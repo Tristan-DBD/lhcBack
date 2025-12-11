@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres
+    container_name: appCoaching_db
+    environment:
+      POSTGRES_USER: appCoaching_api
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: appCoaching_db
+    ports:
+      - "5400:5432"
+    networks:
+      - appCoaching
+    volumes: 
+      - db_data:/var/lib/postgresql
+
+  adminer:
+    image: adminer
+    container_name: adminer-1
+    ports:
+      - "8080:8080"
+    networks:
+      - appCoaching
+
+networks:
+  appCoaching:
+
+volumes:
+  db_data:
