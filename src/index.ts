@@ -2,8 +2,6 @@ import 'dotenv/config'
 import express from 'express'
 import dotenv from 'dotenv'
 import route from './routes'
-import { statService as ss } from './service/stats'
-import { UserService } from './service/user'
 
 dotenv.config()
 
@@ -18,4 +16,5 @@ server.listen(port, () => {
   console.log(`Le serveur est en cours à l'adresse : http://localhost:${port}`)
 })
 
+// pour le récuperer dans les fichiers tests
 export default server

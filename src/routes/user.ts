@@ -1,17 +1,23 @@
 import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
 import { UserService as us } from '../service/user'
-import { hash } from 'node:crypto'
 
 const router = Router()
 
-function hundlerResponse(res: Response, status: number, message: any) {
-  return res.status(status).json(message)
+function hundlerResponse(
+  res: Response,
+  status: number,
+  success: boolean,
+  json: any,
+) {
+  return res.status(status).json({
+    success: success,
+    data: json,
+  })
 }
 
 async function hashedPassword(password: string) {
   const hashed = await bcrypt.hash(password, Number(process.env.SALT_ROUND))
-  console.log(hashed)
   return hashed
 }
 
@@ -31,19 +37,20 @@ router.post('/', async (req: Request, res: Response) => {
   )
 
   if (user == 'ALREADY-EXIST')
-    return hundlerResponse(res, 409, 'Utilisateur déjà existant')
-  return hundlerResponse(res, 200, user)
+    return hundlerResponse(res, 409, false, 'Utilisateur déjà existant')
+  return hundlerResponse(res, 200, true, user)
 })
 
 router.get('/', async (req: Request, res: Response) => {
   const users = await us.findAll()
-  return hundlerResponse(res, 200, users)
+  return hundlerResponse(res, 200, true, users)
 })
 
 router.get('/:id', async (req: Request, res: Response) => {
   const user = await us.findById(Number(req.params.id))
-  if (user == 'NOT-EXIST') return hundlerResponse(res, 404, 'Id incorect')
-  return hundlerResponse(res, 200, user)
+  if (user == 'NOT-EXIST')
+    return hundlerResponse(res, 404, false, 'Id incorect')
+  return hundlerResponse(res, 200, true, user)
 })
 
 router.put('/:id', async (req: Request, res: Response) => {
@@ -68,18 +75,18 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
   const user = await us.update(Number(req.params.id), { ...data })
   if (user == 'NOT-EXIST') {
-    return hundlerResponse(res, 404, 'Id incorect')
+    return hundlerResponse(res, 404, false, 'Id incorect')
   }
 
-  return hundlerResponse(res, 200, user)
+  return hundlerResponse(res, 200, true, user)
 })
 
 router.delete('/:id', async (req: Request, res: Response) => {
   const user = await us.delete(Number(req.params.id))
   if (user == 'NOT-EXIST') {
-    return hundlerResponse(res, 404, 'Utilisateur introuvable')
+    return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
   }
-  return hundlerResponse(res, 200, user)
+  return hundlerResponse(res, 200, true, user)
 })
 
 export default router

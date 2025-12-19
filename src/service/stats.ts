@@ -1,4 +1,3 @@
-import { resourceUsage } from 'node:process'
 import prisma from '../db-config'
 import { UserService as us } from './user'
 
@@ -58,15 +57,7 @@ export const statService = {
     return updated
   },
 
-  async delete(userId: number) {
-    const stats = await this.findByUserId(userId)
-
-    if (stats == null) {
-      return 'STATS_NOT_FOUND'
-    }
-
-    const id = stats?.id
-
+  async delete(id: number) {
     return await prisma.stats.delete({ where: { id } })
   },
 }
