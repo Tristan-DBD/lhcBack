@@ -1,0 +1,22 @@
+{
+    "entryFile": "./src/doc/tsoa-doc-loader.ts",
+    "controllerPathGlobs": ["src/doc/swagger/*.ts"],
+    "spec": {
+    "specVersion": 3,
+    "outputDirectory": "src/doc",
+    "outputFile": "swagger.json",
+    "basePath": "/api",
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "ignore"
+  }
+}
