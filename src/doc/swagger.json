@@ -1,0 +1,974 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"_36_Enums.Role": {
+				"type": "string",
+				"enum": [
+					"COACH",
+					"ATHLETE"
+				]
+			},
+			"Role": {
+				"$ref": "#/components/schemas/_36_Enums.Role"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "back",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/user": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"password": {
+													"type": "string"
+												},
+												"email": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												},
+												"id": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"password",
+												"email",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name",
+												"id"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"ALREADY-EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"surname": {
+										"type": "string"
+									},
+									"age": {
+										"type": "string"
+									},
+									"weight": {
+										"type": "string"
+									},
+									"phone": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									},
+									"password": {
+										"type": "string"
+									},
+									"role": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"name",
+									"surname",
+									"age",
+									"weight",
+									"phone",
+									"email",
+									"password"
+								]
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "FindAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"allOf": [
+											{
+												"properties": {
+													"stat": {
+														"items": {
+															"properties": {
+																"deadlift": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"bench": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"squat": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"userId": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"id": {
+																	"type": "number",
+																	"format": "double"
+																}
+															},
+															"required": [
+																"deadlift",
+																"bench",
+																"squat",
+																"userId",
+																"id"
+															],
+															"type": "object"
+														},
+														"type": "array"
+													}
+												},
+												"required": [
+													"stat"
+												],
+												"type": "object"
+											},
+											{
+												"properties": {
+													"password": {
+														"type": "string"
+													},
+													"email": {
+														"type": "string"
+													},
+													"role": {
+														"$ref": "#/components/schemas/_36_Enums.Role"
+													},
+													"phone": {
+														"type": "string"
+													},
+													"weight": {
+														"type": "number",
+														"format": "double"
+													},
+													"age": {
+														"type": "number",
+														"format": "double"
+													},
+													"surname": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													},
+													"id": {
+														"type": "number",
+														"format": "double"
+													}
+												},
+												"required": [
+													"password",
+													"email",
+													"role",
+													"phone",
+													"weight",
+													"age",
+													"surname",
+													"name",
+													"id"
+												],
+												"type": "object"
+											}
+										]
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/user/{id}": {
+			"get": {
+				"operationId": "FindById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"allOf": [
+												{
+													"properties": {
+														"stat": {
+															"items": {
+																"properties": {
+																	"deadlift": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"bench": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"squat": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	}
+																},
+																"required": [
+																	"deadlift",
+																	"bench",
+																	"squat",
+																	"userId",
+																	"id"
+																],
+																"type": "object"
+															},
+															"type": "array"
+														}
+													},
+													"required": [
+														"stat"
+													],
+													"type": "object"
+												},
+												{
+													"properties": {
+														"password": {
+															"type": "string"
+														},
+														"email": {
+															"type": "string"
+														},
+														"role": {
+															"$ref": "#/components/schemas/_36_Enums.Role"
+														},
+														"phone": {
+															"type": "string"
+														},
+														"weight": {
+															"type": "number",
+															"format": "double"
+														},
+														"age": {
+															"type": "number",
+															"format": "double"
+														},
+														"surname": {
+															"type": "string"
+														},
+														"name": {
+															"type": "string"
+														},
+														"id": {
+															"type": "number",
+															"format": "double"
+														}
+													},
+													"required": [
+														"password",
+														"email",
+														"role",
+														"phone",
+														"weight",
+														"age",
+														"surname",
+														"name",
+														"id"
+													],
+													"type": "object"
+												}
+											]
+										},
+										{
+											"type": "string",
+											"enum": [
+												"NOT-EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "Update",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"password": {
+													"type": "string"
+												},
+												"email": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												},
+												"id": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"password",
+												"email",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name",
+												"id"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"NOT-EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"role": {
+										"$ref": "#/components/schemas/Role"
+									},
+									"password": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									},
+									"phone": {
+										"type": "string"
+									},
+									"weight": {
+										"type": "number",
+										"format": "double"
+									},
+									"age": {
+										"type": "number",
+										"format": "double"
+									},
+									"surname": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"role",
+									"password",
+									"email",
+									"phone",
+									"weight",
+									"age",
+									"surname",
+									"name"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"password": {
+													"type": "string"
+												},
+												"email": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												},
+												"id": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"password",
+												"email",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name",
+												"id"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"NOT-EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/stats": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"deadlift": {
+													"type": "number",
+													"format": "double"
+												},
+												"bench": {
+													"type": "number",
+													"format": "double"
+												},
+												"squat": {
+													"type": "number",
+													"format": "double"
+												},
+												"userId": {
+													"type": "number",
+													"format": "double"
+												},
+												"id": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"deadlift",
+												"bench",
+												"squat",
+												"userId",
+												"id"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"USER_NOT_EXIST",
+												"ALREADY_EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Stats"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"userId": {
+										"type": "string"
+									},
+									"squat": {
+										"type": "string"
+									},
+									"bench": {
+										"type": "string"
+									},
+									"deadlift": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"userId",
+									"squat",
+									"bench",
+									"deadlift"
+								]
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"properties": {
+											"deadlift": {
+												"type": "number",
+												"format": "double"
+											},
+											"bench": {
+												"type": "number",
+												"format": "double"
+											},
+											"squat": {
+												"type": "number",
+												"format": "double"
+											},
+											"userId": {
+												"type": "number",
+												"format": "double"
+											},
+											"id": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"deadlift",
+											"bench",
+											"squat",
+											"userId",
+											"id"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Stats"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "Update",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"deadlift": {
+													"type": "number",
+													"format": "double"
+												},
+												"bench": {
+													"type": "number",
+													"format": "double"
+												},
+												"squat": {
+													"type": "number",
+													"format": "double"
+												},
+												"userId": {
+													"type": "number",
+													"format": "double"
+												},
+												"id": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"deadlift",
+												"bench",
+												"squat",
+												"userId",
+												"id"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"STATS_NOT_FOUND"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Stats"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"deadlift": {
+										"type": "number",
+										"format": "double"
+									},
+									"bench": {
+										"type": "number",
+										"format": "double"
+									},
+									"squat": {
+										"type": "number",
+										"format": "double"
+									},
+									"userId": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"deadlift",
+									"bench",
+									"squat",
+									"userId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/stats/{id}": {
+			"get": {
+				"operationId": "GetById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"deadlift": {
+											"type": "number",
+											"format": "double"
+										},
+										"bench": {
+											"type": "number",
+											"format": "double"
+										},
+										"squat": {
+											"type": "number",
+											"format": "double"
+										},
+										"userId": {
+											"type": "number",
+											"format": "double"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"deadlift",
+										"bench",
+										"squat",
+										"userId",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Stats"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"deadlift": {
+											"type": "number",
+											"format": "double"
+										},
+										"bench": {
+											"type": "number",
+											"format": "double"
+										},
+										"squat": {
+											"type": "number",
+											"format": "double"
+										},
+										"userId": {
+											"type": "number",
+											"format": "double"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"deadlift",
+										"bench",
+										"squat",
+										"userId",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Stats"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/api"
+		}
+	]
+}

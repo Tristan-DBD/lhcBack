@@ -44,6 +44,9 @@
 
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": ["src/**/*", "test/**/*"]
 }

@@ -2,13 +2,15 @@ import 'dotenv/config'
 import express from 'express'
 import dotenv from 'dotenv'
 import route from './routes'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from './doc/swagger.json'
 
 dotenv.config()
 
 const server = express()
 
 server.use(express.json())
-
+server.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 server.use('/api', route)
 
 const port = Number(process.env.PORT) || 4000

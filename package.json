@@ -7,7 +7,8 @@
     "docker:build": "docker compose build",
     "docker:up": "docker compose up",
     "docker": "npm run docker:build && npm run docker:up",
-    "test": "jest --runInBand",
+    "jest:test": "jest --runInBand",
+    "tsoa:generate": "tsoa spec",
     "start": "nodemon"
   },
   "keywords": [],

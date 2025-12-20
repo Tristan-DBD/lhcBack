@@ -40,7 +40,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   return hundlerResponse(res, 200, true, stats)
 })
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/', async (req: Request, res: Response) => {
   const { userId, squat, bench, deadlift } = req.body
 
   const updated = await ss.update(userId, squat, bench, deadlift)
