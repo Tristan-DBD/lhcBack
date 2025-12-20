@@ -41,13 +41,13 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
 
     expect(res.body.success).toBe(true)
   })
-  it('UPDATE (PUT /api/stats/id)', async () => {
-    const res = await request(server).put(`/api/stats/${statsId}`).send({
+  it('UPDATE (PUT /api/stats/)', async () => {
+    const res = await request(server).put('/api/stats').send({
+      userId: userId,
       squat: 99,
     })
 
     expect(res.body.success).toBe(true)
-    console.log('0000000000', res.body.data)
     expect(res.body.data.squat).toBe(99)
   })
   it('DELETE (DELETE /api/stats/id)', async () => {
