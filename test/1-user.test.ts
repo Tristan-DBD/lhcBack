@@ -1,8 +1,6 @@
 import server from '../src/index'
 import request from 'supertest'
 import { resetDb } from './resetDb'
-import fs from 'fs'
-import path from 'path'
 
 beforeAll(async () => {
   resetDb()
@@ -20,6 +18,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       phone: '0601020304',
       email: 'test@gmail.com',
       password: '1234',
+      role: 'COACH',
     })
 
     createdUserId = res.body.data.id
@@ -38,14 +37,14 @@ describe('Test CRUD pour les utilisateurs', () => {
   })
   it('UPDATE (PUT /api/user/id', async () => {
     const res = await request(server).put(`/api/user/${createdUserId}`).send({
-      name: 'modifiedName',
+      name: 'newName',
     })
     expect(res.body.success).toBe(true)
-    expect(res.body.data.name).toBe('modifiedName')
+    expect(res.body.data.name).toBe('newName')
   })
   it('DELETE (DELETE /api/user/id)', async () => {
     const res = await request(server).delete(`/api/user/${createdUserId}`)
 
-    expect(res.body.success).toBe(true)
+    expect(res.status).toBe(204)
   })
 })

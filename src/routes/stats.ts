@@ -1,22 +1,14 @@
 /* eslint-disable quotes */
 import { Request, Response, Router } from 'express'
 import { statService as ss } from '../service/stats'
+import hundlerResponse from '../middleware/hundler'
+import validate from '../middleware/validate'
+import { statsSchema, partialStatsSchema } from '../schemas/stats'
+import { idSchema } from '../schemas/common'
 
 const router = Router()
 
-function hundlerResponse(
-  res: Response,
-  status: number,
-  success: boolean,
-  json: any,
-) {
-  return res.status(status).json({
-    success: success,
-    data: json,
-  })
-}
-
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', validate(statsSchema), async (req: Request, res: Response) => {
   const { userId, squat, bench, deadlift } = req.body
 
   const stats = await ss.create(userId, squat, bench, deadlift)
@@ -27,7 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
   if (stats == 'USER_NOT_EXIST') {
     return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
   }
-  return hundlerResponse(res, 200, true, stats)
+  return hundlerResponse(res, 201, true, stats)
 })
 
 router.get('/', async (req: Request, res: Response) => {
@@ -35,32 +27,43 @@ router.get('/', async (req: Request, res: Response) => {
   return hundlerResponse(res, 200, true, stats)
 })
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', validate(idSchema), async (req: Request, res: Response) => {
   const stats = await ss.findById(Number(req.params.id))
+
+  if (stats == null) {
+    return hundlerResponse(res, 404, false, 'Stats introuvables')
+  }
   return hundlerResponse(res, 200, true, stats)
 })
 
-router.put('/', async (req: Request, res: Response) => {
-  const { userId, squat, bench, deadlift } = req.body
+router.put(
+  '/',
+  validate(partialStatsSchema),
+  async (req: Request, res: Response) => {
+    const { userId, squat, bench, deadlift } = req.body
 
-  const updated = await ss.update(userId, squat, bench, deadlift)
+    const updated = await ss.update(userId, squat, bench, deadlift)
 
-  if (updated == 'STATS_NOT_FOUND')
-    return hundlerResponse(
-      res,
-      409,
-      false,
-      "L'utilisateur n'as pas fiche de stats renseignée",
-    )
+    if (updated == 'STATS_NOT_FOUND')
+      return hundlerResponse(
+        res,
+        404,
+        false,
+        "L'utilisateur n'a pas fiche de stats renseignée",
+      )
 
-  return hundlerResponse(res, 200, true, updated)
-})
+    return hundlerResponse(res, 200, true, updated)
+  },
+)
 
-router.delete('/:id', async (req: Request, res: Response) => {
-  const exist = await ss.findById(Number(req.params.id))
-  if (exist == null) {
-    return hundlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
-  }
+router.delete(
+  '/:id',
+  validate(idSchema),
+  async (req: Request, res: Response) => {
+    const exist = await ss.findById(Number(req.params.id))
+    if (exist == null) {
+      return hundlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
+    }
 
   const deleted = await ss.delete(Number(req.params.id))
   return hundlerResponse(res, 200, true, deleted)

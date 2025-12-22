@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserService as us } from '../service/user'
 import { Role } from '@prisma/client'
-import { resolveObjectURL } from 'node:buffer'
 
 const router = Router()
 
