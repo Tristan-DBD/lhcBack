@@ -1,6 +1,8 @@
 import server from '../src/index'
 import request from 'supertest'
 import { resetDb } from './resetDb'
+import fs from 'fs'
+import path from 'path'
 
 beforeAll(async () => {
   resetDb()
