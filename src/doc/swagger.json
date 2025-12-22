@@ -16,6 +16,55 @@
 			},
 			"Role": {
 				"$ref": "#/components/schemas/_36_Enums.Role"
+			},
+			"CreateUserDto": {
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "Tristan"
+					},
+					"surname": {
+						"type": "string",
+						"example": "Debord"
+					},
+					"age": {
+						"type": "number",
+						"format": "double",
+						"example": 23
+					},
+					"weight": {
+						"type": "number",
+						"format": "double",
+						"example": 85
+					},
+					"phone": {
+						"type": "string",
+						"example": "0601020304"
+					},
+					"email": {
+						"type": "string",
+						"example": "admin@gmail.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "1234"
+					},
+					"role": {
+						"$ref": "#/components/schemas/Role"
+					}
+				},
+				"required": [
+					"name",
+					"surname",
+					"age",
+					"weight",
+					"phone",
+					"email",
+					"password",
+					"role"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {}
@@ -105,44 +154,9 @@
 				"requestBody": {
 					"required": true,
 					"content": {
-						"multipart/form-data": {
+						"application/json": {
 							"schema": {
-								"type": "object",
-								"properties": {
-									"name": {
-										"type": "string"
-									},
-									"surname": {
-										"type": "string"
-									},
-									"age": {
-										"type": "string"
-									},
-									"weight": {
-										"type": "string"
-									},
-									"phone": {
-										"type": "string"
-									},
-									"email": {
-										"type": "string"
-									},
-									"password": {
-										"type": "string"
-									},
-									"role": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"name",
-									"surname",
-									"age",
-									"weight",
-									"phone",
-									"email",
-									"password"
-								]
+								"$ref": "#/components/schemas/CreateUserDto"
 							}
 						}
 					}
@@ -671,29 +685,33 @@
 				"requestBody": {
 					"required": true,
 					"content": {
-						"multipart/form-data": {
+						"application/json": {
 							"schema": {
-								"type": "object",
 								"properties": {
-									"userId": {
-										"type": "string"
-									},
-									"squat": {
-										"type": "string"
+									"deadlift": {
+										"type": "number",
+										"format": "double"
 									},
 									"bench": {
-										"type": "string"
+										"type": "number",
+										"format": "double"
 									},
-									"deadlift": {
-										"type": "string"
+									"squat": {
+										"type": "number",
+										"format": "double"
+									},
+									"userId": {
+										"type": "number",
+										"format": "double"
 									}
 								},
 								"required": [
-									"userId",
-									"squat",
+									"deadlift",
 									"bench",
-									"deadlift"
-								]
+									"squat",
+									"userId"
+								],
+								"type": "object"
 							}
 						}
 					}

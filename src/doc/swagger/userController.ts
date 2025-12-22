@@ -3,7 +3,7 @@ import {
   Body,
   Consumes,
   Delete,
-  FormField,
+  Example,
   Get,
   Path,
   Post,
@@ -13,22 +13,48 @@ import {
 } from 'tsoa'
 import { UserService as us } from '../../service/user'
 
+class CreateUserDto {
+  @Example('Tristan')
+  name!: string
+
+  @Example('Debord')
+  surname!: string
+
+  @Example(23)
+  age!: number
+
+  @Example(85)
+  weight!: number
+
+  @Example('0601020304')
+  phone!: string
+
+  @Example('admin@gmail.com')
+  email!: string
+
+  @Example('1234')
+  password!: string
+
+  @Example(Role.ATHLETE)
+  role!: Role
+}
+
 @Route('user')
 @Tags('Utilisateur')
 export class UserController {
   @Post('/')
-  @Consumes('multipart/form-data')
-  public async create(
-    @FormField() name: string,
-    @FormField() surname: string,
-    @FormField() age: number,
-    @FormField() weight: number,
-    @FormField() phone: string,
-    @FormField() email: string,
-    @FormField() password: string,
-    @FormField() role: Role = Role.ATHLETE,
-  ) {
-    return us.create(name, surname, age, weight, email, phone, password, role)
+  @Consumes('application/json')
+  public async create(@Body() body: CreateUserDto) {
+    return await us.create(
+      body.name,
+      body.surname,
+      body.age,
+      body.weight,
+      body.email,
+      body.phone,
+      body.password,
+      body.role,
+    )
   }
 
   @Get('/')

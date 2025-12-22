@@ -1,27 +1,21 @@
-import {
-  Body,
-  Delete,
-  FormField,
-  Get,
-  Path,
-  Post,
-  Put,
-  Route,
-  Tags,
-} from 'tsoa'
+import { Body, Consumes, Delete, Get, Path, Post, Put, Route, Tags } from 'tsoa'
 import { statService as ss } from '../../service/stats'
 
 @Route('stats')
 @Tags('Stats')
-export default class statsController {
+export default class StatsController {
   @Post('/')
+  @Consumes('application/json')
   public async create(
-    @FormField() userId: number,
-    @FormField() squat: number,
-    @FormField() bench: number,
-    @FormField() deadlift: number,
+    @Body()
+    body: {
+      userId: number
+      squat: number
+      bench: number
+      deadlift: number
+    },
   ) {
-    return ss.create(userId, squat, bench, deadlift)
+    return ss.create(body.userId, body.squat, body.bench, body.deadlift)
   }
 
   @Get('/')
@@ -35,6 +29,7 @@ export default class statsController {
   }
 
   @Put('/')
+  @Consumes('application/json')
   public async update(
     @Body()
     body: {
