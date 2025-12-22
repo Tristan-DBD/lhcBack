@@ -1,7 +1,6 @@
 import { Role } from '@prisma/client'
 import prisma from '../db-config'
 import user from '../interface/user'
-import { stat } from 'node:fs'
 
 export const UserService = {
   async create(

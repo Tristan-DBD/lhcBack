@@ -3,7 +3,7 @@ import { statService as ss } from '../../service/stats'
 
 @Route('stats')
 @Tags('Stats')
-export default class StatsController {
+export class StatsController {
   @Post('/')
   @Consumes('application/json')
   public async create(

@@ -3,11 +3,10 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserService as us } from '../service/user'
 import { Role } from '@prisma/client'
-import { resolveObjectURL } from 'node:buffer'
 
 const router = Router()
 
-async function createToken(id: number, role: Role, email: string) {
+export async function createToken(id: number, role: Role, email: string) {
   const payload = { id, role, email }
   const token = await jwt.sign(payload, String(process.env.JWT_SECRET), {
     expiresIn: '1D',
