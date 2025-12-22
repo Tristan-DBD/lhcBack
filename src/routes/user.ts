@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
 import { UserService as us } from '../service/user'
-
+import { hundlerValidator } from '../middleware/validator'
 const router = Router()
 
 function hundlerResponse(
@@ -23,6 +23,17 @@ async function hashedPassword(password: string) {
 
 router.post('/', async (req: Request, res: Response) => {
   const { name, surname, age, weight, phone, email, password, role } = req.body
+
+  const validInput = await hundlerValidator([
+    { string: name },
+    { string: surname },
+    { email: email },
+    { phoneNumber: phone },
+    { number: age },
+    { number: weight },
+  ])
+
+  if (validInput != true) return hundlerResponse(res, 400, false, validInput)
 
   const hashed = await hashedPassword(password)
   const user = await us.create(
@@ -47,6 +58,10 @@ router.get('/', async (req: Request, res: Response) => {
 })
 
 router.get('/:id', async (req: Request, res: Response) => {
+  const validInput = await hundlerValidator([{ id: Number(req.params.id) }])
+
+  if (validInput != true) return hundlerResponse(res, 400, false, validInput)
+
   const user = await us.findById(Number(req.params.id))
   if (user == 'NOT-EXIST')
     return hundlerResponse(res, 404, false, 'Id incorect')
@@ -55,6 +70,18 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.put('/:id', async (req: Request, res: Response) => {
   const { name, surname, age, weight, email, password, phone, role } = req.body
+
+  const validInput = await hundlerValidator([
+    { string: name },
+    { string: surname },
+    { email: email },
+    { phoneNumber: phone },
+    { number: age },
+    { number: weight },
+    { id: Number(req.params.id) },
+  ])
+
+  if (validInput != true) return hundlerResponse(res, 400, false, validInput)
 
   let hashed
   if (password == undefined) {
@@ -82,6 +109,10 @@ router.put('/:id', async (req: Request, res: Response) => {
 })
 
 router.delete('/:id', async (req: Request, res: Response) => {
+  const validInput = await hundlerValidator([{ id: Number(req.params.id) }])
+
+  if (validInput != true) return hundlerResponse(res, 400, false, validInput)
+
   const user = await us.delete(Number(req.params.id))
   if (user == 'NOT-EXIST') {
     return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
