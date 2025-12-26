@@ -10,6 +10,7 @@ import {
   Put,
   Route,
   Tags,
+  UploadedFiles,
 } from 'tsoa'
 import { UserService as us } from '../../service/user'
 
@@ -89,5 +90,19 @@ export class UserController {
   @Delete('/{id}')
   public async delete(@Path() id: number) {
     return us.delete(id)
+  }
+
+  @Put('/{id}/profile-image')
+  public async imageUpdate(
+    @Path() id: number,
+    @UploadedFiles() profileImage: Express.Multer.File,
+  ) {
+    const filePath = `public/profileImage/${profileImage.filename}`
+    return us.updateImage(id, filePath)
+  }
+
+  @Delete('/{id}/profile-image')
+  public async resetProfileImage(@Path() id: number) {
+    return us.resetImage(id)
   }
 }

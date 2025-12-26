@@ -1,6 +1,7 @@
 import { Role } from '@prisma/client'
 import prisma from '../db-config'
 import user from '../interface/user'
+import { DEFAULT_PROFILE_IMAGE } from '../constants/image'
 
 export const UserService = {
   async create(
@@ -22,6 +23,7 @@ export const UserService = {
       email: email,
       password: password,
       role: role,
+      imageUri: DEFAULT_PROFILE_IMAGE,
     }
     const exist = await this.findByEmail(email)
     if (exist !== 'NOT-EXIST') return 'ALREADY-EXIST'
@@ -82,5 +84,23 @@ export const UserService = {
     if (exist == 'NOT-EXIST') return 'NOT-EXIST'
     const user = await prisma.user.delete({ where: { id } })
     return user
+  },
+
+  async resetImage(id: number) {
+    return await prisma.user.update({
+      where: { id: id },
+      data: {
+        imageUri: DEFAULT_PROFILE_IMAGE,
+      },
+    })
+  },
+
+  async updateImage(id: number, file: string) {
+    return await prisma.user.update({
+      where: { id: id },
+      data: {
+        imageUri: file,
+      },
+    })
   },
 }
