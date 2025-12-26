@@ -4,3 +4,6 @@ generated
 prisma/migrations
 .env
 package-lock*
+public/profileImage/*
+
+!public/profileImage/default.png

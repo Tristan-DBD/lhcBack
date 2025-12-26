@@ -2,6 +2,9 @@ import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
 import { UserService as us } from '../service/user'
 import { hundlerValidator } from '../middleware/validator'
+import { upload } from '../middleware/upload'
+import fs from 'fs/promises'
+
 const router = Router()
 
 function hundlerResponse(
@@ -120,4 +123,42 @@ router.delete('/:id', async (req: Request, res: Response) => {
   return hundlerResponse(res, 200, true, user)
 })
 
+router.put(
+  '/:id/profile-image',
+  upload.single('profileImage'),
+  async (req: Request, res: Response) => {
+    if (req.file == undefined)
+      return hundlerResponse(res, 400, false, 'Fichier manquant')
+
+    const validInput = await hundlerValidator([{ id: Number(req.params.id) }])
+    if (validInput != true) return hundlerResponse(res, 400, false, validInput)
+
+    const filePath = `public/profileImage/${req.file?.filename}`
+    const updated = await us.updateImage(Number(req.params.id), filePath)
+    return hundlerResponse(res, 200, true, updated)
+  },
+)
+
+router.delete(
+  '/:id/profile-image',
+  upload.single('profileImage'),
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.id)
+    const validInput = await hundlerValidator([{ id: id }])
+    if (validInput != true) return hundlerResponse(res, 400, false, validInput)
+
+    const user = await us.findById(id)
+    if (user == 'NOT-EXIST') {
+      return hundlerResponse(res, 400, false, user)
+    }
+    if (user.imageUri.includes('default.png')) {
+      return hundlerResponse(res, 404, false, 'Aucune image enregistrée')
+    }
+    const fileRemove = await fs.unlink(`./${user.imageUri}`)
+    console.log(fileRemove)
+
+    const reset = await us.resetImage(Number(req.params.id))
+    return hundlerResponse(res, 200, true, 'ok')
+  },
+)
 export default router

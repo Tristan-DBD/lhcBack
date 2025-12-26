@@ -1,14 +1,15 @@
 import multer from 'multer'
 
-const imageAllowedTypes = ['image/jpeg', 'image/jpg']
+const imageAllowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, '../../public/profileImage/')
+    callback(null, 'public/profileImage/')
   },
 
   filename: (req, file, callback) => {
-    const filename = String(Date.now())
+    const extension = file.mimetype.split('/')[1]
+    const filename = `${Date.now()}.${extension}`
     callback(null, filename)
   },
 })
