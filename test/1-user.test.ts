@@ -1,6 +1,8 @@
 import server from '../src/index'
 import request from 'supertest'
 import { resetDb } from './resetDb'
+import fs from 'fs'
+import path from 'path'
 
 beforeAll(async () => {
   resetDb()
@@ -40,6 +42,24 @@ describe('Test CRUD pour les utilisateurs', () => {
     })
     expect(res.body.success).toBe(true)
     expect(res.body.data.name).toBe('modifiedName')
+  })
+  it('UPDATE IMAGE (PUT /api/user/id/profile-image)', async () => {
+    const res = await request(server)
+      .put(`/api/user/${createdUserId}/profile-image`)
+      .attach('profileImage', path.join(__dirname, '../test/image/ODA.png'))
+
+    expect(res.body.success).toBe(true)
+  })
+  it('RESET IMAGE (DELETE /api/user/id/profile-image)', async () => {
+    const user = await request(server).get(`/api/user/${createdUserId}`)
+    const imageUri = user.body.data.imageUri
+
+    const res = await request(server).delete(
+      `/api/user/${createdUserId}/profile-image`,
+    )
+
+    expect(fs.existsSync(`${imageUri}`))
+    expect(res.body.success).toBe(true)
   })
   it('DELETE (DELETE /api/user/id)', async () => {
     const res = await request(server).delete(`/api/user/${createdUserId}`)
