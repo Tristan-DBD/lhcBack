@@ -18,7 +18,8 @@ const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
   if (imageAllowedTypes.includes(file.mimetype)) {
     callback(null, true)
   } else {
-    callback(new Error('Seulement des images'))
+    const error = new Error('Invalid file type')
+    callback(error as any, false)
   }
 }
 

@@ -117,9 +117,17 @@ router.delete('/:id', async (req: Request, res: Response) => {
   if (validInput != true) return hundlerResponse(res, 400, false, validInput)
 
   const user = await us.delete(Number(req.params.id))
+
   if (user == 'NOT-EXIST') {
     return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
   }
+
+  const imageUri = user.imageUri
+
+  if (!imageUri.includes('default.png')) {
+    await fs.unlink(`./${imageUri}`)
+  }
+
   return hundlerResponse(res, 200, true, user)
 })
 
@@ -127,9 +135,7 @@ router.put(
   '/:id/profile-image',
   upload.single('profileImage'),
   async (req: Request, res: Response) => {
-    if (req.file == undefined)
-      return hundlerResponse(res, 400, false, 'Fichier manquant')
-
+    if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
     const validInput = await hundlerValidator([{ id: Number(req.params.id) }])
     if (validInput != true) return hundlerResponse(res, 400, false, validInput)
 
@@ -154,10 +160,8 @@ router.delete(
     if (user.imageUri.includes('default.png')) {
       return hundlerResponse(res, 404, false, 'Aucune image enregistrée')
     }
-    const fileRemove = await fs.unlink(`./${user.imageUri}`)
-    console.log(fileRemove)
-
-    const reset = await us.resetImage(Number(req.params.id))
+    await fs.unlink(`./${user.imageUri}`)
+    await us.resetImage(Number(req.params.id))
     return hundlerResponse(res, 200, true, 'ok')
   },
 )
