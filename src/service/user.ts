@@ -86,6 +86,15 @@ export const UserService = {
     return user
   },
 
+  async updateImage(id: number, file: string) {
+    return await prisma.user.update({
+      where: { id: id },
+      data: {
+        imageUri: file,
+      },
+    })
+  },
+
   async resetImage(id: number) {
     return await prisma.user.update({
       where: { id: id },
@@ -95,11 +104,20 @@ export const UserService = {
     })
   },
 
-  async updateImage(id: number, file: string) {
+  async updateProg(id: number, file: string) {
     return await prisma.user.update({
       where: { id: id },
       data: {
-        imageUri: file,
+        progUri: file,
+      },
+    })
+  },
+
+  async removeProg(id: number) {
+    return await prisma.user.update({
+      where: { id: id },
+      data: {
+        progUri: null,
       },
     })
   },
