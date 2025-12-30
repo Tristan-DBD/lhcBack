@@ -17,6 +17,10 @@ beforeAll(async () => {
   userId = createdUser.body.data.id
 })
 
+afterAll(async () => {
+  resetDb()
+})
+
 let userId: number
 let statsId: number
 
