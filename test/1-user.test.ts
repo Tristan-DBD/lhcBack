@@ -46,7 +46,7 @@ describe('Test CRUD pour les utilisateurs', () => {
   it('UPDATE IMAGE (PUT /api/user/id/profile-image)', async () => {
     const res = await request(server)
       .put(`/api/user/${createdUserId}/profile-image`)
-      .attach('profileImage', path.join(__dirname, '../test/image/ODA.png'))
+      .attach('profileImage', path.join(__dirname, '../test/image/test.png'))
 
     expect(res.body.success).toBe(true)
   })
@@ -58,7 +58,26 @@ describe('Test CRUD pour les utilisateurs', () => {
       `/api/user/${createdUserId}/profile-image`,
     )
 
-    expect(fs.existsSync(`${imageUri}`))
+    expect(fs.existsSync(`/public/profileImage${imageUri}`)).toBe(false)
+    expect(res.body.success).toBe(true)
+  })
+  it('UPDATE PROG (PUT /api/user/id/prog)', async () => {
+    const res = await request(server)
+      .put(`/api/user/${createdUserId}/prog`)
+      .attach('statsFile', path.join(__dirname, '../test/prog/test.xlsx'), {
+        contentType:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+
+    expect(res.body.success).toBe(true)
+  })
+  it('REMOVE PROG (DELETE /api/user/id/prog)', async () => {
+    const user = await request(server).get(`/api/user/${createdUserId}`)
+    const progUri = user.body.data.progUri
+
+    const res = await request(server).delete(`/api/user/${createdUserId}/prog`)
+
+    expect(fs.existsSync(`${progUri}`))
     expect(res.body.success).toBe(true)
   })
   it('DELETE (DELETE /api/user/id)', async () => {
