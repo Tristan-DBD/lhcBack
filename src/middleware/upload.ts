@@ -1,25 +1,48 @@
 import multer from 'multer'
 
+// fichier image .jpg .png
 const imageAllowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
-
+// fichier type excel .xls .xlsx
+const statsAllowedTypes = [
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+]
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'public/profileImage/')
+    switch (file.fieldname) {
+      case 'profileImage':
+        callback(null, 'public/profileImage/')
+        break
+      case 'statsFile':
+        callback(null, 'public/prog/')
+        break
+    }
   },
 
   filename: (req, file, callback) => {
-    const extension = file.mimetype.split('/')[1]
+    const extension = file.originalname.split('.')[1]
     const filename = `${Date.now()}.${extension}`
     callback(null, filename)
   },
 })
 
 const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
-  if (imageAllowedTypes.includes(file.mimetype)) {
-    callback(null, true)
-  } else {
-    const error = new Error('Invalid file type')
-    callback(error as any, false)
+  switch (file.fieldname) {
+    case 'profileImage':
+      if (imageAllowedTypes.includes(file.mimetype)) {
+        callback(null, true)
+      } else {
+        const error = new Error('Invalid file type')
+        callback(error as any, false)
+      }
+      break
+    case 'statsFile':
+      if (statsAllowedTypes.includes(file.mimetype)) {
+        callback(null, true)
+      } else {
+        const error = new Error('Invalid file type')
+        callback(error as any, false)
+      }
   }
 }
 

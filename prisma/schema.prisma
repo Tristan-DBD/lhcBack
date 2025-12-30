@@ -21,6 +21,7 @@ model User {
   phone         String
   role          Role @default(ATHLETE)
   imageUri      String
+  progUri       String?
 
   stat          Stats[]
 

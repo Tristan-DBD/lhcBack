@@ -96,6 +96,9 @@
 												"email": {
 													"type": "string"
 												},
+												"progUri": {
+													"type": "string"
+												},
 												"imageUri": {
 													"type": "string"
 												},
@@ -127,6 +130,7 @@
 											"required": [
 												"password",
 												"email",
+												"progUri",
 												"imageUri",
 												"role",
 												"phone",
@@ -227,6 +231,9 @@
 													"email": {
 														"type": "string"
 													},
+													"progUri": {
+														"type": "string"
+													},
 													"imageUri": {
 														"type": "string"
 													},
@@ -258,6 +265,7 @@
 												"required": [
 													"password",
 													"email",
+													"progUri",
 													"imageUri",
 													"role",
 													"phone",
@@ -347,6 +355,9 @@
 														"email": {
 															"type": "string"
 														},
+														"progUri": {
+															"type": "string"
+														},
 														"imageUri": {
 															"type": "string"
 														},
@@ -378,6 +389,7 @@
 													"required": [
 														"password",
 														"email",
+														"progUri",
 														"imageUri",
 														"role",
 														"phone",
@@ -436,6 +448,9 @@
 												"email": {
 													"type": "string"
 												},
+												"progUri": {
+													"type": "string"
+												},
 												"imageUri": {
 													"type": "string"
 												},
@@ -467,6 +482,7 @@
 											"required": [
 												"password",
 												"email",
+												"progUri",
 												"imageUri",
 												"role",
 												"phone",
@@ -571,6 +587,9 @@
 												"email": {
 													"type": "string"
 												},
+												"progUri": {
+													"type": "string"
+												},
 												"imageUri": {
 													"type": "string"
 												},
@@ -602,6 +621,7 @@
 											"required": [
 												"password",
 												"email",
+												"progUri",
 												"imageUri",
 												"role",
 												"phone",
@@ -658,6 +678,9 @@
 										"email": {
 											"type": "string"
 										},
+										"progUri": {
+											"type": "string"
+										},
 										"imageUri": {
 											"type": "string"
 										},
@@ -689,6 +712,7 @@
 									"required": [
 										"password",
 										"email",
+										"progUri",
 										"imageUri",
 										"role",
 										"phone",
@@ -757,6 +781,9 @@
 										"email": {
 											"type": "string"
 										},
+										"progUri": {
+											"type": "string"
+										},
 										"imageUri": {
 											"type": "string"
 										},
@@ -788,6 +815,190 @@
 									"required": [
 										"password",
 										"email",
+										"progUri",
+										"imageUri",
+										"role",
+										"phone",
+										"weight",
+										"age",
+										"surname",
+										"name",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/user/{id}/prog": {
+			"put": {
+				"operationId": "UpdateProg",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"password": {
+											"type": "string"
+										},
+										"email": {
+											"type": "string"
+										},
+										"progUri": {
+											"type": "string"
+										},
+										"imageUri": {
+											"type": "string"
+										},
+										"role": {
+											"$ref": "#/components/schemas/_36_Enums.Role"
+										},
+										"phone": {
+											"type": "string"
+										},
+										"weight": {
+											"type": "number",
+											"format": "double"
+										},
+										"age": {
+											"type": "number",
+											"format": "double"
+										},
+										"surname": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"password",
+										"email",
+										"progUri",
+										"imageUri",
+										"role",
+										"phone",
+										"weight",
+										"age",
+										"surname",
+										"name",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"statsFile": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"statsFile"
+								]
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "RemoveProg",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"password": {
+											"type": "string"
+										},
+										"email": {
+											"type": "string"
+										},
+										"progUri": {
+											"type": "string"
+										},
+										"imageUri": {
+											"type": "string"
+										},
+										"role": {
+											"$ref": "#/components/schemas/_36_Enums.Role"
+										},
+										"phone": {
+											"type": "string"
+										},
+										"weight": {
+											"type": "number",
+											"format": "double"
+										},
+										"age": {
+											"type": "number",
+											"format": "double"
+										},
+										"surname": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"password",
+										"email",
+										"progUri",
 										"imageUri",
 										"role",
 										"phone",
