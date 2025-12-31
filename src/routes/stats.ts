@@ -65,7 +65,7 @@ router.delete(
     }
 
     const deleted = await ss.delete(Number(req.params.id))
-    return hundlerResponse(res, 204, true, deleted)
+    return hundlerResponse(res, 204, true, 'Stats supprimé')
   },
 )
 export default router

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const positiveNumber = (field: string) =>
-  z
+  z.coerce
     .number({
       message: `${field} doit être un nombre valide`,
     })

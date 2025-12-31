@@ -13,6 +13,7 @@ beforeAll(async () => {
     phone: '0601020304',
     email: 'teststat@gmail.com',
     password: '1234',
+    role: 'COACH',
   })
   userId = createdUser.body.data.id
 })
@@ -57,6 +58,6 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
   it('DELETE (DELETE /api/stats/id)', async () => {
     const res = await request(server).delete(`/api/stats/${statsId}`)
 
-    expect(res.body.success).toBe(true)
+    expect(res.status).toBe(204)
   })
 })

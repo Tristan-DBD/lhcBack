@@ -100,7 +100,7 @@ router.delete(
       await fs.unlink(`./${imageUri}`)
     }
 
-    return hundlerResponse(res, 200, true, user)
+    return hundlerResponse(res, 204, true, user)
   },
 )
 
