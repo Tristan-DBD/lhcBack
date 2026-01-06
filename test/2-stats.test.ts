@@ -1,63 +1,171 @@
 import server from '../src'
 import request from 'supertest'
 import { resetDb } from './resetDb'
+import { createToken } from '../src/routes/login'
 
 beforeAll(async () => {
   await resetDb()
+  const createdCoach = await request(server)
+    .post('/api/user')
+    .set('Authorization', `Bearer ${coachToken}`)
+    .send({
+      name: 'Test',
+      surname: 'Testest',
+      age: 23,
+      weight: 85,
+      phone: '0601020304',
+      email: 'coach@gmail.com',
+      password: '1234',
+      role: 'COACH',
+    })
+  coachId = createdCoach.body.data.id
 
-  const createdUser = await request(server).post('/api/user').send({
-    name: 'Test',
-    surname: 'Testest',
-    age: 23,
-    weight: 85,
-    phone: '0601020304',
-    email: 'teststat@gmail.com',
-    password: '1234',
-    role: 'COACH',
-  })
-  userId = createdUser.body.data.id
+  // Création des utilisateurs
+  const createdAth = await request(server)
+    .post('/api/user')
+    .set('Authorization', `Bearer ${coachToken}`)
+    .send({
+      name: 'Test',
+      surname: 'Testest',
+      age: 23,
+      weight: 85,
+      phone: '0601020304',
+      email: 'ahtlete@gmail.com',
+      password: '1234',
+      role: 'ATHLETE',
+    })
+  athleteId = createdAth.body.data.id
 })
 
 afterAll(async () => {
-  resetDb()
+  await resetDb()
 })
 
-let userId: number
-let statsId: number
+let coachId: number
+let athleteId: number
+let coachStatId: number
+let athStatId: number
+let coachToken: string
+let athleteToken: string
 
 describe('Test CRUD pour les stats des utilisateurs', () => {
-  it('CREATE (POST /api/stats)', async () => {
-    const res = await request(server).post('/api/stats').send({
-      userId: userId,
-      squat: 200,
-      bench: 200,
-      deadlift: 200,
+  async function token() {
+    coachToken = await createToken(1, 'COACH', 'email@gmail.com')
+    athleteToken = await createToken(2, 'ATHLETE', 'email@gmail.com')
+  }
+  token()
+  describe('CREATE (POST /api/stats)', () => {
+    it('COACH -> Authorize', async () => {
+      const res = await request(server)
+        .post('/api/stats')
+        .set('Authorization', `Bearer ${coachToken}`)
+        .send({
+          userId: coachId,
+          squat: 200,
+          bench: 200,
+          deadlift: 200,
+        })
+
+      coachStatId = res.body.data.id
+      expect(res.body.success).toBe(true)
     })
-    statsId = res.body.data.id
-    expect(res.body.success).toBe(true)
-  })
-  it('GET ALL (/api/stats)', async () => {
-    const res = await request(server).get('/api/stats')
+    it('ATHLETE -> Unauthorize', async () => {
+      const res = await request(server)
+        .post('/api/stats')
+        .set('Authorization', `Bearer ${athleteToken}`)
+        .send({
+          userId: athleteId,
+          squat: 200,
+          bench: 200,
+          deadlift: 200,
+        })
+      expect(res.body.success).toBe(false)
 
-    expect(res.body.success).toBe(true)
-  })
-  it('GET BY ID (GET /api/stats/id)', async () => {
-    const res = await request(server).get(`/api/stats/${statsId}`)
+      // crée une fiche de stat ath pour la suite des tests
+      const ATH = await request(server)
+        .post('/api/stats')
+        .set('Authorization', `Bearer ${coachToken}`)
+        .send({
+          userId: athleteId,
+          squat: 200,
+          bench: 200,
+          deadlift: 200,
+        })
 
-    expect(res.body.success).toBe(true)
-  })
-  it('UPDATE (PUT /api/stats/)', async () => {
-    const res = await request(server).put('/api/stats').send({
-      userId: userId,
-      squat: 99,
+      athStatId = ATH.body.data.id
     })
-
-    expect(res.body.success).toBe(true)
-    expect(res.body.data.squat).toBe(99)
   })
-  it('DELETE (DELETE /api/stats/id)', async () => {
-    const res = await request(server).delete(`/api/stats/${statsId}`)
+  describe('GET ALL (/api/stats)', () => {
+    it('COACH -> Authorize', async () => {
+      const res = await request(server)
+        .get('/api/stats')
+        .set('Authorization', `Bearer ${coachToken}`)
 
-    expect(res.status).toBe(204)
+      expect(res.body.success).toBe(true)
+    })
+    it('ATHLETE -> Unauthorize', async () => {
+      const res = await request(server)
+        .get('/api/stats')
+        .set('Authorization', `Bearer ${athleteToken}`)
+
+      expect(res.body.success).toBe(false)
+    })
+  })
+  describe('GET BY ID (GET /api/stats/id)', () => {
+    it('COACH -> Authorize', async () => {
+      const res = await request(server)
+        .get(`/api/stats/${coachStatId}`)
+        .set('Authorization', `Bearer ${coachToken}`)
+
+      expect(res.body.success).toBe(true)
+    })
+    it('ATHLETE -> Authorize', async () => {
+      const res = await request(server)
+        .get(`/api/stats/${athStatId}`)
+        .set('Authorization', `Bearer ${athleteToken}`)
+
+      expect(res.body.success).toBe(true)
+    })
+  })
+  describe('UPDATE (PUT /api/stats/)', () => {
+    it('COACH -> Authorize', async () => {
+      const res = await request(server)
+        .put('/api/stats')
+        .set('Authorization', `Bearer ${coachToken}`)
+        .send({
+          userId: coachId,
+          squat: 99,
+        })
+
+      expect(res.body.success).toBe(true)
+      expect(res.body.data.squat).toBe(99)
+    })
+    it('ATHLETE -> Unauthorize', async () => {
+      const res = await request(server)
+        .put('/api/stats')
+        .set('Authorization', `Bearer ${athleteToken}`)
+        .send({
+          userId: athleteId,
+          squat: 99,
+        })
+
+      expect(res.body.success).toBe(false)
+    })
+  })
+  describe('DELETE (DELETE /api/stats/id)', () => {
+    it('COACH -> Authorize', async () => {
+      const res = await request(server)
+        .delete(`/api/stats/${coachStatId}`)
+        .set('Authorization', `Bearer ${coachToken}`)
+
+      expect(res.body.success).toBe(true)
+    })
+    it('ATHLETE -> Unauthorize', async () => {
+      const res = await request(server)
+        .delete(`/api/stats/${athStatId}`)
+        .set('Authorization', `Bearer ${athleteToken}`)
+
+      expect(res.body.success).toBe(false)
+    })
   })
 })

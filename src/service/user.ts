@@ -12,7 +12,7 @@ export const UserService = {
     email: string,
     phone: string,
     password: string,
-    role: Role = 'ATHLETE',
+    role: Role = 'ATHLETE_CO',
   ) {
     const data = {
       name: name,

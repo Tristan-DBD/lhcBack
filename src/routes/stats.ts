@@ -3,41 +3,66 @@ import { Request, Response, Router } from 'express'
 import { statService as ss } from '../service/stats'
 import hundlerResponse from '../middleware/hundler'
 import validate from '../middleware/validate'
-import { statsSchema, partialStatsSchema } from '../schemas/stats'
+import { partialStatsSchema, statsSchema } from '../schemas/stats'
 import { idSchema } from '../schemas/common'
+import { authenticate } from '../middleware/auth'
+import { authorize } from '../middleware/authorize'
 
 const router = Router()
 
-router.post('/', validate(statsSchema), async (req: Request, res: Response) => {
-  const { userId, squat, bench, deadlift } = req.body
+router.post(
+  '/',
+  validate(statsSchema),
+  authenticate,
+  authorize('COACH'),
+  async (req: Request, res: Response) => {
+    const { userId, squat, bench, deadlift } = req.body
 
-  const stats = await ss.create(userId, squat, bench, deadlift)
+    const stats = await ss.create(userId, squat, bench, deadlift)
 
-  if (stats == 'ALREADY_EXIST') {
-    return hundlerResponse(res, 409, false, 'Cet utilisateur à déjà des stats ')
-  }
-  if (stats == 'USER_NOT_EXIST') {
-    return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
-  }
-  return hundlerResponse(res, 201, true, stats)
-})
+    if (stats == 'ALREADY_EXIST') {
+      return hundlerResponse(
+        res,
+        409,
+        false,
+        'Cet utilisateur à déjà des stats ',
+      )
+    }
+    if (stats == 'USER_NOT_EXIST') {
+      return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
+    }
+    return hundlerResponse(res, 201, true, stats)
+  },
+)
 
-router.get('/', async (req: Request, res: Response) => {
-  const stats = await ss.findAll()
-  return hundlerResponse(res, 200, true, stats)
-})
+router.get(
+  '/',
+  authenticate,
+  authorize('COACH'),
+  async (req: Request, res: Response) => {
+    const stats = await ss.findAll()
+    return hundlerResponse(res, 200, true, stats)
+  },
+)
 
-router.get('/:id', validate(idSchema), async (req: Request, res: Response) => {
-  const stats = await ss.findById(Number(req.params.id))
+router.get(
+  '/:id',
+  authenticate,
+  validate(idSchema),
+  async (req: Request, res: Response) => {
+    const stats = await ss.findById(Number(req.params.id))
 
-  if (stats == null) {
-    return hundlerResponse(res, 404, false, 'Stats introuvables')
-  }
-  return hundlerResponse(res, 200, true, stats)
-})
+    if (stats == null) {
+      return hundlerResponse(res, 404, false, 'Stats introuvables')
+    }
+    return hundlerResponse(res, 200, true, stats)
+  },
+)
 
 router.put(
   '/',
+  authenticate,
+  authorize('COACH'),
   validate(partialStatsSchema),
   async (req: Request, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
@@ -58,6 +83,8 @@ router.put(
 
 router.delete(
   '/:id',
+  authenticate,
+  authorize('COACH'),
   validate(idSchema),
   async (req: Request, res: Response) => {
     const exist = await ss.findById(Number(req.params.id))
@@ -65,7 +92,8 @@ router.delete(
       return hundlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
     }
 
-  const deleted = await ss.delete(Number(req.params.id))
-  return hundlerResponse(res, 200, true, deleted)
-})
+    await ss.delete(Number(req.params.id))
+    return hundlerResponse(res, 200, true, 'Stats supprimé')
+  },
+)
 export default router

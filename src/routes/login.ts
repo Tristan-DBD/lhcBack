@@ -3,13 +3,14 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserService as us } from '../service/user'
 import { Role } from '@prisma/client'
+import hundlerResponse from '../middleware/hundler'
 
 const router = Router()
 
-async function createToken(id: number, role: Role, email: string) {
+export async function createToken(id: number, role: Role, email: string) {
   const payload = { id, role, email }
-  const token = await jwt.sign(payload, String(process.env.JWT_SECRET), {
-    expiresIn: '1D',
+  const token = jwt.sign(payload, String(process.env.JWT_SECRET), {
+    expiresIn: '1H',
   })
   return token
 }
@@ -18,13 +19,18 @@ router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body
   const user = await us.findByEmail(email)
   if (user == 'NOT-EXIST') {
-    return res.status(403).json('Email ou mot de passe incorect')
+    return hundlerResponse(res, 403, false, 'Email ou mot de passe incorect')
   }
   const validPassword = await bcrypt.compare(password, user.password)
   if (validPassword == false) {
-    return res.status(409).json('Email ou mot de passe incorect')
+    return hundlerResponse(res, 409, false, 'Email ou mot de passe incorect')
   }
-  return res.status(200).json(await createToken(user.id, user.role, user.email))
+  return hundlerResponse(
+    res,
+    200,
+    true,
+    await createToken(user.id, user.role, user.email),
+  )
 })
 
 router.post('/register', async (req: Request, res: Response) => {
@@ -44,9 +50,14 @@ router.post('/register', async (req: Request, res: Response) => {
   )
 
   if (user == 'ALREADY-EXIST') {
-    return res.status(409).json('Utilisateur déjà existant')
+    return hundlerResponse(res, 409, false, 'Utilisateur déjà existant')
   }
-  return res.status(200).json(await createToken(user.id, user.role, user.email))
+  return hundlerResponse(
+    res,
+    200,
+    true,
+    await createToken(user.id, user.role, user.email),
+  )
 })
 
 export default router

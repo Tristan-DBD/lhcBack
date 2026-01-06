@@ -43,7 +43,74 @@
 					},
 					"email": {
 						"type": "string",
-						"example": "admin@gmail.com"
+						"example": "tristan.debord@gmail.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "1234"
+					},
+					"role": {
+						"$ref": "#/components/schemas/Role"
+					}
+				},
+				"required": [
+					"name",
+					"surname",
+					"age",
+					"weight",
+					"phone",
+					"email",
+					"password",
+					"role"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"loginDto": {
+				"properties": {
+					"email": {
+						"type": "string",
+						"example": "tristan.debord@gmail.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "1234"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"registerDto": {
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "Tristan"
+					},
+					"surname": {
+						"type": "string",
+						"example": "Debord"
+					},
+					"age": {
+						"type": "number",
+						"format": "double",
+						"example": 23
+					},
+					"weight": {
+						"type": "number",
+						"format": "double",
+						"example": 85
+					},
+					"phone": {
+						"type": "string",
+						"example": "0601020304"
+					},
+					"email": {
+						"type": "string",
+						"example": "tristan.debord@gmail.com"
 					},
 					"password": {
 						"type": "string",
@@ -157,7 +224,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -288,7 +359,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": []
 			}
 		},
@@ -418,7 +493,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -509,7 +588,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -648,7 +731,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -731,7 +818,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -834,7 +925,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -917,7 +1012,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1017,7 +1116,11 @@
 				"tags": [
 					"Utilisateur"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1089,7 +1192,11 @@
 				"tags": [
 					"Stats"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -1175,7 +1282,11 @@
 				"tags": [
 					"Stats"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": []
 			},
 			"put": {
@@ -1234,7 +1345,11 @@
 				"tags": [
 					"Stats"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -1319,7 +1434,11 @@
 				"tags": [
 					"Stats"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1378,7 +1497,11 @@
 				"tags": [
 					"Stats"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1390,6 +1513,56 @@
 						}
 					}
 				]
+			}
+		},
+		"/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/loginDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/registerDto"
+							}
+						}
+					}
+				}
 			}
 		}
 	},
