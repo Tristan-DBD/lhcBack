@@ -1,12 +1,9 @@
 import 'dotenv/config'
 import express, { Request, Response } from 'express'
-import dotenv from 'dotenv'
 import route from './routes'
 import swaggerUi from 'swagger-ui-express'
-import swaggerDocument from './doc/swagger.json'
+import swagger from './doc/swagger/bearer'
 import path from 'path'
-
-dotenv.config()
 
 const server = express()
 
@@ -18,7 +15,15 @@ server.get('/', (req: Request, res: Response) => {
 })
 
 // swagger
-server.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+server.use(
+  '/doc',
+  swaggerUi.serve,
+  swaggerUi.setup(swagger, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  }),
+)
 
 // charge tous les routes
 server.use('/api', route)

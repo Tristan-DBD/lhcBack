@@ -1,10 +1,22 @@
-import { Body, Consumes, Delete, Get, Path, Post, Put, Route, Tags } from 'tsoa'
+import {
+  Body,
+  Consumes,
+  Delete,
+  Get,
+  Path,
+  Post,
+  Put,
+  Route,
+  Tags,
+  Security,
+} from 'tsoa'
 import { statService as ss } from '../../service/stats'
 
 @Route('stats')
 @Tags('Stats')
 export default class StatsController {
   @Post('/')
+  @Security('BearerAuth')
   @Consumes('application/json')
   public async create(
     @Body()
@@ -19,16 +31,19 @@ export default class StatsController {
   }
 
   @Get('/')
+  @Security('BearerAuth')
   public async getAll() {
     return ss.findAll()
   }
 
   @Get('/{id}')
+  @Security('BearerAuth')
   public async getById(@Path() id: number) {
     return ss.findById(id)
   }
 
   @Put('/')
+  @Security('BearerAuth')
   @Consumes('application/json')
   public async update(
     @Body()
@@ -43,6 +58,7 @@ export default class StatsController {
   }
 
   @Delete('/{id}')
+  @Security('BearerAuth')
   public async delete(@Path() id: number) {
     return ss.delete(id)
   }

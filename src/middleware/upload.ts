@@ -1,4 +1,6 @@
 import multer from 'multer'
+import path from 'path'
+import fs from 'fs'
 
 // fichier image .jpg .png
 const imageAllowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
@@ -7,42 +9,23 @@ const statsAllowedTypes = [
   'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ]
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    switch (file.fieldname) {
-      case 'profileImage':
-        callback(null, 'public/profileImage/')
-        break
-      case 'statsFile':
-        callback(null, 'public/prog/')
-        break
-    }
-  },
 
-  filename: (req, file, callback) => {
-    const extension = file.originalname.split('.')[1]
-    const filename = `${Date.now()}.${extension}`
-    callback(null, filename)
-  },
-})
+const storage = multer.memoryStorage()
 
 const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
   switch (file.fieldname) {
     case 'profileImage':
-      if (imageAllowedTypes.includes(file.mimetype)) {
-        callback(null, true)
-      } else {
-        const error = new Error('Invalid file type')
-        callback(error as any, false)
-      }
-      break
+      return imageAllowedTypes.includes(file.mimetype)
+        ? callback(null, true)
+        : callback(new Error('Invalid image type'))
+
     case 'statsFile':
-      if (statsAllowedTypes.includes(file.mimetype)) {
-        callback(null, true)
-      } else {
-        const error = new Error('Invalid file type')
-        callback(error as any, false)
-      }
+      return statsAllowedTypes.includes(file.mimetype)
+        ? callback(null, true)
+        : callback(new Error('Invalid stats file type'))
+
+    default:
+      return callback(new Error('Invalid field name'))
   }
 }
 
@@ -53,3 +36,21 @@ export const upload = multer({
     fileSize: 5 * 1024 * 1024, // taille de 1024*1024=1MB donc 5* = 5MB
   },
 })
+
+export class FileService {
+  static async save(file: Express.Multer.File, folder: string) {
+    const uploadDir = path.join('public', folder)
+    await fs.promises.mkdir(uploadDir, { recursive: true })
+
+    const extention = file.originalname.split('.').pop()
+    const filename = `${Date.now()}.${extention}`
+    const filePath = path.join(uploadDir, filename)
+
+    await fs.promises.writeFile(filePath, file.buffer)
+    return filePath
+  }
+
+  static async delete(filePath: string) {
+    await fs.promises.unlink(filePath).catch(() => {})
+  }
+}
