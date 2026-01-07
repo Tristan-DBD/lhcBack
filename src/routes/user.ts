@@ -122,96 +122,96 @@ router.delete(
 )
 
 // gestion image Utilisateur
-  router.put(
-    '/:id/profile-image',
-    validate(idSchema),
-    authenticate,
-    upload.single('profileImage'),
-    async (req: Request, res: Response) => {
-      if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
+router.put(
+  '/:id/profile-image',
+  validate(idSchema),
+  authenticate,
+  upload.single('profileImage'),
+  async (req: Request, res: Response) => {
+    if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
 
-      const user = await us.findById(Number(req.params.id))
-      if (user == 'NOT-EXIST') {
-        return hundlerResponse(res, 404, false, user)
-      }
-      if (!user.imageUri.includes('default.png')) {
-        await FileService.delete(user.imageUri)
-      }
-
-      const filePath = await FileService.save(req.file, 'profileImage')
-
-      const updated = await us.updateImage(Number(req.params.id), filePath)
-      return hundlerResponse(res, 200, true, updated)
-    },
-  )
-
-  router.delete(
-    '/:id/profile-image',
-    authenticate,
-    authorize('COACH'),
-    validate(idSchema),
-    async (req: Request, res: Response) => {
-      const id = Number(req.params.id)
-
-      const user = await us.findById(id)
-      if (user == 'NOT-EXIST') {
-        return hundlerResponse(res, 400, false, user)
-      }
-      if (user.imageUri.includes('default.png')) {
-        return hundlerResponse(res, 404, false, 'Aucune image enregistrée')
-      }
-
+    const user = await us.findById(Number(req.params.id))
+    if (user == 'NOT-EXIST') {
+      return hundlerResponse(res, 404, false, user)
+    }
+    if (!user.imageUri.includes('default.png')) {
       await FileService.delete(user.imageUri)
+    }
 
-      await us.resetImage(Number(req.params.id))
-      return hundlerResponse(res, 200, true, 'ok')
-    },
-  )
+    const filePath = await FileService.save(req.file, 'profileImage')
 
-  // gestion programme Utilisateur
-  router.put(
-    '/:id/prog',
-    validate(idSchema),
-    authenticate,
-    upload.single('statsFile'),
-    authorize('COACH'),
-    async (req: Request, res: Response) => {
-      if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
+    const updated = await us.updateImage(Number(req.params.id), filePath)
+    return hundlerResponse(res, 200, true, updated)
+  },
+)
 
-      const user = await us.findById(Number(req.params.id))
-      if (user == 'NOT-EXIST') {
-        return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
-      }
-      if (user.progUri) await FileService.delete(user.progUri)
+router.delete(
+  '/:id/profile-image',
+  authenticate,
+  authorize('COACH'),
+  validate(idSchema),
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.id)
 
-      const filePath = await FileService.save(req.file, 'prog')
+    const user = await us.findById(id)
+    if (user == 'NOT-EXIST') {
+      return hundlerResponse(res, 400, false, user)
+    }
+    if (user.imageUri.includes('default.png')) {
+      return hundlerResponse(res, 404, false, 'Aucune image enregistrée')
+    }
 
-      const updated = await us.updateProg(Number(req.params.id), filePath)
-      return hundlerResponse(res, 200, true, updated)
-    },
-  )
+    await FileService.delete(user.imageUri)
 
-  router.delete(
-    '/:id/prog',
-    authenticate,
-    authorize('COACH'),
-    validate(idSchema),
-    async (req: Request, res: Response) => {
-      const id = Number(req.params.id)
+    await us.resetImage(Number(req.params.id))
+    return hundlerResponse(res, 200, true, 'ok')
+  },
+)
 
-      const user = await us.findById(id)
-      if (user == 'NOT-EXIST') {
-        return hundlerResponse(res, 400, false, user)
-      }
-      if (user.progUri == null) {
-        return hundlerResponse(res, 404, false, 'Aucun programme enregistré')
-      }
+// gestion programme Utilisateur
+router.put(
+  '/:id/prog',
+  validate(idSchema),
+  authenticate,
+  upload.single('statsFile'),
+  authorize('COACH'),
+  async (req: Request, res: Response) => {
+    if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
 
-      await FileService.delete(user.progUri)
+    const user = await us.findById(Number(req.params.id))
+    if (user == 'NOT-EXIST') {
+      return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
+    }
+    if (user.progUri) await FileService.delete(user.progUri)
 
-      const removeFile = await us.removeProg(id)
-      return hundlerResponse(res, 200, true, removeFile)
-    },
-  )
+    const filePath = await FileService.save(req.file, 'prog')
+
+    const updated = await us.updateProg(Number(req.params.id), filePath)
+    return hundlerResponse(res, 200, true, updated)
+  },
+)
+
+router.delete(
+  '/:id/prog',
+  authenticate,
+  authorize('COACH'),
+  validate(idSchema),
+  async (req: Request, res: Response) => {
+    const id = Number(req.params.id)
+
+    const user = await us.findById(id)
+    if (user == 'NOT-EXIST') {
+      return hundlerResponse(res, 400, false, user)
+    }
+    if (user.progUri == null) {
+      return hundlerResponse(res, 404, false, 'Aucun programme enregistré')
+    }
+
+    await FileService.delete(user.progUri)
+
+    const removeFile = await us.removeProg(id)
+    return hundlerResponse(res, 200, true, removeFile)
+  },
+)
 
 export default router

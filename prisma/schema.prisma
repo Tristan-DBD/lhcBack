@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native"]
 }
 
@@ -9,33 +9,66 @@ datasource db {
 
 enum Role {
   COACH
-  ATHLETE
+  ATHLETE_PROG
+  ATHLETE_CO
 }
 
 model User {
-  id            Int   @unique @default(autoincrement())
-  name          String 
-  surname       String
-  age           Int
-  weight        Float
-  phone         String
-  role          Role @default(ATHLETE)
-  imageUri      String
-  progUri       String?
+  id       Int     @id @default(autoincrement())
+  name     String
+  surname  String
+  age      Int
+  weight   Float
+  phone    String
+  role     Role
+  imageUri String
+  progUri  String?
 
   stat          Stats[]
+  courses       Courses[]      @relation("CoachCourses")
+  registrations Registration[]
 
-  email         String
-  password      String
+  email    String @unique
+  password String
 }
 
 model Stats {
-  id            Int @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  user          User  @relation(fields: [userId],references: [id])
-  userId        Int
-  
-  squat         Int
-  bench         Int
-  deadlift      Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  squat    Int
+  bench    Int
+  deadlift Int
+}
+
+model Courses {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String?
+  StartAt         DateTime
+  durationMinutes Int
+  maxParticipants Int
+
+  coachId Int?
+  coach   User? @relation("CoachCourses", fields: [coachId], references: [id])
+
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Registration {
+  id       Int @id @default(autoincrement())
+  userId   Int
+  courseId Int
+
+  user   User    @relation(fields: [userId], references: [id])
+  course Courses @relation(fields: [courseId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
 }
