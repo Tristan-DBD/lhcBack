@@ -1,11 +1,9 @@
 import server from '../src/index'
 import request from 'supertest'
 import { resetDb } from './resetDb'
-import fsp from 'fs/promises'
 import fs from 'fs'
 import path from 'path'
 import { createToken } from '../src/routes/login'
-import { FileService } from '../src/middleware/upload'
 
 beforeAll(async () => {
   resetDb()
@@ -51,7 +49,7 @@ describe('Test CRUD pour les utilisateurs', () => {
           phone: '0601020304',
           email: 'ahtlete@gmail.com',
           password: '1234',
-          role: 'ATHLETE',
+          role: 'ATHLETE_PROG',
         })
 
       athleteTestId = ath.body.data.id
@@ -70,7 +68,7 @@ describe('Test CRUD pour les utilisateurs', () => {
           phone: '0601020304',
           email: 'athelete@gmail.com',
           password: '1234',
-          role: 'ATHELETE',
+          role: 'ATHELETE_PROG',
         })
 
       expect(res.body.success).toBe(false)

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { positiveNumber, validString } from './common'
 
-const roleEnum = z.enum(['COACH', 'ATHLETE'])
+const roleEnum = z.enum(['COACH', 'ATHLETE_CO', 'ATHLETE_PROG'])
 
 const userSchema = z.object({
   id: positiveNumber('Id'),

@@ -11,7 +11,8 @@
 				"type": "string",
 				"enum": [
 					"COACH",
-					"ATHLETE"
+					"ATHLETE_PROG",
+					"ATHLETE_CO"
 				]
 			},
 			"Role": {
@@ -157,6 +158,10 @@
 									"anyOf": [
 										{
 											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
+												},
 												"password": {
 													"type": "string"
 												},
@@ -188,13 +193,10 @@
 												},
 												"name": {
 													"type": "string"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
 												}
 											},
 											"required": [
+												"id",
 												"password",
 												"email",
 												"progUri",
@@ -204,8 +206,7 @@
 												"weight",
 												"age",
 												"surname",
-												"name",
-												"id"
+												"name"
 											],
 											"type": "object"
 										},
@@ -296,6 +297,10 @@
 											},
 											{
 												"properties": {
+													"id": {
+														"type": "number",
+														"format": "double"
+													},
 													"password": {
 														"type": "string"
 													},
@@ -327,13 +332,10 @@
 													},
 													"name": {
 														"type": "string"
-													},
-													"id": {
-														"type": "number",
-														"format": "double"
 													}
 												},
 												"required": [
+													"id",
 													"password",
 													"email",
 													"progUri",
@@ -343,8 +345,7 @@
 													"weight",
 													"age",
 													"surname",
-													"name",
-													"id"
+													"name"
 												],
 												"type": "object"
 											}
@@ -424,6 +425,10 @@
 												},
 												{
 													"properties": {
+														"id": {
+															"type": "number",
+															"format": "double"
+														},
 														"password": {
 															"type": "string"
 														},
@@ -455,13 +460,10 @@
 														},
 														"name": {
 															"type": "string"
-														},
-														"id": {
-															"type": "number",
-															"format": "double"
 														}
 													},
 													"required": [
+														"id",
 														"password",
 														"email",
 														"progUri",
@@ -471,8 +473,7 @@
 														"weight",
 														"age",
 														"surname",
-														"name",
-														"id"
+														"name"
 													],
 													"type": "object"
 												}
@@ -521,6 +522,10 @@
 									"anyOf": [
 										{
 											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
+												},
 												"password": {
 													"type": "string"
 												},
@@ -552,13 +557,10 @@
 												},
 												"name": {
 													"type": "string"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
 												}
 											},
 											"required": [
+												"id",
 												"password",
 												"email",
 												"progUri",
@@ -568,8 +570,7 @@
 												"weight",
 												"age",
 												"surname",
-												"name",
-												"id"
+												"name"
 											],
 											"type": "object"
 										},
@@ -664,6 +665,10 @@
 									"anyOf": [
 										{
 											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
+												},
 												"password": {
 													"type": "string"
 												},
@@ -695,13 +700,10 @@
 												},
 												"name": {
 													"type": "string"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
 												}
 											},
 											"required": [
+												"id",
 												"password",
 												"email",
 												"progUri",
@@ -711,8 +713,7 @@
 												"weight",
 												"age",
 												"surname",
-												"name",
-												"id"
+												"name"
 											],
 											"type": "object"
 										},
@@ -759,6 +760,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"id": {
+											"type": "number",
+											"format": "double"
+										},
 										"password": {
 											"type": "string"
 										},
@@ -790,13 +795,10 @@
 										},
 										"name": {
 											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
 										}
 									},
 									"required": [
+										"id",
 										"password",
 										"email",
 										"progUri",
@@ -806,8 +808,7 @@
 										"weight",
 										"age",
 										"surname",
-										"name",
-										"id"
+										"name"
 									],
 									"type": "object"
 								}
@@ -866,6 +867,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"id": {
+											"type": "number",
+											"format": "double"
+										},
 										"password": {
 											"type": "string"
 										},
@@ -897,13 +902,10 @@
 										},
 										"name": {
 											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
 										}
 									},
 									"required": [
+										"id",
 										"password",
 										"email",
 										"progUri",
@@ -913,8 +915,7 @@
 										"weight",
 										"age",
 										"surname",
-										"name",
-										"id"
+										"name"
 									],
 									"type": "object"
 								}
@@ -953,6 +954,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"id": {
+											"type": "number",
+											"format": "double"
+										},
 										"password": {
 											"type": "string"
 										},
@@ -984,13 +989,10 @@
 										},
 										"name": {
 											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
 										}
 									},
 									"required": [
+										"id",
 										"password",
 										"email",
 										"progUri",
@@ -1000,8 +1002,7 @@
 										"weight",
 										"age",
 										"surname",
-										"name",
-										"id"
+										"name"
 									],
 									"type": "object"
 								}
@@ -1057,6 +1058,10 @@
 							"application/json": {
 								"schema": {
 									"properties": {
+										"id": {
+											"type": "number",
+											"format": "double"
+										},
 										"password": {
 											"type": "string"
 										},
@@ -1088,13 +1093,10 @@
 										},
 										"name": {
 											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
 										}
 									},
 									"required": [
+										"id",
 										"password",
 										"email",
 										"progUri",
@@ -1104,8 +1106,7 @@
 										"weight",
 										"age",
 										"surname",
-										"name",
-										"id"
+										"name"
 									],
 									"type": "object"
 								}
@@ -1496,6 +1497,492 @@
 				},
 				"tags": [
 					"Stats"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/course": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"coachId": {
+											"type": "number",
+											"format": "double"
+										},
+										"updatedAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"maxParticipants": {
+											"type": "number",
+											"format": "double"
+										},
+										"durationMinutes": {
+											"type": "number",
+											"format": "double"
+										},
+										"startAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"description": {
+											"type": "string"
+										},
+										"title": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"coachId",
+										"updatedAt",
+										"createdAt",
+										"maxParticipants",
+										"durationMinutes",
+										"startAt",
+										"description",
+										"title",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cours Collectifs"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"description": {
+										"type": "string"
+									},
+									"durationMinutes": {
+										"type": "number",
+										"format": "double"
+									},
+									"coachId": {
+										"type": "number",
+										"format": "double"
+									},
+									"startAt": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"maxParticipants": {
+										"type": "number",
+										"format": "double"
+									},
+									"title": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"description",
+									"durationMinutes",
+									"coachId",
+									"startAt",
+									"maxParticipants",
+									"title"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"properties": {
+											"coachId": {
+												"type": "number",
+												"format": "double"
+											},
+											"updatedAt": {
+												"type": "string",
+												"format": "date-time"
+											},
+											"createdAt": {
+												"type": "string",
+												"format": "date-time"
+											},
+											"maxParticipants": {
+												"type": "number",
+												"format": "double"
+											},
+											"durationMinutes": {
+												"type": "number",
+												"format": "double"
+											},
+											"startAt": {
+												"type": "string",
+												"format": "date-time"
+											},
+											"description": {
+												"type": "string"
+											},
+											"title": {
+												"type": "string"
+											},
+											"id": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"coachId",
+											"updatedAt",
+											"createdAt",
+											"maxParticipants",
+											"durationMinutes",
+											"startAt",
+											"description",
+											"title",
+											"id"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cours Collectifs"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/course/{id}": {
+			"get": {
+				"operationId": "GetById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"coachId": {
+													"type": "number",
+													"format": "double"
+												},
+												"updatedAt": {
+													"type": "string",
+													"format": "date-time"
+												},
+												"createdAt": {
+													"type": "string",
+													"format": "date-time"
+												},
+												"maxParticipants": {
+													"type": "number",
+													"format": "double"
+												},
+												"durationMinutes": {
+													"type": "number",
+													"format": "double"
+												},
+												"startAt": {
+													"type": "string",
+													"format": "date-time"
+												},
+												"description": {
+													"type": "string"
+												},
+												"title": {
+													"type": "string"
+												},
+												"id": {
+													"type": "number",
+													"format": "double"
+												}
+											},
+											"required": [
+												"coachId",
+												"updatedAt",
+												"createdAt",
+												"maxParticipants",
+												"durationMinutes",
+												"startAt",
+												"description",
+												"title",
+												"id"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"NOT-EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cours Collectifs"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "Update",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"coachId": {
+											"type": "number",
+											"format": "double"
+										},
+										"updatedAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"maxParticipants": {
+											"type": "number",
+											"format": "double"
+										},
+										"durationMinutes": {
+											"type": "number",
+											"format": "double"
+										},
+										"startAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"description": {
+											"type": "string"
+										},
+										"title": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"coachId",
+										"updatedAt",
+										"createdAt",
+										"maxParticipants",
+										"durationMinutes",
+										"startAt",
+										"description",
+										"title",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cours Collectifs"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"description": {
+										"type": "string"
+									},
+									"durationMinutes": {
+										"type": "number",
+										"format": "double"
+									},
+									"coachId": {
+										"type": "number",
+										"format": "double"
+									},
+									"startAt": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"maxParticipants": {
+										"type": "number",
+										"format": "double"
+									},
+									"title": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"description",
+									"durationMinutes",
+									"coachId",
+									"startAt",
+									"maxParticipants",
+									"title"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"coachId": {
+											"type": "number",
+											"format": "double"
+										},
+										"updatedAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"maxParticipants": {
+											"type": "number",
+											"format": "double"
+										},
+										"durationMinutes": {
+											"type": "number",
+											"format": "double"
+										},
+										"startAt": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"description": {
+											"type": "string"
+										},
+										"title": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										}
+									},
+									"required": [
+										"coachId",
+										"updatedAt",
+										"createdAt",
+										"maxParticipants",
+										"durationMinutes",
+										"startAt",
+										"description",
+										"title",
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cours Collectifs"
 				],
 				"security": [
 					{

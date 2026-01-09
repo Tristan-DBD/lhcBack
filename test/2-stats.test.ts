@@ -32,7 +32,7 @@ beforeAll(async () => {
       phone: '0601020304',
       email: 'ahtlete@gmail.com',
       password: '1234',
-      role: 'ATHLETE',
+      role: 'ATHLETE_PROG',
     })
   athleteId = createdAth.body.data.id
 })
@@ -51,7 +51,7 @@ let athleteToken: string
 describe('Test CRUD pour les stats des utilisateurs', () => {
   async function token() {
     coachToken = await createToken(1, 'COACH', 'email@gmail.com')
-    athleteToken = await createToken(2, 'ATHLETE', 'email@gmail.com')
+    athleteToken = await createToken(2, 'ATHLETE_PROG', 'email@gmail.com')
   }
   token()
   describe('CREATE (POST /api/stats)', () => {
