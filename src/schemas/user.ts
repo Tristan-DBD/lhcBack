@@ -43,7 +43,7 @@ const validString = (
   return schema
 }
 
-const roleEnum = z.enum(['COACH', 'ATHLETE'])
+const roleEnum = z.enum(['COACH', 'ATHLETE_CO', 'ATHLETE_PROG'])
 
 export const idSchema = z.object({
   id: positiveNumber('Id'),

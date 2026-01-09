@@ -1,4 +1,6 @@
 import { Role } from '@prisma/client'
+import { Course } from './course'
+import { Registration } from './registration'
 
 export default interface Stats {
   squat: number
@@ -14,7 +16,11 @@ export default interface User {
   weight: number
   phone: string
   role: Role
+  imageUri: string
+  progUri: string
   stat: Stats[]
+  courses: Course[]
+  registrations: Registration[]
 
   email: string
   password: string
