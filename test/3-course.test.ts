@@ -58,7 +58,7 @@ describe('Test CRUD pour les cours', () => {
         .post('/api/course')
         .set('Authorization', `Bearer ${coachToken}`)
         .send({
-          title: 'Course de test',
+          title: 'Course de test coach',
           maxParticipants: 10,
           startAt: new Date(Date.now()),
           coachId: coachTestId,
@@ -169,11 +169,11 @@ describe('Test CRUD pour les cours', () => {
         .put(`/api/course/${courseTestId}`)
         .set('Authorization', `Bearer ${coachToken}`)
         .send({
-          title: 'Course modifiée',
+          title: 'Course modifiée coach',
         })
 
       expect(res.body.success).toBe(true)
-      expect(res.body.data.title).toBe('Course modifiée')
+      expect(res.body.data.title).toBe('Course modifiée coach')
     })
 
     it('ATHLETE -> Unauthorize', async () => {
@@ -181,7 +181,7 @@ describe('Test CRUD pour les cours', () => {
         .put(`/api/course/${courseTestId}`)
         .set('Authorization', `Bearer ${athleteToken}`)
         .send({
-          title: 'Course non autorisée',
+          title: 'Course non autorisée athlete',
         })
 
       expect(res.body.success).toBe(false)
