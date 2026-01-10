@@ -3,9 +3,9 @@ import validate from '../middleware/validate'
 import { createCourseSchema, partialCourseSchema } from '../schemas/course'
 import { coursesService as cs } from '../service/course'
 import { handlerResponse } from '../middleware/handler'
-import { idSchema } from '../schemas/user'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
+import { idSchema } from '../schemas/common'
 
 const router = Router()
 

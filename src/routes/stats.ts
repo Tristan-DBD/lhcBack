@@ -3,15 +3,16 @@ import { Request, Response, Router } from 'express'
 import { statService as ss } from '../service/stats'
 import { handlerResponse } from '../middleware/handler'
 import validate from '../middleware/validate'
-import { idSchema, statsSchema, statsSchemaOptional } from '../schemas/stats'
+import { createStatsSchema, partialStatsSchema } from '../schemas/stats'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
+import { idSchema } from '../schemas/common'
 
 const router = Router()
 
 router.post(
   '/',
-  validate(statsSchema),
+  validate(createStatsSchema),
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
@@ -62,7 +63,7 @@ router.put(
   '/',
   authenticate,
   authorize('COACH'),
-  validate(statsSchemaOptional),
+  validate(partialStatsSchema),
   async (req: Request, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
 
