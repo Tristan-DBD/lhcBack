@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserService as us } from '../service/user'
 import { Role } from '@prisma/client'
-import hundlerResponse from '../middleware/hundler'
+import { handlerResponse } from '../middleware/handler'
 
 const router = Router()
 
@@ -19,13 +19,13 @@ router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body
   const user = await us.findByEmail(email)
   if (user == 'NOT-EXIST') {
-    return hundlerResponse(res, 403, false, 'Email ou mot de passe incorect')
+    return handlerResponse(res, 403, false, 'Email ou mot de passe incorect')
   }
   const validPassword = await bcrypt.compare(password, user.password)
   if (validPassword == false) {
-    return hundlerResponse(res, 409, false, 'Email ou mot de passe incorect')
+    return handlerResponse(res, 409, false, 'Email ou mot de passe incorect')
   }
-  return hundlerResponse(
+  return handlerResponse(
     res,
     200,
     true,
@@ -50,9 +50,9 @@ router.post('/register', async (req: Request, res: Response) => {
   )
 
   if (user == 'ALREADY-EXIST') {
-    return hundlerResponse(res, 409, false, 'Utilisateur déjà existant')
+    return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
   }
-  return hundlerResponse(
+  return handlerResponse(
     res,
     200,
     true,

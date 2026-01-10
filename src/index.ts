@@ -4,10 +4,13 @@ import route from './routes'
 import swaggerUi from 'swagger-ui-express'
 import swagger from './doc/swagger/bearer'
 import path from 'path'
+import { requestLogger } from './middleware/logger'
+import { globalErrorHandler, notFoundHandler } from './middleware/handler'
 
 const server = express()
 
 server.use(express.json())
+server.use(requestLogger)
 
 // redirect vers le swagger
 server.get('/', (req: Request, res: Response) => {
@@ -25,8 +28,10 @@ server.use(
   }),
 )
 
-// charge tous les routes
 server.use('/api', route)
+
+server.use(globalErrorHandler)
+server.use(notFoundHandler)
 
 // expose en static le fichier avec les images
 server.use('/public', express.static(path.join(__dirname, '..', 'public')))

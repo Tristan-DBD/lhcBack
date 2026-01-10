@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ZodError, ZodType } from 'zod'
-import hundlerResponse from './hundler'
+import { handlerResponse } from './handler'
 
 export default function validate(schema: ZodType) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -16,11 +16,11 @@ export default function validate(schema: ZodType) {
           message: err.message,
         }))
 
-        return hundlerResponse(res, 400, false, formattedErrors)
+        return handlerResponse(res, 400, false, formattedErrors)
       }
 
       // Autre type d'erreur
-      return hundlerResponse(res, 500, false, 'Erreur serveur')
+      return handlerResponse(res, 500, false, 'Erreur serveur')
     }
   }
 }
