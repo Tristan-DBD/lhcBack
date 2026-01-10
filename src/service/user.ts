@@ -30,19 +30,49 @@ export const UserService = {
 
     const user = await prisma.user.create({
       data,
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
+      },
     })
     return user
   },
 
   async findAll() {
-    const user = await prisma.user.findMany({ include: { stat: true } })
+    const user = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
+      },
+    })
     return user
   },
 
   async findById(id: number) {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { stat: true },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
+      },
     })
     if (user == null) return 'NOT-EXIST'
     return user
@@ -75,6 +105,16 @@ export const UserService = {
     const user = await prisma.user.update({
       where: { id },
       data: { ...data },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
+      },
     })
     return user
   },
@@ -92,6 +132,16 @@ export const UserService = {
       data: {
         imageUri: file,
       },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
+      },
     })
   },
 
@@ -100,6 +150,16 @@ export const UserService = {
       where: { id: id },
       data: {
         imageUri: DEFAULT_PROFILE_IMAGE,
+      },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
       },
     })
   },
@@ -110,6 +170,16 @@ export const UserService = {
       data: {
         progUri: file,
       },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
+      },
     })
   },
 
@@ -118,6 +188,16 @@ export const UserService = {
       where: { id: id },
       data: {
         progUri: null,
+      },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        role: true,
+        stat: true,
+        imageUri: true,
+        progUri: true,
       },
     })
   },

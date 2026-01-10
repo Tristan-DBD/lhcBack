@@ -1,10 +1,4 @@
 import prisma from '../db-config'
-import { UserService as us } from './user'
-
-async function userExist(userId: number) {
-  const exist = await us.findById(userId)
-  return exist
-}
 
 export const coursesService = {
   async create(
