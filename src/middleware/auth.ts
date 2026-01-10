@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import hundlerResponse from './hundler'
+import { handlerResponse } from './handler'
 import jwt from 'jsonwebtoken'
 
 export interface AuthRequest extends Request {
@@ -7,6 +7,7 @@ export interface AuthRequest extends Request {
     id: string
     role: string
   }
+  timestamp?: number
 }
 
 export const authenticate = (
@@ -17,23 +18,24 @@ export const authenticate = (
   const authHeader = req.headers.authorization
 
   if (!authHeader?.startsWith('Bearer ')) {
-    return hundlerResponse(res, 401, false, 'Unauthorized')
+    return handlerResponse(res, 401, false, 'Unauthorized')
   }
 
   const token = authHeader.split(' ')[1]
 
   try {
     const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
-      sub: string
+      id: string
       role: string
+      email: string
     }
     req.user = {
-      id: decoded.sub,
+      id: decoded.id,
       role: decoded.role,
     }
 
     next()
   } catch {
-    return hundlerResponse(res, 401, false, 'Invalid token')
+    return handlerResponse(res, 401, false, 'Invalid token')
   }
 }

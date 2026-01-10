@@ -3,12 +3,12 @@ import bcrypt from 'bcrypt'
 import { UserService as us } from '../service/user'
 import { FileService, upload } from '../middleware/upload'
 import fs from 'fs/promises'
+import { handlerResponse } from '../middleware/handler'
 import validate from '../middleware/validate'
 import { createUserSchema, partialUserSchema } from '../schemas/user'
 import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
-import hundlerResponse from '../middleware/hundler'
 
 const router = Router()
 
@@ -23,9 +23,7 @@ router.post(
   authorize('COACH'),
   validate(createUserSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } =
-      req.body
-
+    const { name, surname, age, weight, phone, email, password, role } = req.body
     const hashed = await hashedPassword(password)
     const user = await us.create(
       name,
@@ -39,8 +37,8 @@ router.post(
     )
 
     if (user == 'ALREADY-EXIST')
-      return hundlerResponse(res, 409, false, 'Utilisateur déjà existant')
-    return hundlerResponse(res, 201, true, user)
+      return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
+    return handlerResponse(res, 201, true, user)
   },
 )
 
@@ -50,7 +48,7 @@ router.get(
   authorize('COACH'),
   async (req: Request, res: Response) => {
     const users = await us.findAll()
-    return hundlerResponse(res, 200, true, users)
+    return handlerResponse(res, 200, true, users)
   },
 )
 
@@ -61,8 +59,8 @@ router.get(
   async (req: Request, res: Response) => {
     const user = await us.findById(Number(req.params.id))
     if (user == 'NOT-EXIST')
-      return hundlerResponse(res, 404, false, 'Id incorrect')
-    return hundlerResponse(res, 200, true, user)
+      return handlerResponse(res, 404, false, 'Id incorrect')
+    return handlerResponse(res, 200, true, user)
   },
 )
 
@@ -71,9 +69,7 @@ router.put(
   authenticate,
   validate(partialUserSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, email, password, phone, role } =
-      req.body
-
+    const { name, surname, age, weight, email, password, phone, role } = req.body
     let hashed
     if (password == undefined) {
       hashed = null
@@ -93,10 +89,10 @@ router.put(
     }
     const user = await us.update(Number(req.params.id), { ...data })
     if (user == 'NOT-EXIST') {
-      return hundlerResponse(res, 404, false, 'Id incorrect')
+      return handlerResponse(res, 404, false, 'Id incorrect')
     }
 
-    return hundlerResponse(res, 200, true, user)
+    return handlerResponse(res, 200, true, user)
   },
 )
 
@@ -109,7 +105,7 @@ router.delete(
     const user = await us.delete(Number(req.params.id))
 
     if (user == 'NOT-EXIST') {
-      return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
+      return handlerResponse(res, 404, false, 'Utilisateur introuvable')
     }
 
     const imageUri = user.imageUri
@@ -118,7 +114,7 @@ router.delete(
       await fs.unlink(`./${imageUri}`)
     }
 
-    return hundlerResponse(res, 204, true, user)
+    return handlerResponse(res, 204, true, user)
   },
 )
 
@@ -129,11 +125,11 @@ router.put(
   authenticate,
   upload.single('profileImage'),
   async (req: Request, res: Response) => {
-    if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
+    if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 
     const user = await us.findById(Number(req.params.id))
     if (user == 'NOT-EXIST') {
-      return hundlerResponse(res, 404, false, user)
+      return handlerResponse(res, 404, false, user)
     }
     if (!user.imageUri.includes('default.png')) {
       await FileService.delete(user.imageUri)
@@ -142,7 +138,7 @@ router.put(
     const filePath = await FileService.save(req.file, 'profileImage')
 
     const updated = await us.updateImage(Number(req.params.id), filePath)
-    return hundlerResponse(res, 200, true, updated)
+    return handlerResponse(res, 200, true, updated)
   },
 )
 
@@ -156,16 +152,16 @@ router.delete(
 
     const user = await us.findById(id)
     if (user == 'NOT-EXIST') {
-      return hundlerResponse(res, 400, false, user)
+      return handlerResponse(res, 400, false, user)
     }
     if (user.imageUri.includes('default.png')) {
-      return hundlerResponse(res, 404, false, 'Aucune image enregistrée')
+      return handlerResponse(res, 404, false, 'Aucune image enregistrée')
     }
 
     await FileService.delete(user.imageUri)
 
     await us.resetImage(Number(req.params.id))
-    return hundlerResponse(res, 200, true, 'ok')
+    return handlerResponse(res, 200, true, 'ok')
   },
 )
 
@@ -177,18 +173,18 @@ router.put(
   upload.single('statsFile'),
   authorize('COACH'),
   async (req: Request, res: Response) => {
-    if (!req.file) return hundlerResponse(res, 400, false, 'Fichier manquant')
+    if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 
     const user = await us.findById(Number(req.params.id))
     if (user == 'NOT-EXIST') {
-      return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
+      return handlerResponse(res, 404, false, 'Utilisateur introuvable')
     }
     if (user.progUri) await FileService.delete(user.progUri)
 
     const filePath = await FileService.save(req.file, 'prog')
 
     const updated = await us.updateProg(Number(req.params.id), filePath)
-    return hundlerResponse(res, 200, true, updated)
+    return handlerResponse(res, 200, true, updated)
   },
 )
 
@@ -202,16 +198,16 @@ router.delete(
 
     const user = await us.findById(id)
     if (user == 'NOT-EXIST') {
-      return hundlerResponse(res, 400, false, user)
+      return handlerResponse(res, 400, false, user)
     }
     if (user.progUri == null) {
-      return hundlerResponse(res, 404, false, 'Aucun programme enregistré')
+      return handlerResponse(res, 404, false, 'Aucun programme enregistré')
     }
 
     await FileService.delete(user.progUri)
 
     const removeFile = await us.removeProg(id)
-    return hundlerResponse(res, 200, true, removeFile)
+    return handlerResponse(res, 200, true, removeFile)
   },
 )
 

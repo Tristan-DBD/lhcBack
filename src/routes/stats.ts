@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 import { Request, Response, Router } from 'express'
 import { statService as ss } from '../service/stats'
-import hundlerResponse from '../middleware/hundler'
+import { handlerResponse } from '../middleware/handler'
 import validate from '../middleware/validate'
 import { partialStatsSchema, statsSchema } from '../schemas/stats'
 import { idSchema } from '../schemas/common'
@@ -21,7 +21,7 @@ router.post(
     const stats = await ss.create(userId, squat, bench, deadlift)
 
     if (stats == 'ALREADY_EXIST') {
-      return hundlerResponse(
+      return handlerResponse(
         res,
         409,
         false,
@@ -29,9 +29,9 @@ router.post(
       )
     }
     if (stats == 'USER_NOT_EXIST') {
-      return hundlerResponse(res, 404, false, 'Utilisateur introuvable')
+      return handlerResponse(res, 404, false, 'Utilisateur introuvable')
     }
-    return hundlerResponse(res, 201, true, stats)
+    return handlerResponse(res, 201, true, stats)
   },
 )
 
@@ -41,7 +41,7 @@ router.get(
   authorize('COACH'),
   async (req: Request, res: Response) => {
     const stats = await ss.findAll()
-    return hundlerResponse(res, 200, true, stats)
+    return handlerResponse(res, 200, true, stats)
   },
 )
 
@@ -53,9 +53,9 @@ router.get(
     const stats = await ss.findById(Number(req.params.id))
 
     if (stats == null) {
-      return hundlerResponse(res, 404, false, 'Stats introuvables')
+      return handlerResponse(res, 404, false, 'Stats introuvables')
     }
-    return hundlerResponse(res, 200, true, stats)
+    return handlerResponse(res, 200, true, stats)
   },
 )
 
@@ -70,14 +70,14 @@ router.put(
     const updated = await ss.update(userId, squat, bench, deadlift)
 
     if (updated == 'STATS_NOT_FOUND')
-      return hundlerResponse(
+      return handlerResponse(
         res,
         404,
         false,
         "L'utilisateur n'a pas fiche de stats renseignée",
       )
 
-    return hundlerResponse(res, 200, true, updated)
+    return handlerResponse(res, 200, true, updated)
   },
 )
 
@@ -89,11 +89,11 @@ router.delete(
   async (req: Request, res: Response) => {
     const exist = await ss.findById(Number(req.params.id))
     if (exist == null) {
-      return hundlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
+      return handlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
     }
 
     await ss.delete(Number(req.params.id))
-    return hundlerResponse(res, 200, true, 'Stats supprimé')
+    return handlerResponse(res, 200, true, 'Stats supprimé')
   },
 )
 export default router
