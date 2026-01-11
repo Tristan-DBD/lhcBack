@@ -2,7 +2,6 @@ import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
 import { UserService as us } from '../service/user'
 import { FileService, upload } from '../middleware/upload'
-import fs from 'fs/promises'
 import { handlerResponse } from '../middleware/handler'
 import validate from '../middleware/validate'
 import { createUserSchema, partialUserSchema } from '../schemas/user'
@@ -108,10 +107,12 @@ router.delete(
       return handlerResponse(res, 404, false, 'Utilisateur introuvable')
     }
 
-    const imageUri = user.imageUri
+    if (!user.imageUri.includes('default.png')) {
+      await FileService.delete(user.imageUri)
+    }
 
-    if (imageUri && !imageUri.includes('default.png')) {
-      await fs.unlink(`./${imageUri}`)
+    if (user.progUri !== null) {
+      await FileService.delete(user.progUri)
     }
 
     return handlerResponse(res, 204, true, user)

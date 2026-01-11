@@ -2,8 +2,11 @@ node_modules
 .vscode
 generated
 prisma/migrations
-.env
-package-lock*
+
+.env.prod
+.env.dev
+.env.test
+
 public/profileImage/*
 public/prog/*
 
