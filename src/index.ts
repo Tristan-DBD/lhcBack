@@ -1,4 +1,7 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
+const env = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev'
+dotenv.config({ path: env })
+
 import express, { Request, Response } from 'express'
 import route from './routes'
 import swaggerUi from 'swagger-ui-express'

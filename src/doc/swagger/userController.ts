@@ -38,7 +38,7 @@ class CreateUserDto {
   @Example('1234')
   password!: string
 
-  @Example(Role.ATHLETE)
+  @Example(Role.ATHLETE_PROG)
   role!: Role
 }
 

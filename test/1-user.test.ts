@@ -1,12 +1,17 @@
 import server from '../src/index'
 import request from 'supertest'
 import { resetDb } from './resetDb'
-import fs from 'fs'
-import path from 'path'
+import { FileTestHelper } from './testUtils'
 import { createToken } from '../src/routes/login'
 
 beforeAll(async () => {
+  await FileTestHelper.ensureBucketExists()
+  await FileTestHelper.uploadTestFiles()
   resetDb()
+})
+
+afterAll(async () => {
+  await FileTestHelper.cleanupTestFiles()
 })
 
 describe('Test CRUD pour les utilisateurs', () => {
@@ -132,7 +137,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       const res = await request(server)
         .put(`/api/user/${coachTestId}/profile-image`)
         .set('Authorization', `Bearer ${coachToken}`)
-        .attach('profileImage', path.join(__dirname, '../test/image/test.png'))
+        .attach('profileImage', FileTestHelper.getTestImagePath('test.png'))
 
       expect(res.body.success).toBe(true)
     })
@@ -140,7 +145,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       const res = await request(server)
         .put(`/api/user/${athleteTestId}/profile-image`)
         .set('Authorization', `Bearer ${athleteToken}`)
-        .attach('profileImage', path.join(__dirname, '../test/image/test2.png'))
+        .attach('profileImage', FileTestHelper.getTestImagePath('test2.png'))
 
       expect(res.body.success).toBe(true)
     })
@@ -156,18 +161,13 @@ describe('Test CRUD pour les utilisateurs', () => {
         .delete(`/api/user/${coachTestId}/profile-image`)
         .set('Authorization', `Bearer ${coachToken}`)
 
-      expect(fs.existsSync(`${imageUri}`)).toBe(false)
+      await FileTestHelper.expectFileNotExists(imageUri)
       expect(res.body.success).toBe(true)
     })
     it('ATHLETE -> Unauthorize', async () => {
-      const user = await request(server)
-        .get(`/api/user/${athleteTestId}`)
-        .set('Authorization', `Bearer ${athleteTestId}`)
-      const imageUri = user.body.data.imageUri
-
       const res = await request(server)
         .delete(`/api/user/${athleteTestId}/profile-image`)
-        .set('Authorization', `Bearer ${athleteTestId}`)
+        .set('Authorization', `Bearer ${athleteToken}`)
 
       expect(res.body.success).toBe(false)
     })
@@ -177,7 +177,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       const res = await request(server)
         .put(`/api/user/${coachTestId}/prog`)
         .set('Authorization', `Bearer ${coachToken}`)
-        .attach('statsFile', path.join(__dirname, '../test/prog/test.xlsx'), {
+        .attach('statsFile', FileTestHelper.getTestProgPath('test.xlsx'), {
           contentType:
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         })
@@ -188,7 +188,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       const res = await request(server)
         .put(`/api/user/${athleteTestId}/prog`)
         .set('Authorization', `Bearer ${athleteToken}`)
-        .attach('statsFile', path.join(__dirname, '../test/prog/test.xlsx'), {
+        .attach('statsFile', FileTestHelper.getTestProgPath('test.xlsx'), {
           contentType:
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         })
@@ -207,10 +207,18 @@ describe('Test CRUD pour les utilisateurs', () => {
         .delete(`/api/user/${coachTestId}/prog`)
         .set('Authorization', `Bearer ${coachToken}`)
 
-      expect(fs.existsSync(`${progUri}`))
+      await FileTestHelper.expectFileNotExists(progUri)
       expect(res.body.success).toBe(true)
     })
     it('ATHLETE -> Unauthorize', async () => {
+      await request(server)
+        .put(`/api/user/${athleteTestId}/prog`)
+        .set('Authorization', `Bearer ${coachToken}`)
+        .attach('statsFile', FileTestHelper.getTestProgPath('test.xlsx'), {
+          contentType:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+
       const user = await request(server)
         .get(`/api/user/${athleteTestId}`)
         .set('Authorization', `Bearer ${athleteToken}`)
@@ -220,7 +228,7 @@ describe('Test CRUD pour les utilisateurs', () => {
         .delete(`/api/user/${athleteTestId}/prog`)
         .set('Authorization', `Bearer ${athleteToken}`)
 
-      expect(fs.existsSync(`${progUri}`))
+      await FileTestHelper.expectFileExists(progUri)
       expect(res.body.success).toBe(false)
     })
   })

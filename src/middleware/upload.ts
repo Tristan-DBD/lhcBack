@@ -1,6 +1,7 @@
 import multer from 'multer'
 import path from 'path'
-import fs from 'fs'
+import fs from 'fs/promises'
+import { supabase, getBucketName } from '../config/supabase'
 
 // fichier image .jpg .png
 const imageAllowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
@@ -10,7 +11,25 @@ const statsAllowedTypes = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ]
 
-const storage = multer.memoryStorage()
+// Configuration du stockage local pour le développement
+const localStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(
+      process.cwd(),
+      'public',
+      file.fieldname === 'profileImage' ? 'profileImage' : 'prog',
+    )
+    cb(null, uploadPath)
+  },
+  filename: (req, file, cb) => {
+    const extension = file.originalname.split('.').pop()
+    const filename = `${Date.now()}.${extension}`
+    cb(null, filename)
+  },
+})
+
+// Configuration mémoire pour Supabase (production)
+const memoryStorage = multer.memoryStorage()
 
 const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
   switch (file.fieldname) {
@@ -29,28 +48,91 @@ const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
   }
 }
 
+// Middleware multer avec configuration conditionnelle
 export const upload = multer({
-  storage,
+  storage: process.env.NODE_ENV === 'production' ? memoryStorage : localStorage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // taille de 1024*1024=1MB donc 5* = 5MB
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
 })
 
 export class FileService {
   static async save(file: Express.Multer.File, folder: string) {
-    const uploadDir = path.join('public', folder)
-    await fs.promises.mkdir(uploadDir, { recursive: true })
+    // En développement : stockage local
+    if (process.env.NODE_ENV !== 'production') {
+      // Le fichier est déjà sauvegardé par multer.diskStorage
+      if (file.path) {
+        // Retourner le chemin relatif depuis le dossier public
+        const relativePath = file.path.replace(
+          path.join(process.cwd(), 'public'),
+          '',
+        )
+        return relativePath.replace(/\\/g, '/') // Normaliser les chemins Windows
+      }
+      throw new Error('Local file path not found')
+    }
 
-    const extention = file.originalname.split('.').pop()
-    const filename = `${Date.now()}.${extention}`
-    const filePath = path.join(uploadDir, filename)
+    // En production : stockage Supabase
+    const bucketName = getBucketName()
+    const extension = file.originalname.split('.').pop()
+    const filename = `${Date.now()}.${extension}`
+    const filePath = `${folder}/${filename}`
 
-    await fs.promises.writeFile(filePath, file.buffer)
-    return filePath
+    try {
+      const client = supabase()
+      if (!client) {
+        throw new Error('Supabase client not available in development')
+      }
+
+      const { error } = await client.storage
+        .from(bucketName)
+        .upload(filePath, file.buffer, {
+          contentType: file.mimetype,
+          upsert: true,
+        })
+
+      if (error) {
+        throw new Error(`Supabase upload error: ${error.message}`)
+      }
+
+      return `${filePath}`
+    } catch (error) {
+      console.error('File upload error:', error)
+      throw error
+    }
   }
 
-  static async delete(filePath: string) {
-    await fs.promises.unlink(filePath).catch(() => {})
+  static async delete(fileUrl: string) {
+    // En développement : suppression locale
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const fullPath = path.join(process.cwd(), 'public', fileUrl)
+        await fs.unlink(fullPath)
+        console.log('Local file deleted:', fullPath)
+      } catch (error) {
+        console.error('Local file delete error:', error)
+      }
+      return
+    }
+
+    // En production : suppression Supabase
+    try {
+      const client = supabase()
+      if (!client) {
+        console.log('Supabase client not available in development')
+        return
+      }
+
+      const bucketName = getBucketName()
+
+      const { error } = await client.storage.from(bucketName).remove([fileUrl])
+
+      if (error) {
+        console.error('Supabase delete error:', error)
+      }
+    } catch (error) {
+      console.error('File delete error:', error)
+    }
   }
 }
