@@ -11,3 +11,4 @@ public/profileImage/*
 public/prog/*
 
 !public/profileImage/default.png
+!public/prog/.gitkeep
