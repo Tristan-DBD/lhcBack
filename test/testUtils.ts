@@ -47,7 +47,7 @@ export class FileTestHelper {
   }
 
   static async uploadTestFiles() {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'prod') {
       try {
         const client = supabase()
         if (!client) return false
@@ -85,7 +85,7 @@ export class FileTestHelper {
   }
 
   static async cleanupTestFiles() {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'prod') {
       try {
         const client = supabase()
         if (!client) return false
@@ -110,7 +110,7 @@ export class FileTestHelper {
   }
 
   static async checkFileExists(uri: string): Promise<TestFile> {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'prod') {
       // En production: vérifier sur Supabase
       try {
         const client = supabase()

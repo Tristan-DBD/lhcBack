@@ -50,7 +50,7 @@ const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
 
 // Middleware multer avec configuration conditionnelle
 export const upload = multer({
-  storage: process.env.NODE_ENV === 'production' ? memoryStorage : localStorage,
+  storage: process.env.NODE_ENV === 'prod' ? memoryStorage : localStorage,
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
@@ -60,7 +60,7 @@ export const upload = multer({
 export class FileService {
   static async save(file: Express.Multer.File, folder: string) {
     // En développement : stockage local
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'prod') {
       // Le fichier est déjà sauvegardé par multer.diskStorage
       if (file.path) {
         // Retourner le chemin relatif depuis le dossier public
@@ -105,7 +105,7 @@ export class FileService {
 
   static async delete(fileUrl: string) {
     // En développement : suppression locale
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'prod') {
       try {
         const fullPath = path.join(process.cwd(), 'public', fileUrl)
         await fs.unlink(fullPath)

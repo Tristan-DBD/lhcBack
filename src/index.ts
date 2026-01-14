@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
-const env = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev'
-dotenv.config({ path: env })
+const env = process.env.NODE_ENV || 'dev'
+dotenv.config({ path :`.env.${env}` })
 
 import express, { Request, Response } from 'express'
 import route from './routes'
