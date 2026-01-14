@@ -38,6 +38,8 @@ jobs:
           echo "DATABASE_URL=postgresql://appCoaching_api:1234@localhost:5432/appCoaching_db" > .env.test
           echo "NODE_ENV=test" >> .env.test
           echo "PORT=3000" >> .env.test
+          echo "JWT_SECRET=test-secret-key-for-ci" >> .env.test
+          echo "SALT_ROUND=10" >> .env.test
 
       - name: Setup database
         run: npm run migrate:test
