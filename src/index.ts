@@ -15,6 +15,9 @@ const server = express()
 server.use(express.json())
 server.use(requestLogger)
 
+server.get('/favicon.ico', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'logoLhc.png'))
+})
 // redirect vers le swagger
 server.get('/', (req: Request, res: Response) => {
   res.redirect('/doc')
@@ -32,6 +35,7 @@ server.use(
 )
 
 server.use('/api', route)
+
 
 server.use(globalErrorHandler)
 server.use(notFoundHandler)
