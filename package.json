@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx dotenv-cli -e .env.dev -- nodemon",
     "prod": "npx dotenv-cli -e .env.prod -- ts-node src/index.ts",
-    "test": "npx dotenv-cli -e .env.dev -- jest --runInBand",
+    "test": "npx dotenv-cli -e .env.dev -- jest --runInBand --forceExit",
     "test:prod": "npx dotenv-cli -e .env.prod -- jest --runInBand --forceExit",
     "test:ci": "npx dotenv-cli -e .env.test -- jest --runInBand --forceExit",
     "migrate:test": "npx dotenv-cli -e .env.test -- npx prisma db push",
