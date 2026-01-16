@@ -5,9 +5,9 @@ import { FileService, upload } from '../middleware/upload'
 import { handlerResponse } from '../middleware/handler'
 import validate from '../middleware/validate'
 import { createUserSchema, partialUserSchema } from '../schemas/user'
-import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
+import { idSchema } from '../schemas/common'
 
 const router = Router()
 
