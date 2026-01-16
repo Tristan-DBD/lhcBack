@@ -22,7 +22,8 @@ router.post(
   authorize('COACH'),
   validate(createUserSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } = req.body
+    const { name, surname, age, weight, phone, email, password, role } =
+      req.body
     const hashed = await hashedPassword(password)
     const user = await us.create(
       name,
@@ -68,7 +69,8 @@ router.put(
   authenticate,
   validate(partialUserSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, email, password, phone, role } = req.body
+    const { name, surname, age, weight, email, password, phone, role } =
+      req.body
     let hashed
     if (password == undefined) {
       hashed = null

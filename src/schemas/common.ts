@@ -67,3 +67,7 @@ export const validString = (
 export const idSchema = z.object({
   id: positiveNumber('Id'),
 })
+
+export const validDate = (field: string) => {
+ return z.coerce.date(`${field} doit être une date valide`)
+}

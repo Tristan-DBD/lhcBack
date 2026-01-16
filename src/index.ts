@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 const env = process.env.NODE_ENV || 'dev'
-dotenv.config({ path :`.env.${env}` })
+dotenv.config({ path: `.env.${env}` })
 
 import express, { Request, Response } from 'express'
 import route from './routes'
@@ -35,7 +35,6 @@ server.use(
 )
 
 server.use('/api', route)
-
 
 server.use(globalErrorHandler)
 server.use(notFoundHandler)
