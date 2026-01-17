@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 const env = process.env.NODE_ENV || 'dev'
-dotenv.config({ path :`.env.${env}` })
+dotenv.config({ path: `.env.${env}` })
 
 import express, { Request, Response } from 'express'
 import route from './routes'
@@ -9,6 +9,7 @@ import swagger from './doc/swagger/bearer'
 import path from 'path'
 import { requestLogger } from './middleware/logger'
 import { globalErrorHandler, notFoundHandler } from './middleware/handler'
+import { rateLimiter } from './middleware/rateLimiter'
 
 const server = express()
 
@@ -34,8 +35,8 @@ server.use(
   }),
 )
 
+server.use(rateLimiter(3, 100, { motif: 'global' }))
 server.use('/api', route)
-
 
 server.use(globalErrorHandler)
 server.use(notFoundHandler)
