@@ -58,6 +58,9 @@ model Courses {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([coachId])
+  @@index([startAt])
 }
 
 model Registration {
@@ -71,4 +74,5 @@ model Registration {
   createdAt DateTime @default(now())
 
   @@unique([userId, courseId])
+  @@index([courseId])
 }

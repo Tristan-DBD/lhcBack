@@ -10,13 +10,13 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: appCoaching_api
-          POSTGRES_PASSWORD: 1234
-          POSTGRES_DB: appCoaching_db
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U appCoaching_api"
+          --health-cmd "pg_isready -U $$POSTGRES_USER"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -35,11 +35,11 @@ jobs:
 
       - name: Setup test environment
         run: |
-          echo "DATABASE_URL=postgresql://appCoaching_api:1234@localhost:5432/appCoaching_db" > .env.test
+          echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" > .env.test
           echo "NODE_ENV=test" >> .env.test
-          echo "PORT=3000" >> .env.test
-          echo "JWT_SECRET=test-secret-key-for-ci" >> .env.test
-          echo "SALT_ROUND=10" >> .env.test
+          echo "PORT=${{ secrets.PORT }}" >> .env.test
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.test
+          echo "SALT_ROUND=${{ secrets.SALT_ROUND }}" >> .env.test
 
       - name: Setup database
         run: npm run migrate:test
