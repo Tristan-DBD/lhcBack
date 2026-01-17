@@ -2,7 +2,8 @@ import rateLimit from 'express-rate-limit'
 
 export const rateLimiter = (time: number, max: number, option?: {
     motif?: string,
-    skipSuccessful?: boolean
+    skipSuccessful?: boolean,
+    skipPath?: string[]
 }) => {
     let message: string
     switch (option?.motif) {
@@ -43,6 +44,9 @@ export const rateLimiter = (time: number, max: number, option?: {
         message: message,
         standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-        skipSuccessfulRequests: option?.skipSuccessful || false
+        skipSuccessfulRequests: option?.skipSuccessful || false,
+        skip: (req) => {
+            return option?.skipPath?.includes(req.path) || false
+        }
     })
 }

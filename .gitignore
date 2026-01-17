@@ -8,6 +8,8 @@ coverage
 .env.dev
 .env.test
 
+
+dist/
 public/profileImage/*
 public/prog/*
 

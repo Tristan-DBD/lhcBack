@@ -10,6 +10,7 @@ import path from 'path'
 import { requestLogger } from './middleware/logger'
 import { globalErrorHandler, notFoundHandler } from './middleware/handler'
 import { rateLimiter } from './middleware/rateLimiter'
+import healthRoute from './routes/health'
 
 const server = express()
 
@@ -17,7 +18,7 @@ server.use(express.json())
 server.use(requestLogger)
 
 server.get('/favicon.ico', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'logoLhc.png'))
+  res.sendFile(path.join(__dirname, '@/lhcBack/public', 'logoLhc.png'))
 })
 // redirect vers le swagger
 server.get('/', (req: Request, res: Response) => {
@@ -34,9 +35,8 @@ server.use(
     },
   }),
 )
-
-server.use(rateLimiter(3, 100, { motif: 'global' }))
-server.use('/api', route)
+server.use('/health', healthRoute)
+server.use('/api', rateLimiter(1, 100, { motif: 'global', skipPath: ['/api/health', '/favicon.ico'] }), route)
 
 server.use(globalErrorHandler)
 server.use(notFoundHandler)

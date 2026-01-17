@@ -54,9 +54,9 @@ export class FileTestHelper {
 
         // Upload des fichiers de test pour les tests de production
         const testFiles = [
-          { path: 'image/test.png', folder: 'profileImage' },
-          { path: 'image/test2.png', folder: 'profileImage' },
-          { path: 'prog/test.xlsx', folder: 'prog' },
+          { path: '@/lhcBack/test/image/test.png', folder: 'profileImage' },
+          { path: '@/lhcBack/test/image/test2.png', folder: 'profileImage' },
+          { path: '@/lhcBack/test/prog/test.xlsx', folder: 'prog' },
         ]
 
         for (const file of testFiles) {

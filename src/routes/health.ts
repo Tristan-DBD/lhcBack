@@ -47,7 +47,7 @@ const checkSupabaseConnection = async () => {
   }
 }
 
-router.get('/', rateLimiter(1, 5, { motif: 'health' }), async (req: Request, res: Response) => {
+router.get('/', rateLimiter(1, 61, { motif: 'health' }), async (req: Request, res: Response) => {
   const dbHealth = await checkDatabaseConnection()
   const supabaseHealth =
     process.env.NODE_ENV === 'prod'
