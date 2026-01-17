@@ -37,6 +37,10 @@ export function globalErrorHandler(error: Error, req: Request, res: Response) {
     return handlerResponse(res, 400, false, 'ID invalide')
   }
 
+  if (error.name === 'TooManyRequestsError') {
+    return handlerResponse(res, 429, false, error.message)
+  }
+
   return handlerResponse(res, 500, false, 'Erreur serveur')
 }
 

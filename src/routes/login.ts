@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { UserService as us } from '../service/user'
 import { Role } from '@prisma/client'
 import { handlerResponse } from '../middleware/handler'
+import { rateLimiter } from '../middleware/rateLimiter'
 
 const router = Router()
 
@@ -15,7 +16,7 @@ export async function createToken(id: number, role: Role, email: string) {
   return token
 }
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', rateLimiter(15, 5, { motif: 'login', skipSuccessful: true }), async (req: Request, res: Response) => {
   const { email, password } = req.body
   const user = await us.findByEmail(email)
   if (user == 'NOT-EXIST') {
@@ -33,7 +34,7 @@ router.post('/login', async (req: Request, res: Response) => {
   )
 })
 
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', rateLimiter(60, 3, { motif: 'register' }), async (req: Request, res: Response) => {
   const { name, surname, age, weight, phone, email, password, role } = req.body
 
   const hashed = await bcrypt.hash(password, Number(process.env.SALT_ROUND))

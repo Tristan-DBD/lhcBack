@@ -6,11 +6,13 @@ import { handlerResponse } from '../middleware/handler'
 import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
+import { rateLimiter } from '../middleware/rateLimiter'
 
 const router = Router()
 
 router.post(
   '/',
+  rateLimiter(1, 10, { motif: 'create' }),
   authenticate,
   authorize('COACH'),
   validate(createCourseSchema),
@@ -27,13 +29,14 @@ router.post(
   },
 )
 
-router.get('/', authenticate, async (req: Request, res: Response) => {
+router.get('/', rateLimiter(1, 40, { motif: 'get' }), authenticate, async (req: Request, res: Response) => {
   const courses = await cs.findAll()
   return handlerResponse(res, 200, true, courses)
 })
 
 router.get(
   '/:id',
+  rateLimiter(1, 60, { motif: 'get' }),
   authenticate,
   validate(idSchema),
   async (req: Request, res: Response) => {
@@ -47,6 +50,7 @@ router.get(
 
 router.put(
   '/:id',
+  rateLimiter(1, 20, { motif: 'update' }),
   validate(partialCourseSchema),
   authenticate,
   authorize('COACH'),
@@ -62,6 +66,7 @@ router.put(
 )
 router.delete(
   '/:id',
+  rateLimiter(60, 5, { motif: 'delete' }),
   authenticate,
   authorize('COACH'),
   validate(idSchema),

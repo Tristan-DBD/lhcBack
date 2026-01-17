@@ -8,6 +8,7 @@ import { createUserSchema, partialUserSchema } from '../schemas/user'
 import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
+import { rateLimiter } from '../middleware/rateLimiter'
 
 const router = Router()
 
@@ -18,12 +19,12 @@ async function hashedPassword(password: string) {
 
 router.post(
   '/',
+  rateLimiter(60, 3, { motif: 'register' }),
   authenticate,
   authorize('COACH'),
   validate(createUserSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } =
-      req.body
+    const { name, surname, age, weight, phone, email, password, role } = req.body
     const hashed = await hashedPassword(password)
     const user = await us.create(
       name,
@@ -44,6 +45,7 @@ router.post(
 
 router.get(
   '/',
+  rateLimiter(1, 20, { motif: 'get' }),
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
@@ -54,6 +56,7 @@ router.get(
 
 router.get(
   '/:id',
+  rateLimiter(1, 60, { motif: 'get' }),
   authenticate,
   validate(idSchema),
   async (req: Request, res: Response) => {
@@ -66,6 +69,7 @@ router.get(
 
 router.put(
   '/:id',
+  rateLimiter(60, 5, { motif: 'update' }),
   authenticate,
   validate(partialUserSchema),
   async (req: Request, res: Response) => {
@@ -99,6 +103,7 @@ router.put(
 
 router.delete(
   '/:id',
+  rateLimiter(60, 5, { motif: 'delete' }),
   authenticate,
   authorize('COACH'),
   validate(idSchema),
@@ -124,6 +129,7 @@ router.delete(
 // gestion image Utilisateur
 router.put(
   '/:id/profile-image',
+  rateLimiter(60, 10, { motif: 'profile-image' }),
   validate(idSchema),
   authenticate,
   upload.single('profileImage'),
@@ -147,6 +153,7 @@ router.put(
 
 router.delete(
   '/:id/profile-image',
+  rateLimiter(60, 10, { motif: 'profile-image' }),
   authenticate,
   authorize('COACH'),
   validate(idSchema),
@@ -171,6 +178,7 @@ router.delete(
 // gestion programme Utilisateur
 router.put(
   '/:id/prog',
+  rateLimiter(60, 10, { motif: 'prog' }),
   validate(idSchema),
   authenticate,
   upload.single('statsFile'),
@@ -193,6 +201,7 @@ router.put(
 
 router.delete(
   '/:id/prog',
+  rateLimiter(60, 10, { motif: 'prog' }),
   authenticate,
   authorize('COACH'),
   validate(idSchema),

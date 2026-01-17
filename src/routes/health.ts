@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express'
 import prisma from '../db-config'
 import { supabase } from '../config/supabase'
 import { handlerResponse } from '../middleware/handler'
+import { rateLimiter } from '../middleware/rateLimiter'
 
 const router = Router()
 
@@ -46,7 +47,7 @@ const checkSupabaseConnection = async () => {
   }
 }
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', rateLimiter(1, 5, { motif: 'health' }), async (req: Request, res: Response) => {
   const dbHealth = await checkDatabaseConnection()
   const supabaseHealth =
     process.env.NODE_ENV === 'prod'

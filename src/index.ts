@@ -9,6 +9,7 @@ import swagger from './doc/swagger/bearer'
 import path from 'path'
 import { requestLogger } from './middleware/logger'
 import { globalErrorHandler, notFoundHandler } from './middleware/handler'
+import { rateLimiter } from './middleware/rateLimiter'
 
 const server = express()
 
@@ -34,6 +35,7 @@ server.use(
   }),
 )
 
+server.use(rateLimiter(3, 100, { motif: 'global' }))
 server.use('/api', route)
 
 server.use(globalErrorHandler)
