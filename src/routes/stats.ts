@@ -51,8 +51,9 @@ router.get(
 router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
-  authenticate,
   validate(idSchema),
+  authenticate,
+  authorize('COACH'),
   async (req: Request, res: Response) => {
     const stats = await ss.findById(Number(req.params.id))
 
@@ -66,9 +67,9 @@ router.get(
 router.put(
   '/',
   rateLimiter(1, 20, { motif: 'update' }),
+  validate(partialStatsSchema),
   authenticate,
   authorize('COACH'),
-  validate(partialStatsSchema),
   async (req: Request, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
 
@@ -89,9 +90,9 @@ router.put(
 router.delete(
   '/:id',
   rateLimiter(60, 5, { motif: 'delete' }),
+  validate(idSchema),
   authenticate,
   authorize('COACH'),
-  validate(idSchema),
   async (req: Request, res: Response) => {
     const exist = await ss.findById(Number(req.params.id))
     if (exist == null) {

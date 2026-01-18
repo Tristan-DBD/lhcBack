@@ -13,9 +13,9 @@ const router = Router()
 router.post(
   '/',
   rateLimiter(1, 10, { motif: 'create' }),
+  validate(createCourseSchema),
   authenticate,
   authorize('COACH'),
-  validate(createCourseSchema),
   async (req: Request, res: Response) => {
     const created = await cs.create(
       req.body.title,
@@ -29,16 +29,21 @@ router.post(
   },
 )
 
-router.get('/', rateLimiter(1, 40, { motif: 'get' }), authenticate, async (req: Request, res: Response) => {
-  const courses = await cs.findAll()
-  return handlerResponse(res, 200, true, courses)
-})
+router.get('/',
+  rateLimiter(1, 40, { motif: 'get' }),
+  authenticate,
+  authorize('CO'),
+  async (req: Request, res: Response) => {
+    const courses = await cs.findAll()
+    return handlerResponse(res, 200, true, courses)
+  })
 
 router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
-  authenticate,
   validate(idSchema),
+  authenticate,
+  authorize('CO'),
   async (req: Request, res: Response) => {
     const course = await cs.findById(Number(req.params.id))
     if (course == 'NOT-EXIST') {
@@ -67,9 +72,9 @@ router.put(
 router.delete(
   '/:id',
   rateLimiter(60, 5, { motif: 'delete' }),
+  validate(idSchema),
   authenticate,
   authorize('COACH'),
-  validate(idSchema),
   async (req: Request, res: Response) => {
     const exist = await cs.findById(Number(req.params.id))
     if (exist == 'NOT-EXIST') {

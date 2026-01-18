@@ -8,9 +8,8 @@ import swaggerUi from 'swagger-ui-express'
 import swagger from './doc/swagger/bearer'
 import path from 'path'
 import { requestLogger } from './middleware/logger'
-import { globalErrorHandler, notFoundHandler } from './middleware/handler'
+import { globalErrorHandler, handlerResponse, notFoundHandler } from './middleware/handler'
 import { rateLimiter } from './middleware/rateLimiter'
-import healthRoute from './routes/health'
 
 const server = express()
 
@@ -35,7 +34,9 @@ server.use(
     },
   }),
 )
-server.use('/health', healthRoute)
+server.use('/health', rateLimiter(1, 61, { motif: 'health' }), async (req: Request, res: Response) => {
+  return handlerResponse(res, 200, true, { status: 'ok' })
+})
 server.use('/api', rateLimiter(1, 100, { motif: 'global', skipPath: ['/api/health', '/favicon.ico'] }), route)
 
 server.use(globalErrorHandler)

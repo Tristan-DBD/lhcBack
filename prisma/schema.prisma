@@ -11,6 +11,8 @@ enum Role {
   COACH
   ATHLETE_PROG
   ATHLETE_CO
+  ATHLETE_FULL
+  ADMIN
 }
 
 model User {

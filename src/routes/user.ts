@@ -20,9 +20,9 @@ async function hashedPassword(password: string) {
 router.post(
   '/',
   rateLimiter(60, 3, { motif: 'register' }),
+  validate(createUserSchema),
   authenticate,
   authorize('COACH'),
-  validate(createUserSchema),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, phone, email, password, role } = req.body
     const hashed = await hashedPassword(password)
@@ -57,8 +57,9 @@ router.get(
 router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
-  authenticate,
   validate(idSchema),
+  authenticate,
+  authorize('PROFILE'),
   async (req: Request, res: Response) => {
     const user = await us.findById(Number(req.params.id))
     if (user == 'NOT-EXIST')
@@ -70,8 +71,9 @@ router.get(
 router.put(
   '/:id',
   rateLimiter(60, 5, { motif: 'update' }),
-  authenticate,
   validate(partialUserSchema),
+  authenticate,
+  authorize('PROFILE'),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, email, password, phone, role } =
       req.body
@@ -104,9 +106,9 @@ router.put(
 router.delete(
   '/:id',
   rateLimiter(60, 5, { motif: 'delete' }),
+  validate(idSchema),
   authenticate,
   authorize('COACH'),
-  validate(idSchema),
   async (req: Request, res: Response) => {
     const user = await us.delete(Number(req.params.id))
 
@@ -132,6 +134,7 @@ router.put(
   rateLimiter(60, 10, { motif: 'profile-image' }),
   validate(idSchema),
   authenticate,
+  authorize('PROFILE'),
   upload.single('profileImage'),
   async (req: Request, res: Response) => {
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
@@ -154,9 +157,9 @@ router.put(
 router.delete(
   '/:id/profile-image',
   rateLimiter(60, 10, { motif: 'profile-image' }),
-  authenticate,
-  authorize('COACH'),
   validate(idSchema),
+  authenticate,
+  authorize('PROFILE'),
   async (req: Request, res: Response) => {
     const id = Number(req.params.id)
 
@@ -181,8 +184,8 @@ router.put(
   rateLimiter(60, 10, { motif: 'prog' }),
   validate(idSchema),
   authenticate,
-  upload.single('statsFile'),
   authorize('COACH'),
+  upload.single('statsFile'),
   async (req: Request, res: Response) => {
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 
@@ -202,9 +205,9 @@ router.put(
 router.delete(
   '/:id/prog',
   rateLimiter(60, 10, { motif: 'prog' }),
+  validate(idSchema),
   authenticate,
   authorize('COACH'),
-  validate(idSchema),
   async (req: Request, res: Response) => {
     const id = Number(req.params.id)
 

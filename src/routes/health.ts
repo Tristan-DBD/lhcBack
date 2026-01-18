@@ -3,6 +3,8 @@ import prisma from '../db-config'
 import { supabase } from '../config/supabase'
 import { handlerResponse } from '../middleware/handler'
 import { rateLimiter } from '../middleware/rateLimiter'
+import { authenticate } from '../middleware/auth'
+import { authorize } from '../middleware/authorize'
 
 const router = Router()
 
@@ -47,7 +49,11 @@ const checkSupabaseConnection = async () => {
   }
 }
 
-router.get('/', rateLimiter(1, 61, { motif: 'health' }), async (req: Request, res: Response) => {
+router.get('/', 
+  rateLimiter(1, 5, { motif: 'health' }), 
+  authenticate,
+  authorize('ADMIN'),
+  async (req: Request, res: Response) => {
   const dbHealth = await checkDatabaseConnection()
   const supabaseHealth =
     process.env.NODE_ENV === 'prod'
@@ -86,7 +92,11 @@ router.get('/', rateLimiter(1, 61, { motif: 'health' }), async (req: Request, re
   return handlerResponse(res, statusCode, true, data)
 })
 
-router.get('/database', async (req: Request, res: Response) => {
+router.get('/database',
+  rateLimiter(1, 5, { motif: 'health' }), 
+  authenticate,
+  authorize('ADMIN'),
+  async (req: Request, res: Response) => {
   const dbHealth = await checkDatabaseConnection()
   return handlerResponse(
     res,
