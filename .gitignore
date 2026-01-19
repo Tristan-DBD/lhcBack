@@ -8,6 +8,8 @@ coverage
 .env.dev
 .env.test
 
+logs/
+logs/!.gitkeep
 
 dist/
 public/profileImage/*

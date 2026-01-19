@@ -2,7 +2,7 @@
 
 ## 📋 Description
 
-AppCoach est une API RESTful complète pour la gestion de coaching sportif, permettant aux coachs de créer des cours et aux athlètes de s'y inscrire. Ce projet démontre mes compétences en développement back-end avec une architecture moderne et sécurisée.
+AppCoach est une API RESTful complète pour la gestion de coaching sportif, permettant aux coachs de créer des cours collectifs et aux athlètes de s'y inscrire.
 
 ## 🏗️ Architecture Technique
 
@@ -12,6 +12,7 @@ AppCoach est une API RESTful complète pour la gestion de coaching sportif, perm
 - **Prisma** + **PostgreSQL** - ORM moderne et base de données relationnelle
 - **JWT** - Authentification sécurisée par tokens
 - **Zod** - Validation robuste des données d'entrée
+- **Supabase** - Services de base de données et authentification
 
 ### Outils de Développement
 - **Swagger** - Documentation API interactive
@@ -24,7 +25,7 @@ AppCoach est une API RESTful complète pour la gestion de coaching sportif, perm
 
 ### Gestion des Utilisateurs
 - **Authentification sécurisée** avec JWT et bcrypt
-- **Rôles multiples** : Coach, Athlète Pro, Athlète Co
+- **Rôles multiples** : Coach, Athlète Pro, Athlète Co, Athlète Full, Admin
 - **Profils complets** avec informations sportives (poids, stats)
 - **Gestion des photos de profil** avec upload d'images
 - **Programmes sportifs** uploadables pour les athlètes
@@ -46,6 +47,7 @@ AppCoach est une API RESTful complète pour la gestion de coaching sportif, perm
 - **Tests automatisés** avec Jest (unitaires et d'intégration)
 - **Conteneurisation Docker** pour le déploiement
 - **Code qualité** avec ESLint et Prettier
+- **Rate limiting** intégré pour la protection contre les abus
 
 ## 🎯 À Venir - Prochaines Développements
 
@@ -53,18 +55,16 @@ AppCoach est une API RESTful complète pour la gestion de coaching sportif, perm
 - **Emails de confirmation** d'inscription aux cours
 - **Notifications automatiques** pour les nouveaux cours disponibles
 
-### Rate Limiting & Sécurité Avancée
-- **Rate limiting** par endpoint pour prévenir les abus
-- **Protection anti-brute-force** sur l'authentification
-
 ### Améliorations Prévues
 - **Suivi de paiement** pour les coachs (validation manuelle des paiements reçus)
+- **Protection anti-brute-force** avancée sur l'authentification
 
 ## 📁 Structure du Projet
 
 ```
 src/
-├── constants/         # Constantes et configurations
+├── config/           # Configurations (environnement, etc.)
+├── constants/        # Constantes et configurations
 ├── doc/              # Documentation Swagger et loaders
 ├── interface/        # Définitions TypeScript (User, Course)
 ├── middleware/       # Middlewares (auth, authorize, handler)
@@ -78,6 +78,7 @@ test/                 # Tests unitaires et d'intégration
 ├── 1-user.test.ts    # Tests utilisateurs
 ├── 2-stats.test.ts   # Tests statistiques
 ├── 3-course.test.ts  # Tests cours
+├── 4-register.test.ts # Tests d'inscription
 └── resetDb.ts        # Utilitaire de réinitialisation BDD
 
 prisma/
@@ -99,7 +100,7 @@ public/
 ```bash
 # Cloner le projet
 git clone <repository-url>
-cd back
+cd lhcBack
 
 # Installer les dépendances
 npm install
@@ -109,16 +110,17 @@ cp .env.example .env
 # Éditer .env avec vos configurations
 
 # Démarrer Docker et la base de données
-npm run docker 
+# (Utiliser votre configuration Docker existante)
 
 # Générer le client Prisma
 npx prisma generate
 
-# Lancer les migrations
-npx prisma migrate dev --name "init"
+# Lancer les migrations en développement
+npm run migrate:dev
 
 # Démarrer le serveur de développement
-npm run start
+npm run dev
+```
 
 ## 📚 Documentation API
 
@@ -132,7 +134,14 @@ Une fois le serveur démarré, accédez à :
 
 ```bash
 # Lancer tous les tests
-npm run jest:test
+npm run test
+
+# Lancer les tests avec couverture
+npm run test:coverage
+
+# Lancer les tests en environnement de production
+npm run test:prod
+```
 
 ## 🔐 Sécurité
 
@@ -140,6 +149,7 @@ npm run jest:test
 - **Tokens JWT** avec expiration
 - **Validation des entrées** avec Zod
 - **Protection contre les injections** via Prisma ORM
+- **Rate limiting** intégré pour prévenir les abus
 
 ## 🎯 Points Techniques Valorisés
 
@@ -155,14 +165,14 @@ npm run jest:test
 - **Documentation auto-générée** avec Swagger
 
 ### Performance
-- **Connexions PostgreSQL optimisées** avec Prisma
+- **Connexions PostgreSQL optimisées** avec Prisma et Supabase
 - **Middleware de parsing JSON** 
 - **Structure modulaire** pour le chargement rapide
 
 ## 📊 Modèle de Données
 
 ### Entités Principales
-- **User** : Utilisateurs avec rôles (Coach/Athlète Prog/Athlète Co)
+- **User** : Utilisateurs avec rôles (Coach/Athlète Prog/Athlète Co/Athlète Full/Admin)
   - Informations personnelles : nom, prénom, âge, poids, téléphone
   - Photo de profil et programme sportif uploadable
   - Authentification par email/mot de passe
@@ -185,3 +195,4 @@ Le projet est prêt pour le déploiement avec :
 - **Configuration Docker** complète
 - **Variables d'environnement** gérées
 - **Scripts de build** automatisés
+- **Support multi-environnements** (dev, prod, test)
