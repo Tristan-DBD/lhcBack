@@ -37,7 +37,7 @@ server.use(
 server.use('/health', rateLimiter(1, 61, { motif: 'health' }), async (req: Request, res: Response) => {
   return handlerResponse(res, 200, true, { status: 'ok' })
 })
-server.use('/api', rateLimiter(1, 100, { motif: 'global', skipPath: ['/api/health', '/favicon.ico'] }), route)
+server.use('/api', rateLimiter(1, 1000, { motif: 'global', skipPath: ['/api/health', '/favicon.ico'] }), route)
 
 server.use(globalErrorHandler)
 server.use(notFoundHandler)

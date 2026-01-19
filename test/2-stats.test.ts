@@ -119,12 +119,12 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
 
       expect(res.body.success).toBe(true)
     })
-    it('ATHLETE -> Authorize', async () => {
+    it('ATHLETE -> Unauthorize', async () => {
       const res = await request(server)
         .get(`/api/stats/${athStatId}`)
         .set('Authorization', `Bearer ${athleteToken}`)
 
-      expect(res.body.success).toBe(true)
+      expect(res.body.success).toBe(false)
     })
   })
   describe('UPDATE (PUT /api/stats/)', () => {

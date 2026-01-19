@@ -61,4 +61,16 @@ export class CourseController {
   public async delete(@Path() id: number) {
     return cs.delete(id)
   }
+
+  @Post('/register')
+  @Security('BearerAuth')
+  public async register(@Body() body: { userId: number; courseId: number }) {
+    return cs.register(body.userId, body.courseId)
+  }
+
+  @Delete('/unregister')
+  @Security('BearerAuth')
+  public async unregister(@Body() body: { userId: number; courseId: number }) {
+    return cs.unregister(body.userId, body.courseId)
+  }
 }

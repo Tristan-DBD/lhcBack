@@ -1,8 +1,6 @@
 import { z } from 'zod'
 import { positiveNumber, validString } from './common'
 
-const roleEnum = z.enum(['COACH', 'ATHLETE_CO', 'ATHLETE_PROG', 'ATHLETE_FULL', 'ADMIN'])
-
 const userSchema = z.object({
   id: positiveNumber('Id'),
   name: validString('Name', { min: 4, max: 10 }),
@@ -11,8 +9,7 @@ const userSchema = z.object({
   weight: positiveNumber('Weight'),
   phone: validString('Phone', { exactC: 10 }),
   email: validString('Email', { email: true }),
-  password: validString('Password', { min: 3 }),
-  role: roleEnum,
+  password: validString('Password', { min: 3 })
 })
 
 export const createUserSchema = userSchema.omit({ id: true })

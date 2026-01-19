@@ -19,12 +19,43 @@ async function hashedPassword(password: string) {
 
 router.post(
   '/',
-  rateLimiter(60, 3, { motif: 'register' }),
+  rateLimiter(60, 10, { motif: 'register' }),
   validate(createUserSchema),
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, phone, email, password, role } = req.body
+    const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG']
+
+    const finalRole = role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
+
+    const hashed = await hashedPassword(password)
+    const user = await us.create(
+      name,
+      surname,
+      age,
+      weight,
+      email,
+      phone,
+      hashed,
+      finalRole,
+    )
+
+    if (user == 'ALREADY-EXIST')
+      return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
+    return handlerResponse(res, 201, true, user)
+  },
+)
+
+router.post('/coach',
+  rateLimiter(1, 1, { motif: 'register' }),
+  validate(createUserSchema),
+  authenticate,
+  authorize('ADMIN'),
+  async (req: Request, res: Response) => {
+    const { name, surname, age, weight, phone, email, password } = req.body
+    const role = 'COACH'
+
     const hashed = await hashedPassword(password)
     const user = await us.create(
       name,
@@ -40,7 +71,7 @@ router.post(
     if (user == 'ALREADY-EXIST')
       return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
     return handlerResponse(res, 201, true, user)
-  },
+  }
 )
 
 router.get(
@@ -75,7 +106,7 @@ router.put(
   authenticate,
   authorize('PROFILE'),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, email, password, phone, role } =
+    const { name, surname, age, weight, email, password, phone } =
       req.body
     let hashed
     if (password == undefined) {
@@ -92,7 +123,6 @@ router.put(
       ...(phone && { phone: phone }),
       ...(email && { email: email }),
       ...(password && { password: hashed }),
-      ...(role && { role: role }),
     }
     const user = await us.update(Number(req.params.id), { ...data })
     if (user == 'NOT-EXIST') {
@@ -184,8 +214,8 @@ router.put(
   rateLimiter(60, 10, { motif: 'prog' }),
   validate(idSchema),
   authenticate,
-  authorize('COACH'),
   upload.single('statsFile'),
+  authorize('COACH'),
   async (req: Request, res: Response) => {
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 

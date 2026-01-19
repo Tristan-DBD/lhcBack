@@ -22,18 +22,14 @@ router.post(
 
     const stats = await ss.create(userId, squat, bench, deadlift)
 
-    if (stats == 'ALREADY_EXIST') {
-      return handlerResponse(
-        res,
-        409,
-        false,
-        'Cet utilisateur à déjà des stats ',
-      )
+    switch (stats) {
+      case 'ALREADY_EXIST':
+        return handlerResponse(res, 409, false, 'Cet utilisateur à déjà des stats ')
+      case 'USER_NOT_EXIST':
+        return handlerResponse(res, 404, false, 'Utilisateur introuvable')
+      default:
+        return handlerResponse(res, 201, true, stats)
     }
-    if (stats == 'USER_NOT_EXIST') {
-      return handlerResponse(res, 404, false, 'Utilisateur introuvable')
-    }
-    return handlerResponse(res, 201, true, stats)
   },
 )
 
@@ -76,12 +72,7 @@ router.put(
     const updated = await ss.update(userId, squat, bench, deadlift)
 
     if (updated == 'STATS_NOT_FOUND')
-      return handlerResponse(
-        res,
-        404,
-        false,
-        "L'utilisateur n'a pas fiche de stats renseignée",
-      )
+      return handlerResponse(res, 404, false, "L'utilisateur n'a pas fiche de stats renseignée")
 
     return handlerResponse(res, 200, true, updated)
   },

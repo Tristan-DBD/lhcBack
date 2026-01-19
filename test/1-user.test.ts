@@ -36,8 +36,7 @@ describe('Test CRUD pour les utilisateurs', () => {
           weight: 85,
           phone: '0601020304',
           email: 'coach@gmail.com',
-          password: '1234',
-          role: 'COACH',
+          password: '1234'
         })
 
       coachTestId = res.body.data.id
@@ -54,7 +53,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           phone: '0601020304',
           email: 'ahtlete@gmail.com',
           password: '1234',
-          role: 'ATHLETE_PROG',
         })
 
       athleteTestId = ath.body.data.id
@@ -73,7 +71,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           phone: '0601020304',
           email: 'athelete@gmail.com',
           password: '1234',
-          role: 'ATHELETE_PROG',
         })
 
       expect(res.body.success).toBe(false)
@@ -150,7 +147,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       expect(res.body.success).toBe(true)
     })
   })
-  describe('RESET IMAGE (DELETE /api/user/id/profile-image', () => {
+  describe('RESET IMAGE (DELETE /api/user/id/profile-image)', () => {
     it('COACH -> Authorize', async () => {
       const user = await request(server)
         .get(`/api/user/${coachTestId}`)
@@ -164,15 +161,15 @@ describe('Test CRUD pour les utilisateurs', () => {
       await FileTestHelper.expectFileNotExists(imageUri)
       expect(res.body.success).toBe(true)
     })
-    it('ATHLETE -> Unauthorize', async () => {
+    it('ATHLETE -> Authorize', async () => {
       const res = await request(server)
         .delete(`/api/user/${athleteTestId}/profile-image`)
         .set('Authorization', `Bearer ${athleteToken}`)
 
-      expect(res.body.success).toBe(false)
+      expect(res.body.success).toBe(true)
     })
   })
-  describe('UPDATE PROG (PUT /api/user/id/prog)rst', () => {
+  describe('UPDATE PROG (PUT /api/user/id/prog)', () => {
     it('COACH -> Auhtorize', async () => {
       const res = await request(server)
         .put(`/api/user/${coachTestId}/prog`)

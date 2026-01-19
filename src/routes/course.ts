@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 import validate from '../middleware/validate'
-import { createCourseSchema, partialCourseSchema } from '../schemas/course'
+import { createCourseSchema, partialCourseSchema, registerSchema } from '../schemas/course'
 import { coursesService as cs } from '../service/course'
 import { handlerResponse } from '../middleware/handler'
 import { idSchema } from '../schemas/common'
@@ -82,6 +82,51 @@ router.delete(
     }
     const course = await cs.delete(Number(req.params.id))
     return handlerResponse(res, 200, true, course)
+  },
+)
+
+router.post('/register',
+  rateLimiter(1, 10, { motif: 'register' }),
+  validate(registerSchema),
+  authenticate,
+  authorize('CO'),
+  async (req: Request, res: Response) => {
+    const { userId, courseId } = req.body;
+
+    const result = await cs.register(userId, courseId)
+
+    switch (result) {
+      case 'NOT-EXIST':
+        return handlerResponse(res, 404, false, 'Cours non trouvé')
+      case 'ALREADY-REGISTERED':
+        return handlerResponse(res, 400, false, 'Déjà inscrit au cours')
+      case 'FULL':
+        return handlerResponse(res, 400, false, 'Cours complet')
+      default:
+        return handlerResponse(res, 200, true, result)
+    }
+  },
+)
+
+router.post('/unregister',
+  rateLimiter(1, 10, { motif: 'unregister' }),
+  validate(registerSchema),
+  authenticate,
+  authorize('CO'),
+  async (req: Request, res: Response) => {
+
+    const { userId, courseId } = req.body
+
+    const result = await cs.unregister(userId, courseId)
+
+    switch (result) {
+      case 'NOT-EXIST':
+        return handlerResponse(res, 404, false, 'Cours non trouvé')
+      case 'NOT-REGISTERED':
+        return handlerResponse(res, 400, false, 'Non inscrit au cours')
+      default:
+        return handlerResponse(res, 200, true, result)
+    }
   },
 )
 

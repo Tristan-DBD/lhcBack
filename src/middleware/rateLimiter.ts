@@ -34,6 +34,12 @@ export const rateLimiter = (time: number, max: number, option?: {
         case 'prog':
             message = 'Limite de mise à jour du programme atteinte, veuillez patienter'
             break;
+        case 'register':
+            message = 'Limite d\'inscription atteinte, veuillez patienter'
+            break;
+        case 'unregister':
+            message = 'Limite de désinscription atteinte, veuillez patienter'
+            break;
         default:
             message = 'Trop de requêtes, veuillez patienter'
             break;

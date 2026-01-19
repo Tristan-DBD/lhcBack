@@ -14,5 +14,10 @@ const courseSchema = z.object({
   durationMinutes: positiveNumber('Le temps de la séance', { min: 1 }),
 })
 
+export const registerSchema = z.object({
+  userId: positiveNumber('UserId'),
+  courseId: positiveNumber('CourseId'),
+})
+
 export const createCourseSchema = courseSchema.omit({ id: true })
 export const partialCourseSchema = courseSchema.partial()
