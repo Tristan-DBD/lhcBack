@@ -17,7 +17,7 @@ server.use(express.json())
 server.use(requestLogger)
 
 server.get('/favicon.ico', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '@/lhcBack/public', 'logoLhc.png'))
+  res.sendFile(path.join(__dirname, '@/public', 'logoLhc.png'))
 })
 // redirect vers le swagger
 server.get('/', (req: Request, res: Response) => {
