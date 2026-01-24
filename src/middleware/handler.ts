@@ -1,4 +1,5 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
+import logger from '../config/logger'
 
 export function handlerResponse(
   res: Response,
@@ -13,18 +14,20 @@ export function handlerResponse(
   })
 }
 
-export function globalErrorHandler(error: Error, req: Request, res: Response) {
-  console.error('Error:', error.message, {
+export function globalErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+  logger.error('Server error', {
+    message: error.message,
     name: error.name,
+    stack: error.stack,
     method: req.method,
-    url: req.url,
+    path: req.path,
   })
 
   // Vérifier si res.status existe (cas des réponses partielles du router)
   if (typeof res.status !== 'function') {
-    console.error('Response object missing status method:', {
+    logger.error('Response object missing status method:', {
       method: req.method,
-      url: req.url,
+      path: req.path,
     })
     return
   }
