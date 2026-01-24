@@ -10,8 +10,34 @@ import path from 'path'
 import { requestLogger } from './middleware/logger'
 import { globalErrorHandler, handlerResponse, notFoundHandler } from './middleware/handler'
 import { rateLimiter } from './middleware/rateLimiter'
+import cors from 'cors'
+import helmet from 'helmet'
 
 const server = express()
+const yourIp = process.env.YOUR_IP || 'localhost'
+server.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'",
+        `http://${yourIp}`,
+        `https://${yourIp}`],
+    }
+  },
+}))
+server.use(cors({
+  origin: [
+    'http://localhost:3000',
+    `http://${yourIp}`,
+    `https://${yourIp}`,
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}))
 
 server.use(express.json())
 server.use(requestLogger)
