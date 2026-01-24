@@ -2,6 +2,7 @@ import multer from 'multer'
 import path from 'path'
 import fs from 'fs/promises'
 import { supabase, getBucketName } from '../config/supabase'
+import logger from '../config/logger'
 
 // fichier image .jpg .png
 const imageAllowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
@@ -98,7 +99,10 @@ export class FileService {
 
       return `${filePath}`
     } catch (error) {
-      console.error('File upload error:', error)
+      logger.error('File upload error', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      })
       throw error
     }
   }
@@ -109,9 +113,12 @@ export class FileService {
       try {
         const fullPath = path.join(process.cwd(), 'public', fileUrl)
         await fs.unlink(fullPath)
-        console.log('Local file deleted:', fullPath)
+        logger.info('Local file deleted', { fullPath })
       } catch (error) {
-        console.error('Local file delete error:', error)
+        logger.error('Local file delete error', {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined
+        })
       }
       return
     }
@@ -120,7 +127,7 @@ export class FileService {
     try {
       const client = supabase()
       if (!client) {
-        console.log('Supabase client not available in development')
+        logger.error('Supabase client not available in development')
         return
       }
 
@@ -129,10 +136,13 @@ export class FileService {
       const { error } = await client.storage.from(bucketName).remove([fileUrl])
 
       if (error) {
-        console.error('Supabase delete error:', error)
+        logger.error('Supabase delete error', { error: error.message, stack: error.stack })
       }
     } catch (error) {
-      console.error('File delete error:', error)
+      logger.error('File delete error', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      })
     }
   }
 }
