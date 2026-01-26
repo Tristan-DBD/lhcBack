@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit'
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit'
 
 export const rateLimiter = (time: number, max: number, option?: {
     motif?: string,
@@ -48,11 +48,15 @@ export const rateLimiter = (time: number, max: number, option?: {
         windowMs: time * 60 * 1000, // 15 minutes
         max: max, // limit each IP to 100 requests per windowMs
         message: message,
+
+        keyGenerator: (req) => ipKeyGenerator(req.ip!),
+
+
         standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
         skipSuccessfulRequests: option?.skipSuccessful || false,
         skip: (req) => {
             return option?.skipPath?.includes(req.path) || false
-        }
+        },
     })
 }
