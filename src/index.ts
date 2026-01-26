@@ -16,6 +16,9 @@ import { errorLogger } from './middleware/errorLogger'
 import { requestLogger } from './middleware/logger'
 
 const server = express()
+
+server.set('trust proxy', 1)
+
 const yourIp = process.env.YOUR_IP || 'localhost'
 
 server.use(helmet({
