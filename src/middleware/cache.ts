@@ -118,13 +118,12 @@ export const invalidateCacheMiddleware = (patterns: string[]) => {
 export const cachePatterns = {
   courses: {
     all: 'courses:*',
-    byId: (id: number) => `course:*${id}*`,
+    byId: (id: number) => `courses:*${id}*`,
     byCoach: (coachId: number) => `courses:*coachId*${coachId}*`
   },
   users: {
     all: 'users:*',
-    byId: (id: number) => `user:*${id}*`,
-    byEmail: (email: string) => `user:*email*${email}*`
+    byId: (id: number) => `users:*${id}*`
   },
   stats: {
     all: 'stats:*',

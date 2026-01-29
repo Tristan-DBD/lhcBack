@@ -38,9 +38,9 @@ router.post(
 router.get(
   '/',
   rateLimiter(1, 30, { motif: 'get' }),
-  cacheMiddleware('stats', { ttl: 120 }), // Cache de 2 minutes pour les stats (court car données changeantes)
   authenticate,
   authorize('COACH'),
+  cacheMiddleware('stats', { ttl: 120 }), // Cache de 2 minutes pour les stats (court car données changeantes)
   async (req: Request, res: Response) => {
     const stats = await ss.findAll()
     return handlerResponse(res, 200, true, stats)
@@ -51,12 +51,12 @@ router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
   validate(idSchema),
+  authenticate,
+  authorize('COACH'),
   cacheMiddleware('stat', {
     ttl: 180, // Cache de 3 minutes pour les stats individuelles
     keyGenerator: (req) => `stat:${req.params.id}`
   }),
-  authenticate,
-  authorize('COACH'),
   async (req: Request, res: Response) => {
     const stats = await ss.findById(Number(req.params.id))
 

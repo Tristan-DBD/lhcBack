@@ -80,9 +80,9 @@ router.post('/coach',
 router.get(
   '/',
   rateLimiter(1, 20, { motif: 'get' }),
-  cacheMiddleware('users', { ttl: 300 }), // Cache de 5 minutes pour la liste
   authenticate,
   authorize('COACH'),
+  cacheMiddleware('users', { ttl: 300 }), // Cache de 5 minutes pour la liste
   async (req: Request, res: Response) => {
     const users = await us.findAll()
     return handlerResponse(res, 200, true, users)
@@ -93,12 +93,12 @@ router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
   validate(idSchema),
-  cacheMiddleware('user', {
-    ttl: 600, // Cache de 10 minutes pour les profils individuels
-    keyGenerator: (req) => `user:${req.params.id}`
-  }),
   authenticate,
   authorize('PROFILE'),
+  cacheMiddleware('users', {
+    ttl: 600, // Cache de 10 minutes pour les profils individuels
+    keyGenerator: (req) => `users:${req.params.id}`
+  }),
   async (req: Request, res: Response) => {
     const user = await us.findById(Number(req.params.id))
     if (user == 'NOT-EXIST')
@@ -148,6 +148,7 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const user = await us.delete(Number(req.params.id))
 
@@ -174,6 +175,7 @@ router.put(
   validate(idSchema),
   authenticate,
   authorize('PROFILE'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   upload.single('profileImage'),
   async (req: Request, res: Response) => {
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
@@ -199,6 +201,7 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('PROFILE'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const id = Number(req.params.id)
 
@@ -225,6 +228,7 @@ router.put(
   authenticate,
   upload.single('statsFile'),
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 
@@ -247,6 +251,7 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const id = Number(req.params.id)
 

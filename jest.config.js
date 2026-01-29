@@ -4,4 +4,5 @@ module.exports = {
     testMatch: ['**/test/**/*.test.ts'],
     moduleFileExtensions: ['ts', 'js'],
     maxWorkers: 1,
+    randomize: false,
 }

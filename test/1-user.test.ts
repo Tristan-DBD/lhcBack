@@ -23,7 +23,9 @@ describe('Test CRUD pour les utilisateurs', () => {
     coachToken = await createToken(1, 'COACH', 'email@gmail.com')
     athleteToken = await createToken(2, 'ATHLETE_PROG', 'email@gmail.com')
   }
-  token()
+  beforeAll(async () => {
+    await token()
+  })
   describe('CREATE (POST /api/user/)', () => {
     it('COACH -> Authorize', async () => {
       const res = await request(server)
@@ -135,7 +137,7 @@ describe('Test CRUD pour les utilisateurs', () => {
         .put(`/api/user/${coachTestId}/profile-image`)
         .set('Authorization', `Bearer ${coachToken}`)
         .attach('profileImage', FileTestHelper.getTestImagePath('test.png'))
-
+      console.log(res.body.data)
       expect(res.body.success).toBe(true)
     })
     it('ATHELETE -> Authorize', async () => {
@@ -153,7 +155,7 @@ describe('Test CRUD pour les utilisateurs', () => {
         .get(`/api/user/${coachTestId}`)
         .set('Authorization', `Bearer ${coachToken}`)
       const imageUri = user.body.data.imageUri
-
+      console.log(user.body.data)
       const res = await request(server)
         .delete(`/api/user/${coachTestId}/profile-image`)
         .set('Authorization', `Bearer ${coachToken}`)

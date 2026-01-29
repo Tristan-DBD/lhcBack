@@ -119,6 +119,7 @@ export class FileService {
           error: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined
         })
+        throw error // Propager l'erreur pour que le test échoue correctement
       }
       return
     }

@@ -33,9 +33,9 @@ router.post(
 
 router.get('/',
   rateLimiter(1, 40, { motif: 'get' }),
-  cacheMiddleware('courses', { ttl: 300 }), // Cache de 5 minutes
   authenticate,
   authorize('CO'),
+  cacheMiddleware('courses', { ttl: 300 }), // Cache de 5 minutes
   async (req: Request, res: Response) => {
     const courses = await cs.findAll()
     return handlerResponse(res, 200, true, courses)
@@ -45,12 +45,12 @@ router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
   validate(idSchema),
+  authenticate,
+  authorize('CO'),
   cacheMiddleware('course', {
     ttl: 600, // Cache de 10 minutes pour les entités individuelles
     keyGenerator: (req) => `course:${req.params.id}`
   }),
-  authenticate,
-  authorize('CO'),
   async (req: Request, res: Response) => {
     const course = await cs.findById(Number(req.params.id))
     if (course == 'NOT-EXIST') {
