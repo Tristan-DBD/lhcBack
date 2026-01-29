@@ -1,4 +1,3 @@
-import { register } from 'node:module'
 import prisma from '../db-config'
 
 export const coursesService = {

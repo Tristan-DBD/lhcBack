@@ -14,6 +14,7 @@ import helmet from 'helmet'
 import logger from './config/logger'
 import { errorLogger } from './middleware/errorLogger'
 import { requestLogger } from './middleware/logger'
+import { cacheService } from './config/cache'
 
 const server = express()
 server.set('trust proxy', 1)
@@ -82,13 +83,40 @@ server.use(notFoundHandler)
 server.use('/public', express.static(path.join(__dirname, '..', 'public')))
 
 const port = Number(process.env.PORT) || 4000
-server.listen(port, () => {
-  logger.info(`Server is running on port ${port}`, {
-    port,
-    env: process.env.NODE_ENV,
-    timeStamp: new Date().toISOString(),
+
+// Initialiser Redis avant de démarrer le serveur
+async function startServer() {
+  try {
+    // Connexion à Redis (avec fallback si Redis n'est pas disponible)
+    await cacheService.connect()
+    logger.info('Redis connected successfully')
+  } catch (error) {
+    logger.warn('Redis connection failed, continuing without cache:', error)
+  }
+
+  server.listen(port, () => {
+    logger.info(`Server is running on port ${port}`, {
+      port,
+      env: process.env.NODE_ENV,
+      timeStamp: new Date().toISOString(),
+    })
   })
+}
+
+// Gestion de l'arrêt gracieux
+process.on('SIGTERM', async () => {
+  logger.info('SIGTERM received, shutting down gracefully')
+  await cacheService.disconnect()
+  process.exit(0)
 })
+
+process.on('SIGINT', async () => {
+  logger.info('SIGINT received, shutting down gracefully')
+  await cacheService.disconnect()
+  process.exit(0)
+})
+
+startServer()
 
 
 

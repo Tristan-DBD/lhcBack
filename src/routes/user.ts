@@ -9,6 +9,7 @@ import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
+import { cacheMiddleware, invalidateCacheMiddleware, cachePatterns } from '../middleware/cache'
 
 const router = Router()
 
@@ -23,6 +24,7 @@ router.post(
   validate(createUserSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, phone, email, password, role } = req.body
     const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG']
@@ -52,6 +54,7 @@ router.post('/coach',
   validate(createUserSchema),
   authenticate,
   authorize('ADMIN'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, phone, email, password } = req.body
     const role = 'COACH'
@@ -77,6 +80,7 @@ router.post('/coach',
 router.get(
   '/',
   rateLimiter(1, 20, { motif: 'get' }),
+  cacheMiddleware('users', { ttl: 300 }), // Cache de 5 minutes pour la liste
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
@@ -89,6 +93,10 @@ router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
   validate(idSchema),
+  cacheMiddleware('user', {
+    ttl: 600, // Cache de 10 minutes pour les profils individuels
+    keyGenerator: (req) => `user:${req.params.id}`
+  }),
   authenticate,
   authorize('PROFILE'),
   async (req: Request, res: Response) => {
@@ -105,6 +113,7 @@ router.put(
   validate(partialUserSchema),
   authenticate,
   authorize('PROFILE'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, email, password, phone } =
       req.body

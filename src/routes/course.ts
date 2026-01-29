@@ -7,6 +7,7 @@ import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
+import { cacheMiddleware, invalidateCacheMiddleware, cachePatterns } from '../middleware/cache'
 
 const router = Router()
 
@@ -16,6 +17,7 @@ router.post(
   validate(createCourseSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.courses.all]),
   async (req: Request, res: Response) => {
     const created = await cs.create(
       req.body.title,
@@ -31,6 +33,7 @@ router.post(
 
 router.get('/',
   rateLimiter(1, 40, { motif: 'get' }),
+  cacheMiddleware('courses', { ttl: 300 }), // Cache de 5 minutes
   authenticate,
   authorize('CO'),
   async (req: Request, res: Response) => {
@@ -42,6 +45,10 @@ router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
   validate(idSchema),
+  cacheMiddleware('course', {
+    ttl: 600, // Cache de 10 minutes pour les entités individuelles
+    keyGenerator: (req) => `course:${req.params.id}`
+  }),
   authenticate,
   authorize('CO'),
   async (req: Request, res: Response) => {
@@ -59,6 +66,7 @@ router.put(
   validate(partialCourseSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.courses.all]),
   async (req: Request, res: Response) => {
     const exist = await cs.findById(Number(req.params.id))
     if (exist == 'NOT-EXIST') {
@@ -66,6 +74,7 @@ router.put(
     }
 
     const course = await cs.update(Number(req.params.id), req.body)
+
     return handlerResponse(res, 200, true, course)
   },
 )

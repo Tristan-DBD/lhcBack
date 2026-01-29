@@ -8,6 +8,7 @@ import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
+import { cacheMiddleware, invalidateCacheMiddleware, cachePatterns } from '../middleware/cache'
 
 const router = Router()
 
@@ -17,6 +18,7 @@ router.post(
   validate(statsSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.stats.all]),
   async (req: Request, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
 
@@ -36,6 +38,7 @@ router.post(
 router.get(
   '/',
   rateLimiter(1, 30, { motif: 'get' }),
+  cacheMiddleware('stats', { ttl: 120 }), // Cache de 2 minutes pour les stats (court car données changeantes)
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
@@ -48,6 +51,10 @@ router.get(
   '/:id',
   rateLimiter(1, 60, { motif: 'get' }),
   validate(idSchema),
+  cacheMiddleware('stat', {
+    ttl: 180, // Cache de 3 minutes pour les stats individuelles
+    keyGenerator: (req) => `stat:${req.params.id}`
+  }),
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
@@ -66,6 +73,7 @@ router.put(
   validate(partialStatsSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.stats.all]),
   async (req: Request, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
 
@@ -84,6 +92,7 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.stats.all]),
   async (req: Request, res: Response) => {
     const exist = await ss.findById(Number(req.params.id))
     if (exist == null) {

@@ -8,14 +8,9 @@ coverage
 .env.dev
 .env.test
 
-<<<<<<< HEAD
 logs/*.log
 logs/!*.gitkeep
 
-=======
-logs/
-logs/!.gitkeep
->>>>>>> prod
 
 dist/
 public/profileImage/*

@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 
 export const positiveNumber = (
   field: string,
@@ -69,5 +69,5 @@ export const idSchema = z.object({
 })
 
 export const validDate = (field: string) => {
- return z.coerce.date(`${field} doit être une date valide`)
+  return z.coerce.date(`${field} doit être une date valide`)
 }
