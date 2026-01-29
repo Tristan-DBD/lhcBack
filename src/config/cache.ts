@@ -8,7 +8,7 @@ class CacheService {
 
   constructor() {
     // Utiliser le cache mémoire si Redis n'est pas configuré ou en dev sans Redis
-    this.useMemoryCache = !process.env.REDIS_URL || process.env.NODE_ENV === 'dev'
+    this.useMemoryCache = !process.env.REDIS_URL || process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test'
 
     if (!this.useMemoryCache) {
       this.client = createClient({

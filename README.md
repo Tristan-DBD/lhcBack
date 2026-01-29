@@ -106,7 +106,7 @@ cd lhcBack
 npm install
 
 # Configurer les variables d'environnement
-cp .env.example .env
+cp .env.example .env.dev
 # Éditer .env avec vos configurations
 
 # Démarrer Docker et la base de données
@@ -172,7 +172,7 @@ npm run test:prod
 ## 📊 Modèle de Données
 
 ### Entités Principales
-- **User** : Utilisateurs avec rôles (Coach/Athlète Prog/Athlète Co/Athlète Full/Admin)
+- **User** : Utilisateurs avec rôles (Coach/Athlète Prog/Athlète Co/Athlète Full)
   - Informations personnelles : nom, prénom, âge, poids, téléphone
   - Photo de profil et programme sportif uploadable
   - Authentification par email/mot de passe
@@ -196,3 +196,35 @@ Le projet est prêt pour le déploiement avec :
 - **Variables d'environnement** gérées
 - **Scripts de build** automatisés
 - **Support multi-environnements** (dev, prod, test)
+
+## 🐛 Dépannage
+
+### Problèmes Communs
+
+#### Erreur de connexion Redis
+```bash
+# Solution : Le cache fallback automatique prend le relai
+# Vérifier : REDIS_URL dans .env
+```
+
+#### Tests qui échouent
+```bash
+# Réinitialiser la base de données
+npm run migrate:test
+npm run test:reset
+```
+
+### Support
+
+- **Documentation** : `/doc` endpoint
+- **Logs** : `./logs/` directory
+- **Health Check** : `/api/health`
+- **Metrics** : `/api/metric`
+
+## 🏋️‍♂️ AppCoach - Transformez votre coaching sportif
+
+[![GitHub stars](https://img.shields.io/github/stars/Tristan-DBD/lhcBack.svg)](https://github.com/Tristan-DBD/lhcBack)
+[![GitHub forks](https://img.shields.io/github/forks/Tristan-DBD/lhcBack.svg)](https://github.com/Tristan-DBD/lhcBack)
+[![GitHub issues](https://img.shields.io/github/issues/Tristan-DBD/lhcBack.svg)](https://github.com/Tristan-DBD/lhcBack/issues)
+
+Made with ❤️ for the fitness community
