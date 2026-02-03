@@ -7,7 +7,11 @@ import route from './routes'
 import swaggerUi from 'swagger-ui-express'
 import swagger from './doc/swagger/bearer'
 import path from 'path'
-import { globalErrorHandler, handlerResponse, notFoundHandler } from './middleware/handler'
+import {
+  globalErrorHandler,
+  handlerResponse,
+  notFoundHandler,
+} from './middleware/handler'
 import { rateLimiter } from './middleware/rateLimiter'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -20,30 +24,28 @@ const server = express()
 server.set('trust proxy', 1)
 const yourIp = process.env.YOUR_IP || 'localhost'
 
-server.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'",
-        `http://${yourIp}`,
-        `https://${yourIp}`],
-    }
-  },
-}))
+server.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ['\'self\''],
+        styleSrc: ['\'self\'', '\'unsafe-inline\''],
+        scriptSrc: ['\'self\''],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", `http://${yourIp}`, `https://${yourIp}`],
+      },
+    },
+  }),
+)
 
-server.use(cors({
-  origin: [
-    'http://localhost:3000',
-    `http://${yourIp}`,
-    `https://${yourIp}`,
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}))
+server.use(
+  cors({
+    origin: ['http://localhost:3000', `http://${yourIp}`, `https://${yourIp}`],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }),
+)
 
 server.use(express.json())
 
@@ -70,10 +72,21 @@ server.use(
     },
   }),
 )
-server.use('/health', rateLimiter(1, 61, { motif: 'health' }), async (req: Request, res: Response) => {
-  return handlerResponse(res, 200, true, { status: 'ok' })
-})
-server.use('/api', rateLimiter(1, 1000, { motif: 'global', skipPath: ['/api/health', '/favicon.ico'] }), route)
+server.use(
+  '/health',
+  rateLimiter(1, 61, { motif: 'health' }),
+  async (req: Request, res: Response) => {
+    return handlerResponse(res, 200, true, { status: 'ok' })
+  },
+)
+server.use(
+  '/api',
+  rateLimiter(1, 1000, {
+    motif: 'global',
+    skipPath: ['/api/health', '/favicon.ico'],
+  }),
+  route,
+)
 
 server.use(globalErrorHandler)
 
@@ -118,20 +131,18 @@ process.on('SIGINT', async () => {
 
 startServer()
 
-
-
 // Dans les gestionnaires d'erreurs
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', {
     error: error.message,
-    stack: error.stack
+    stack: error.stack,
   })
   process.exit(1)
 })
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection:', {
     reason: reason,
-    promise: promise
+    promise: promise,
   })
   process.exit(1)
 })

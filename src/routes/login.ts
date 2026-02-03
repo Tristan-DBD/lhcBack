@@ -18,12 +18,13 @@ export async function createToken(id: number, role: Role, email: string) {
   return token
 }
 
-router.post('/login',
+router.post(
+  '/login',
   rateLimiter(15, 5, { motif: 'login', skipSuccessful: true }),
   validate(loginSchema),
   async (req: Request, res: Response) => {
     const { email, password } = req.body
-    const user = await us.findByEmail(email)
+    const user = await us.findByEmailWithPassword(email)
     if (user == 'NOT-EXIST') {
       return handlerResponse(res, 403, false, 'Email ou mot de passe incorect')
     }
@@ -37,13 +38,16 @@ router.post('/login',
       true,
       await createToken(user.id, user.role, user.email),
     )
-  })
+  },
+)
 
-router.post('/register',
+router.post(
+  '/register',
   rateLimiter(60, 3, { motif: 'register' }),
   validate(loginSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } = req.body
+    const { name, surname, age, weight, phone, email, password, role } =
+      req.body
 
     const hashed = await bcrypt.hash(password, Number(process.env.SALT_ROUND))
 
@@ -67,6 +71,7 @@ router.post('/register',
       true,
       await createToken(user.id, user.role, user.email),
     )
-  })
+  },
+)
 
 export default router
