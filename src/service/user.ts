@@ -35,6 +35,7 @@ export const UserService = {
       },
       include: {
         stat: true,
+        progUri: true,
       },
     })
     return user
@@ -47,6 +48,7 @@ export const UserService = {
       },
       include: {
         stat: true,
+        progUri: true,
       },
     })
     return user
@@ -60,6 +62,7 @@ export const UserService = {
       },
       include: {
         stat: true,
+        progUri: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
@@ -74,6 +77,7 @@ export const UserService = {
       },
       include: {
         stat: true,
+        progUri: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
@@ -112,6 +116,7 @@ export const UserService = {
       },
       include: {
         stat: true,
+        progUri: true,
       },
     })
     return user
@@ -135,6 +140,7 @@ export const UserService = {
       },
       include: {
         stat: true,
+        progUri: true,
       },
     })
   },
@@ -150,36 +156,7 @@ export const UserService = {
       },
       include: {
         stat: true,
-      },
-    })
-  },
-
-  async updateProg(id: number, file: string) {
-    return await prisma.user.update({
-      where: { id: id },
-      data: {
-        progUri: file,
-      },
-      omit: {
-        password: true,
-      },
-      include: {
-        stat: true,
-      },
-    })
-  },
-
-  async removeProg(id: number) {
-    return await prisma.user.update({
-      where: { id: id },
-      data: {
-        progUri: null,
-      },
-      omit: {
-        password: true,
-      },
-      include: {
-        stat: true,
+        progUri: true,
       },
     })
   },

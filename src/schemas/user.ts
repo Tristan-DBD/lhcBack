@@ -9,7 +9,7 @@ const userSchema = z.object({
   weight: positiveNumber('Weight'),
   phone: validString('Phone', { exactC: 10 }),
   email: validString('Email', { email: true }),
-  password: validString('Password', { min: 3 })
+  password: validString('Password', { min: 3 }),
 })
 
 export const createUserSchema = userSchema.omit({ id: true })

@@ -10,7 +10,6 @@ import {
   Put,
   Route,
   Tags,
-  UploadedFile,
   UploadedFiles,
   Security,
 } from 'tsoa'
@@ -113,21 +112,5 @@ export class UserController {
   @Security('BearerAuth')
   public async resetProfileImage(@Path() id: number) {
     return us.resetImage(id)
-  }
-
-  @Put('/{id}/prog')
-  @Security('BearerAuth')
-  public async updateProg(
-    @Path() id: number,
-    @UploadedFile() statsFile: Express.Multer.File,
-  ) {
-    const filePath = `public/prog/${statsFile.filename}`
-    return us.updateProg(id, filePath)
-  }
-
-  @Delete('/{id}/prog')
-  @Security('BearerAuth')
-  public async removeProg(@Path() id: number) {
-    return us.removeProg(id)
   }
 }

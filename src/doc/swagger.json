@@ -12,7 +12,9 @@
 				"enum": [
 					"COACH",
 					"ATHLETE_PROG",
-					"ATHLETE_CO"
+					"ATHLETE_CO",
+					"ATHLETE_FULL",
+					"ADMIN"
 				]
 			},
 			"Role": {
@@ -157,76 +159,126 @@
 								"schema": {
 									"anyOf": [
 										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"stat": {
-													"items": {
-														"properties": {
-															"deadlift": {
-																"type": "number",
-																"format": "double"
+											"allOf": [
+												{
+													"properties": {
+														"stat": {
+															"items": {
+																"properties": {
+																	"deadlift": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"bench": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"squat": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	}
+																},
+																"required": [
+																	"deadlift",
+																	"bench",
+																	"squat",
+																	"userId",
+																	"id"
+																],
+																"type": "object"
 															},
-															"bench": {
-																"type": "number",
-																"format": "double"
-															},
-															"squat": {
-																"type": "number",
-																"format": "double"
-															},
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															}
+															"type": "array"
 														},
-														"required": [
-															"deadlift",
-															"bench",
-															"squat",
-															"userId",
-															"id"
-														],
-														"type": "object"
+														"progUri": {
+															"items": {
+																"properties": {
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"fileUri": {
+																		"type": "string"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"name": {
+																		"type": "string"
+																	}
+																},
+																"required": [
+																	"userId",
+																	"fileUri",
+																	"id",
+																	"name"
+																],
+																"type": "object"
+															},
+															"type": "array"
+														}
 													},
-													"type": "array"
+													"required": [
+														"stat",
+														"progUri"
+													],
+													"type": "object"
 												},
-												"email": {
-													"type": "string"
-												},
-												"progUri": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
+												{
+													"properties": {
+														"id": {
+															"type": "number",
+															"format": "double"
+														},
+														"email": {
+															"type": "string"
+														},
+														"imageUri": {
+															"type": "string"
+														},
+														"role": {
+															"$ref": "#/components/schemas/_36_Enums.Role"
+														},
+														"phone": {
+															"type": "string"
+														},
+														"weight": {
+															"type": "number",
+															"format": "double"
+														},
+														"age": {
+															"type": "number",
+															"format": "double"
+														},
+														"surname": {
+															"type": "string"
+														},
+														"name": {
+															"type": "string"
+														}
+													},
+													"required": [
+														"id",
+														"email",
+														"imageUri",
+														"role",
+														"phone",
+														"weight",
+														"age",
+														"surname",
+														"name"
+													],
+													"type": "object"
 												}
-											},
-											"required": [
-												"id",
-												"stat",
-												"email",
-												"progUri",
-												"imageUri",
-												"role",
-												"surname",
-												"name"
-											],
-											"type": "object"
+											]
 										},
 										{
 											"type": "string",
@@ -269,76 +321,126 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"properties": {
-											"id": {
-												"type": "number",
-												"format": "double"
-											},
-											"stat": {
-												"items": {
-													"properties": {
-														"deadlift": {
-															"type": "number",
-															"format": "double"
+										"allOf": [
+											{
+												"properties": {
+													"stat": {
+														"items": {
+															"properties": {
+																"deadlift": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"bench": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"squat": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"userId": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"id": {
+																	"type": "number",
+																	"format": "double"
+																}
+															},
+															"required": [
+																"deadlift",
+																"bench",
+																"squat",
+																"userId",
+																"id"
+															],
+															"type": "object"
 														},
-														"bench": {
-															"type": "number",
-															"format": "double"
-														},
-														"squat": {
-															"type": "number",
-															"format": "double"
-														},
-														"userId": {
-															"type": "number",
-															"format": "double"
-														},
-														"id": {
-															"type": "number",
-															"format": "double"
-														}
+														"type": "array"
 													},
-													"required": [
-														"deadlift",
-														"bench",
-														"squat",
-														"userId",
-														"id"
-													],
-													"type": "object"
+													"progUri": {
+														"items": {
+															"properties": {
+																"userId": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"fileUri": {
+																	"type": "string"
+																},
+																"id": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"name": {
+																	"type": "string"
+																}
+															},
+															"required": [
+																"userId",
+																"fileUri",
+																"id",
+																"name"
+															],
+															"type": "object"
+														},
+														"type": "array"
+													}
 												},
-												"type": "array"
+												"required": [
+													"stat",
+													"progUri"
+												],
+												"type": "object"
 											},
-											"email": {
-												"type": "string"
-											},
-											"progUri": {
-												"type": "string"
-											},
-											"imageUri": {
-												"type": "string"
-											},
-											"role": {
-												"$ref": "#/components/schemas/_36_Enums.Role"
-											},
-											"surname": {
-												"type": "string"
-											},
-											"name": {
-												"type": "string"
+											{
+												"properties": {
+													"id": {
+														"type": "number",
+														"format": "double"
+													},
+													"email": {
+														"type": "string"
+													},
+													"imageUri": {
+														"type": "string"
+													},
+													"role": {
+														"$ref": "#/components/schemas/_36_Enums.Role"
+													},
+													"phone": {
+														"type": "string"
+													},
+													"weight": {
+														"type": "number",
+														"format": "double"
+													},
+													"age": {
+														"type": "number",
+														"format": "double"
+													},
+													"surname": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"id",
+													"email",
+													"imageUri",
+													"role",
+													"phone",
+													"weight",
+													"age",
+													"surname",
+													"name"
+												],
+												"type": "object"
 											}
-										},
-										"required": [
-											"id",
-											"stat",
-											"email",
-											"progUri",
-											"imageUri",
-											"role",
-											"surname",
-											"name"
-										],
-										"type": "object"
+										]
 									},
 									"type": "array"
 								}
@@ -368,76 +470,126 @@
 								"schema": {
 									"anyOf": [
 										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"stat": {
-													"items": {
-														"properties": {
-															"deadlift": {
-																"type": "number",
-																"format": "double"
+											"allOf": [
+												{
+													"properties": {
+														"stat": {
+															"items": {
+																"properties": {
+																	"deadlift": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"bench": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"squat": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	}
+																},
+																"required": [
+																	"deadlift",
+																	"bench",
+																	"squat",
+																	"userId",
+																	"id"
+																],
+																"type": "object"
 															},
-															"bench": {
-																"type": "number",
-																"format": "double"
-															},
-															"squat": {
-																"type": "number",
-																"format": "double"
-															},
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															}
+															"type": "array"
 														},
-														"required": [
-															"deadlift",
-															"bench",
-															"squat",
-															"userId",
-															"id"
-														],
-														"type": "object"
+														"progUri": {
+															"items": {
+																"properties": {
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"fileUri": {
+																		"type": "string"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"name": {
+																		"type": "string"
+																	}
+																},
+																"required": [
+																	"userId",
+																	"fileUri",
+																	"id",
+																	"name"
+																],
+																"type": "object"
+															},
+															"type": "array"
+														}
 													},
-													"type": "array"
+													"required": [
+														"stat",
+														"progUri"
+													],
+													"type": "object"
 												},
-												"email": {
-													"type": "string"
-												},
-												"progUri": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
+												{
+													"properties": {
+														"id": {
+															"type": "number",
+															"format": "double"
+														},
+														"email": {
+															"type": "string"
+														},
+														"imageUri": {
+															"type": "string"
+														},
+														"role": {
+															"$ref": "#/components/schemas/_36_Enums.Role"
+														},
+														"phone": {
+															"type": "string"
+														},
+														"weight": {
+															"type": "number",
+															"format": "double"
+														},
+														"age": {
+															"type": "number",
+															"format": "double"
+														},
+														"surname": {
+															"type": "string"
+														},
+														"name": {
+															"type": "string"
+														}
+													},
+													"required": [
+														"id",
+														"email",
+														"imageUri",
+														"role",
+														"phone",
+														"weight",
+														"age",
+														"surname",
+														"name"
+													],
+													"type": "object"
 												}
-											},
-											"required": [
-												"id",
-												"stat",
-												"email",
-												"progUri",
-												"imageUri",
-												"role",
-												"surname",
-												"name"
-											],
-											"type": "object"
+											]
 										},
 										{
 											"type": "string",
@@ -481,76 +633,126 @@
 								"schema": {
 									"anyOf": [
 										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"stat": {
-													"items": {
-														"properties": {
-															"deadlift": {
-																"type": "number",
-																"format": "double"
+											"allOf": [
+												{
+													"properties": {
+														"stat": {
+															"items": {
+																"properties": {
+																	"deadlift": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"bench": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"squat": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	}
+																},
+																"required": [
+																	"deadlift",
+																	"bench",
+																	"squat",
+																	"userId",
+																	"id"
+																],
+																"type": "object"
 															},
-															"bench": {
-																"type": "number",
-																"format": "double"
-															},
-															"squat": {
-																"type": "number",
-																"format": "double"
-															},
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															}
+															"type": "array"
 														},
-														"required": [
-															"deadlift",
-															"bench",
-															"squat",
-															"userId",
-															"id"
-														],
-														"type": "object"
+														"progUri": {
+															"items": {
+																"properties": {
+																	"userId": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"fileUri": {
+																		"type": "string"
+																	},
+																	"id": {
+																		"type": "number",
+																		"format": "double"
+																	},
+																	"name": {
+																		"type": "string"
+																	}
+																},
+																"required": [
+																	"userId",
+																	"fileUri",
+																	"id",
+																	"name"
+																],
+																"type": "object"
+															},
+															"type": "array"
+														}
 													},
-													"type": "array"
+													"required": [
+														"stat",
+														"progUri"
+													],
+													"type": "object"
 												},
-												"email": {
-													"type": "string"
-												},
-												"progUri": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
+												{
+													"properties": {
+														"id": {
+															"type": "number",
+															"format": "double"
+														},
+														"email": {
+															"type": "string"
+														},
+														"imageUri": {
+															"type": "string"
+														},
+														"role": {
+															"$ref": "#/components/schemas/_36_Enums.Role"
+														},
+														"phone": {
+															"type": "string"
+														},
+														"weight": {
+															"type": "number",
+															"format": "double"
+														},
+														"age": {
+															"type": "number",
+															"format": "double"
+														},
+														"surname": {
+															"type": "string"
+														},
+														"name": {
+															"type": "string"
+														}
+													},
+													"required": [
+														"id",
+														"email",
+														"imageUri",
+														"role",
+														"phone",
+														"weight",
+														"age",
+														"surname",
+														"name"
+													],
+													"type": "object"
 												}
-											},
-											"required": [
-												"id",
-												"stat",
-												"email",
-												"progUri",
-												"imageUri",
-												"role",
-												"surname",
-												"name"
-											],
-											"type": "object"
+											]
 										},
 										{
 											"type": "string",
@@ -653,9 +855,6 @@
 												"email": {
 													"type": "string"
 												},
-												"progUri": {
-													"type": "string"
-												},
 												"imageUri": {
 													"type": "string"
 												},
@@ -684,7 +883,6 @@
 												"id",
 												"password",
 												"email",
-												"progUri",
 												"imageUri",
 												"role",
 												"phone",
@@ -737,76 +935,126 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"id": {
-											"type": "number",
-											"format": "double"
-										},
-										"stat": {
-											"items": {
-												"properties": {
-													"deadlift": {
-														"type": "number",
-														"format": "double"
+									"allOf": [
+										{
+											"properties": {
+												"stat": {
+													"items": {
+														"properties": {
+															"deadlift": {
+																"type": "number",
+																"format": "double"
+															},
+															"bench": {
+																"type": "number",
+																"format": "double"
+															},
+															"squat": {
+																"type": "number",
+																"format": "double"
+															},
+															"userId": {
+																"type": "number",
+																"format": "double"
+															},
+															"id": {
+																"type": "number",
+																"format": "double"
+															}
+														},
+														"required": [
+															"deadlift",
+															"bench",
+															"squat",
+															"userId",
+															"id"
+														],
+														"type": "object"
 													},
-													"bench": {
-														"type": "number",
-														"format": "double"
-													},
-													"squat": {
-														"type": "number",
-														"format": "double"
-													},
-													"userId": {
-														"type": "number",
-														"format": "double"
-													},
-													"id": {
-														"type": "number",
-														"format": "double"
-													}
+													"type": "array"
 												},
-												"required": [
-													"deadlift",
-													"bench",
-													"squat",
-													"userId",
-													"id"
-												],
-												"type": "object"
+												"progUri": {
+													"items": {
+														"properties": {
+															"userId": {
+																"type": "number",
+																"format": "double"
+															},
+															"fileUri": {
+																"type": "string"
+															},
+															"id": {
+																"type": "number",
+																"format": "double"
+															},
+															"name": {
+																"type": "string"
+															}
+														},
+														"required": [
+															"userId",
+															"fileUri",
+															"id",
+															"name"
+														],
+														"type": "object"
+													},
+													"type": "array"
+												}
 											},
-											"type": "array"
+											"required": [
+												"stat",
+												"progUri"
+											],
+											"type": "object"
 										},
-										"email": {
-											"type": "string"
-										},
-										"progUri": {
-											"type": "string"
-										},
-										"imageUri": {
-											"type": "string"
-										},
-										"role": {
-											"$ref": "#/components/schemas/_36_Enums.Role"
-										},
-										"surname": {
-											"type": "string"
-										},
-										"name": {
-											"type": "string"
+										{
+											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
+												},
+												"email": {
+													"type": "string"
+												},
+												"imageUri": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"id",
+												"email",
+												"imageUri",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name"
+											],
+											"type": "object"
 										}
-									},
-									"required": [
-										"id",
-										"stat",
-										"email",
-										"progUri",
-										"imageUri",
-										"role",
-										"surname",
-										"name"
-									],
-									"type": "object"
+									]
 								}
 							}
 						}
@@ -862,303 +1110,126 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"id": {
-											"type": "number",
-											"format": "double"
-										},
-										"stat": {
-											"items": {
-												"properties": {
-													"deadlift": {
-														"type": "number",
-														"format": "double"
+									"allOf": [
+										{
+											"properties": {
+												"stat": {
+													"items": {
+														"properties": {
+															"deadlift": {
+																"type": "number",
+																"format": "double"
+															},
+															"bench": {
+																"type": "number",
+																"format": "double"
+															},
+															"squat": {
+																"type": "number",
+																"format": "double"
+															},
+															"userId": {
+																"type": "number",
+																"format": "double"
+															},
+															"id": {
+																"type": "number",
+																"format": "double"
+															}
+														},
+														"required": [
+															"deadlift",
+															"bench",
+															"squat",
+															"userId",
+															"id"
+														],
+														"type": "object"
 													},
-													"bench": {
-														"type": "number",
-														"format": "double"
-													},
-													"squat": {
-														"type": "number",
-														"format": "double"
-													},
-													"userId": {
-														"type": "number",
-														"format": "double"
-													},
-													"id": {
-														"type": "number",
-														"format": "double"
-													}
+													"type": "array"
 												},
-												"required": [
-													"deadlift",
-													"bench",
-													"squat",
-													"userId",
-													"id"
-												],
-												"type": "object"
+												"progUri": {
+													"items": {
+														"properties": {
+															"userId": {
+																"type": "number",
+																"format": "double"
+															},
+															"fileUri": {
+																"type": "string"
+															},
+															"id": {
+																"type": "number",
+																"format": "double"
+															},
+															"name": {
+																"type": "string"
+															}
+														},
+														"required": [
+															"userId",
+															"fileUri",
+															"id",
+															"name"
+														],
+														"type": "object"
+													},
+													"type": "array"
+												}
 											},
-											"type": "array"
+											"required": [
+												"stat",
+												"progUri"
+											],
+											"type": "object"
 										},
-										"email": {
-											"type": "string"
-										},
-										"progUri": {
-											"type": "string"
-										},
-										"imageUri": {
-											"type": "string"
-										},
-										"role": {
-											"$ref": "#/components/schemas/_36_Enums.Role"
-										},
-										"surname": {
-											"type": "string"
-										},
-										"name": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"id",
-										"stat",
-										"email",
-										"progUri",
-										"imageUri",
-										"role",
-										"surname",
-										"name"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Utilisateur"
-				],
-				"security": [
-					{
-						"BearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				]
-			}
-		},
-		"/user/{id}/prog": {
-			"put": {
-				"operationId": "UpdateProg",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"id": {
-											"type": "number",
-											"format": "double"
-										},
-										"stat": {
-											"items": {
-												"properties": {
-													"deadlift": {
-														"type": "number",
-														"format": "double"
-													},
-													"bench": {
-														"type": "number",
-														"format": "double"
-													},
-													"squat": {
-														"type": "number",
-														"format": "double"
-													},
-													"userId": {
-														"type": "number",
-														"format": "double"
-													},
-													"id": {
-														"type": "number",
-														"format": "double"
-													}
+										{
+											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
 												},
-												"required": [
-													"deadlift",
-													"bench",
-													"squat",
-													"userId",
-													"id"
-												],
-												"type": "object"
-											},
-											"type": "array"
-										},
-										"email": {
-											"type": "string"
-										},
-										"progUri": {
-											"type": "string"
-										},
-										"imageUri": {
-											"type": "string"
-										},
-										"role": {
-											"$ref": "#/components/schemas/_36_Enums.Role"
-										},
-										"surname": {
-											"type": "string"
-										},
-										"name": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"id",
-										"stat",
-										"email",
-										"progUri",
-										"imageUri",
-										"role",
-										"surname",
-										"name"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Utilisateur"
-				],
-				"security": [
-					{
-						"BearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"multipart/form-data": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"statsFile": {
-										"type": "string",
-										"format": "binary"
-									}
-								},
-								"required": [
-									"statsFile"
-								]
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"operationId": "RemoveProg",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"id": {
-											"type": "number",
-											"format": "double"
-										},
-										"stat": {
-											"items": {
-												"properties": {
-													"deadlift": {
-														"type": "number",
-														"format": "double"
-													},
-													"bench": {
-														"type": "number",
-														"format": "double"
-													},
-													"squat": {
-														"type": "number",
-														"format": "double"
-													},
-													"userId": {
-														"type": "number",
-														"format": "double"
-													},
-													"id": {
-														"type": "number",
-														"format": "double"
-													}
+												"email": {
+													"type": "string"
 												},
-												"required": [
-													"deadlift",
-													"bench",
-													"squat",
-													"userId",
-													"id"
-												],
-												"type": "object"
+												"imageUri": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												}
 											},
-											"type": "array"
-										},
-										"email": {
-											"type": "string"
-										},
-										"progUri": {
-											"type": "string"
-										},
-										"imageUri": {
-											"type": "string"
-										},
-										"role": {
-											"$ref": "#/components/schemas/_36_Enums.Role"
-										},
-										"surname": {
-											"type": "string"
-										},
-										"name": {
-											"type": "string"
+											"required": [
+												"id",
+												"email",
+												"imageUri",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name"
+											],
+											"type": "object"
 										}
-									},
-									"required": [
-										"id",
-										"stat",
-										"email",
-										"progUri",
-										"imageUri",
-										"role",
-										"surname",
-										"name"
-									],
-									"type": "object"
+									]
 								}
 							}
 						}
@@ -1547,6 +1618,139 @@
 				},
 				"tags": [
 					"Stats"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/user/program/{id}": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"userId": {
+											"type": "number",
+											"format": "double"
+										},
+										"fileUri": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										},
+										"name": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"userId",
+										"fileUri",
+										"id",
+										"name"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Programmes"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"programFile": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"programFile"
+								]
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"userId": {
+											"type": "number",
+											"format": "double"
+										},
+										"fileUri": {
+											"type": "string"
+										},
+										"id": {
+											"type": "number",
+											"format": "double"
+										},
+										"name": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"userId",
+										"fileUri",
+										"id",
+										"name"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Programmes"
 				],
 				"security": [
 					{

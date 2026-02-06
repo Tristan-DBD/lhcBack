@@ -1,8 +1,9 @@
+/* eslint-disable quotes */
 import { z } from 'zod'
 import { positiveNumber } from './common'
 
 export const statsSchema = z.object({
-  userId: positiveNumber('UserId'),
+  userId: positiveNumber("L'id de l'utilisateur"),
   squat: positiveNumber('Squat'),
   bench: positiveNumber('Bench'),
   deadlift: positiveNumber('Deadlift'),

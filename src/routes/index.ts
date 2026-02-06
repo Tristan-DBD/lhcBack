@@ -10,7 +10,7 @@ const route = Router()
 
 route.use('/user', userRoute)
 route.use('/stats', statsRoute)
-route.use('/auth', authRoute)   
+route.use('/auth', authRoute)
 route.use('/course', courseRoute)
 route.use('/metric', metricRoute)
 route.use('/admin/health', healthRoute)

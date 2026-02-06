@@ -8,7 +8,11 @@ import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
-import { cacheMiddleware, invalidateCacheMiddleware, cachePatterns } from '../middleware/cache'
+import {
+  cacheMiddleware,
+  invalidateCacheMiddleware,
+  cachePatterns,
+} from '../middleware/cache'
 
 const router = Router()
 
@@ -26,7 +30,12 @@ router.post(
 
     switch (stats) {
       case 'ALREADY_EXIST':
-        return handlerResponse(res, 409, false, 'Cet utilisateur à déjà des stats ')
+        return handlerResponse(
+          res,
+          409,
+          false,
+          'Cet utilisateur à déjà des stats ',
+        )
       case 'USER_NOT_EXIST':
         return handlerResponse(res, 404, false, 'Utilisateur introuvable')
       default:
@@ -55,7 +64,7 @@ router.get(
   authorize('COACH'),
   cacheMiddleware('stat', {
     ttl: 180, // Cache de 3 minutes pour les stats individuelles
-    keyGenerator: (req) => `stat:${req.params.id}`
+    keyGenerator: (req) => `stat:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
     const stats = await ss.findById(Number(req.params.id))
@@ -80,7 +89,12 @@ router.put(
     const updated = await ss.update(userId, squat, bench, deadlift)
 
     if (updated == 'STATS_NOT_FOUND')
-      return handlerResponse(res, 404, false, "L'utilisateur n'a pas fiche de stats renseignée")
+      return handlerResponse(
+        res,
+        404,
+        false,
+        "L'utilisateur n'a pas fiche de stats renseignée",
+      )
 
     return handlerResponse(res, 200, true, updated)
   },

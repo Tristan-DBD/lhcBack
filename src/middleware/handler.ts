@@ -6,15 +6,28 @@ export function handlerResponse(
   status: number,
   success: boolean,
   json: any,
+  option?: {
+    field?: string
+  },
 ) {
   return res.status(status).json({
     success: success,
-    data: json,
+    data: [
+      {
+        field: option?.field,
+        message: json,
+      },
+    ],
     timestamp: new Date().toISOString(),
   })
 }
 
-export function globalErrorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+export function globalErrorHandler(
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   logger.error('Server error', {
     message: error.message,
     name: error.name,

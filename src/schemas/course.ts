@@ -1,8 +1,9 @@
+/* eslint-disable quotes */
 import { z } from 'zod'
 import { positiveNumber, validDate, validString } from './common'
 
 const courseSchema = z.object({
-  id: positiveNumber('Id'),
+  id: positiveNumber("L'id"),
   title: validString('Le titre', { min: 4, max: 100 }),
   maxParticipants: positiveNumber('Le nombre maximum de participant', {
     min: 1,
@@ -10,13 +11,13 @@ const courseSchema = z.object({
   }),
   startAt: validDate('La date de début'),
   description: validString('La description', { max: 1000 }),
-  coachId: positiveNumber('CoachId'),
+  coachId: positiveNumber("l'id du coach"),
   durationMinutes: positiveNumber('Le temps de la séance', { min: 1 }),
 })
 
 export const registerSchema = z.object({
-  userId: positiveNumber('UserId'),
-  courseId: positiveNumber('CourseId'),
+  userId: positiveNumber("l'id de l'utilisateur"),
+  courseId: positiveNumber("l'id de la séance"),
 })
 
 export const createCourseSchema = courseSchema.omit({ id: true })

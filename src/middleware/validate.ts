@@ -16,7 +16,9 @@ export default function validate(schema: ZodType) {
           message: err.message,
         }))
 
-        return handlerResponse(res, 400, false, formattedErrors)
+        return handlerResponse(res, 400, false, formattedErrors[0]!.message, {
+          field: formattedErrors[0]!.field,
+        })
       }
 
       // Autre type d'erreur

@@ -39,10 +39,10 @@ const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
         ? callback(null, true)
         : callback(new Error('Invalid image type'))
 
-    case 'statsFile':
+    case 'programFile':
       return statsAllowedTypes.includes(file.mimetype)
         ? callback(null, true)
-        : callback(new Error('Invalid stats file type'))
+        : callback(new Error('Invalid program file type'))
 
     default:
       return callback(new Error('Invalid field name'))
@@ -101,7 +101,7 @@ export class FileService {
     } catch (error) {
       logger.error('File upload error', {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       })
       throw error
     }
@@ -117,7 +117,7 @@ export class FileService {
       } catch (error) {
         logger.error('Local file delete error', {
           error: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined
+          stack: error instanceof Error ? error.stack : undefined,
         })
         throw error // Propager l'erreur pour que le test échoue correctement
       }
@@ -137,12 +137,15 @@ export class FileService {
       const { error } = await client.storage.from(bucketName).remove([fileUrl])
 
       if (error) {
-        logger.error('Supabase delete error', { error: error.message, stack: error.stack })
+        logger.error('Supabase delete error', {
+          error: error.message,
+          stack: error.stack,
+        })
       }
     } catch (error) {
       logger.error('File delete error', {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       })
     }
   }

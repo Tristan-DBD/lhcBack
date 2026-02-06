@@ -8,11 +8,16 @@ import { createUserSchema, partialUserSchema } from '../schemas/user'
 import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
+import programRoute from './program'
 import { rateLimiter } from '../middleware/rateLimiter'
-import { cacheMiddleware, invalidateCacheMiddleware, cachePatterns } from '../middleware/cache'
+import {
+  cacheMiddleware,
+  invalidateCacheMiddleware,
+  cachePatterns,
+} from '../middleware/cache'
 
 const router = Router()
-
+router.use('/program', programRoute)
 async function hashedPassword(password: string) {
   const hashed = await bcrypt.hash(password, Number(process.env.SALT_ROUND))
   return hashed
@@ -26,10 +31,12 @@ router.post(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } = req.body
-    const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG']
+    const { name, surname, age, weight, phone, email, password, role } =
+      req.body
+    const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG', 'ATHLETE_FULL']
 
-    const finalRole = role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
+    const finalRole =
+      role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
 
     const hashed = await hashedPassword(password)
     const user = await us.create(
@@ -49,7 +56,8 @@ router.post(
   },
 )
 
-router.post('/coach',
+router.post(
+  '/coach',
   rateLimiter(1, 1, { motif: 'register' }),
   validate(createUserSchema),
   authenticate,
@@ -74,7 +82,7 @@ router.post('/coach',
     if (user == 'ALREADY-EXIST')
       return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
     return handlerResponse(res, 201, true, user)
-  }
+  },
 )
 
 router.get(
@@ -97,7 +105,7 @@ router.get(
   authorize('PROFILE'),
   cacheMiddleware('users', {
     ttl: 600, // Cache de 10 minutes pour les profils individuels
-    keyGenerator: (req) => `users:${req.params.id}`
+    keyGenerator: (req) => `users:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
     const user = await us.findById(Number(req.params.id))
@@ -115,8 +123,7 @@ router.put(
   authorize('PROFILE'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, email, password, phone } =
-      req.body
+    const { name, surname, age, weight, email, password, phone } = req.body
     let hashed
     if (password == undefined) {
       hashed = null
@@ -158,10 +165,6 @@ router.delete(
 
     if (!user.imageUri.includes('default.png')) {
       await FileService.delete(user.imageUri)
-    }
-
-    if (user.progUri !== null) {
-      await FileService.delete(user.progUri)
     }
 
     return handlerResponse(res, 204, true, user)
@@ -217,56 +220,6 @@ router.delete(
 
     await us.resetImage(Number(req.params.id))
     return handlerResponse(res, 200, true, 'ok')
-  },
-)
-
-// gestion programme Utilisateur
-router.put(
-  '/:id/prog',
-  rateLimiter(60, 10, { motif: 'prog' }),
-  validate(idSchema),
-  authenticate,
-  upload.single('statsFile'),
-  authorize('COACH'),
-  invalidateCacheMiddleware([cachePatterns.users.all]),
-  async (req: Request, res: Response) => {
-    if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
-
-    const user = await us.findById(Number(req.params.id))
-    if (user == 'NOT-EXIST') {
-      return handlerResponse(res, 404, false, 'Utilisateur introuvable')
-    }
-    if (user.progUri) await FileService.delete(user.progUri)
-
-    const filePath = await FileService.save(req.file, 'prog')
-
-    const updated = await us.updateProg(Number(req.params.id), filePath)
-    return handlerResponse(res, 200, true, updated)
-  },
-)
-
-router.delete(
-  '/:id/prog',
-  rateLimiter(60, 10, { motif: 'prog' }),
-  validate(idSchema),
-  authenticate,
-  authorize('COACH'),
-  invalidateCacheMiddleware([cachePatterns.users.all]),
-  async (req: Request, res: Response) => {
-    const id = Number(req.params.id)
-
-    const user = await us.findById(id)
-    if (user == 'NOT-EXIST') {
-      return handlerResponse(res, 400, false, user)
-    }
-    if (user.progUri == null) {
-      return handlerResponse(res, 404, false, 'Aucun programme enregistré')
-    }
-
-    await FileService.delete(user.progUri)
-
-    const removeFile = await us.removeProg(id)
-    return handlerResponse(res, 200, true, removeFile)
   },
 )
 
