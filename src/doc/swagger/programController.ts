@@ -7,6 +7,7 @@ import {
   Tags,
   UploadedFile,
   Path,
+  Body,
 } from 'tsoa'
 import { ProgramService as ps } from '../../service/program'
 
@@ -27,11 +28,17 @@ export class ProgramController {
 
   @Delete('/:id')
   @Security('BearerAuth')
-  public async delete(@Path() id: number) {
-    const program = await ps.findByUser(id)
-    if (!program[0]) {
+  public async delete(@Path() id: number, @Body() body: { name: string }) {
+    const programs = await ps.findByUser(id)
+    if (!programs[0]) {
       throw new Error('Aucun programme trouvé pour cette utilisateur')
     }
-    return ps.delete(program[0].id)
+
+    const programToDelete = programs.find((p) => p.name === body.name)
+    if (!programToDelete) {
+      throw new Error('Aucun programme trouvé avec ce nom')
+    }
+
+    return ps.delete(programToDelete.id)
   }
 }

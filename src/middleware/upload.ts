@@ -51,7 +51,10 @@ const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
 
 // Middleware multer avec configuration conditionnelle
 export const upload = multer({
-  storage: process.env.NODE_ENV === 'prod' ? memoryStorage : localStorage,
+  storage:
+    process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === 'dev'
+      ? memoryStorage
+      : localStorage,
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
@@ -60,93 +63,95 @@ export const upload = multer({
 
 export class FileService {
   static async save(file: Express.Multer.File, folder: string) {
-    // En développement : stockage local
-    if (process.env.NODE_ENV !== 'prod') {
-      // Le fichier est déjà sauvegardé par multer.diskStorage
-      if (file.path) {
-        // Retourner le chemin relatif depuis le dossier public
-        const relativePath = file.path.replace(
-          path.join(process.cwd(), 'public'),
-          '',
-        )
-        return relativePath.replace(/\\/g, '/') // Normaliser les chemins Windows
-      }
-      throw new Error('Local file path not found')
-    }
+    // En développement et production : stockage Supabase
+    if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'prod') {
+      const bucketName = getBucketName()
+      const extension = file.originalname.split('.').pop()
+      const filename = `${Date.now()}.${extension}`
+      const filePath = `${folder}/${filename}`
 
-    // En production : stockage Supabase
-    const bucketName = getBucketName()
-    const extension = file.originalname.split('.').pop()
-    const filename = `${Date.now()}.${extension}`
-    const filePath = `${folder}/${filename}`
-
-    try {
-      const client = supabase()
-      if (!client) {
-        throw new Error('Supabase client not available in development')
-      }
-
-      const { error } = await client.storage
-        .from(bucketName)
-        .upload(filePath, file.buffer, {
-          contentType: file.mimetype,
-          upsert: true,
-        })
-
-      if (error) {
-        throw new Error(`Supabase upload error: ${error.message}`)
-      }
-
-      return `${filePath}`
-    } catch (error) {
-      logger.error('File upload error', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      })
-      throw error
-    }
-  }
-
-  static async delete(fileUrl: string) {
-    // En développement : suppression locale
-    if (process.env.NODE_ENV !== 'prod') {
       try {
-        const fullPath = path.join(process.cwd(), 'public', fileUrl)
-        await fs.unlink(fullPath)
-        logger.info('Local file deleted', { fullPath })
+        const client = supabase()
+        if (!client) {
+          throw new Error('Supabase client not available')
+        }
+
+        const { error } = await client.storage
+          .from(bucketName)
+          .upload(filePath, file.buffer, {
+            contentType: file.mimetype,
+            upsert: true,
+          })
+
+        if (error) {
+          throw new Error(`Supabase upload error: ${error.message}`)
+        }
+
+        return `${filePath}`
       } catch (error) {
-        logger.error('Local file delete error', {
+        logger.error('File upload error', {
           error: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
         })
-        throw error // Propager l'erreur pour que le test échoue correctement
+        throw error
+      }
+    }
+
+    // En test : stockage local
+    if (file.path) {
+      // Retourner le chemin relatif depuis le dossier public
+      const relativePath = file.path.replace(
+        path.join(process.cwd(), 'public'),
+        '',
+      )
+      return relativePath.replace(/\\/g, '/') // Normaliser les chemins Windows
+    }
+    throw new Error('Local file path not found')
+  }
+
+  static async delete(fileUrl: string) {
+    // En développement et production : suppression Supabase
+    if (process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'prod') {
+      try {
+        const client = supabase()
+        if (!client) {
+          throw new Error('Supabase client not available')
+        }
+
+        const bucketName = getBucketName()
+
+        const { error } = await client.storage
+          .from(bucketName)
+          .remove([fileUrl])
+
+        if (error) {
+          logger.error('Supabase delete error', {
+            error: error.message,
+            stack: error.stack,
+          })
+          throw error
+        }
+      } catch (error) {
+        logger.error('File delete error', {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        })
+        throw error
       }
       return
     }
 
-    // En production : suppression Supabase
+    // En test : suppression locale
     try {
-      const client = supabase()
-      if (!client) {
-        logger.error('Supabase client not available in development')
-        return
-      }
-
-      const bucketName = getBucketName()
-
-      const { error } = await client.storage.from(bucketName).remove([fileUrl])
-
-      if (error) {
-        logger.error('Supabase delete error', {
-          error: error.message,
-          stack: error.stack,
-        })
-      }
+      const fullPath = path.join(process.cwd(), 'public', fileUrl)
+      await fs.unlink(fullPath)
+      logger.info('Local file deleted', { fullPath })
     } catch (error) {
-      logger.error('File delete error', {
+      logger.error('Local file delete error', {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       })
+      throw error // Propager l'erreur pour que le test échoue correctement
     }
   }
 }
