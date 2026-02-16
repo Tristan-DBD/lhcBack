@@ -68,7 +68,7 @@ server.use(requestLogger)
 server.use(errorLogger)
 
 server.use('/favicon.ico', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../public', 'logoLhc.png'))
+  res.sendFile(path.join(__dirname, '../public', 'logoLhc.png'))
 })
 
 // redirect vers le swagger
