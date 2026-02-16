@@ -32,7 +32,13 @@ server.use(
         styleSrc: ['\'self\'', '\'unsafe-inline\''],
         scriptSrc: ['\'self\''],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", `http://${yourIp}`, `https://${yourIp}`],
+        connectSrc: [
+          "'self'",
+          `http://${yourIp}`,
+          `https://${yourIp}`,
+          `http://${yourIp}:3000`,
+          `https://${yourIp}:3000`,
+        ],
       },
     },
   }),
@@ -40,7 +46,15 @@ server.use(
 
 server.use(
   cors({
-    origin: ['http://localhost:3000', `http://${yourIp}`, `https://${yourIp}`],
+    origin: [
+      'http://localhost:3000',
+      `http://${yourIp}`,
+      `https://${yourIp}`,
+      `http://${yourIp}:3000`,
+      `https://${yourIp}:3000`,
+      `http://${yourIp}:4000`,
+      `https://${yourIp}:4000`,
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -53,7 +67,7 @@ server.use(requestLogger)
 
 server.use(errorLogger)
 
-server.get('/favicon.ico', (req: Request, res: Response) => {
+server.use('/favicon.ico', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../../public', 'logoLhc.png'))
 })
 
@@ -107,7 +121,7 @@ async function startServer() {
     logger.warn('Redis connection failed, continuing without cache:', error)
   }
 
-  server.listen(port, () => {
+  server.listen(port, '0.0.0.0', () => {
     logger.info(`Server is running on port ${port}`, {
       port,
       env: process.env.NODE_ENV,

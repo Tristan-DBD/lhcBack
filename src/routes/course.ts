@@ -84,6 +84,7 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.courses.all]),
   async (req: Request, res: Response) => {
     const exist = await cs.findById(Number(req.params.id))
     if (exist == 'NOT-EXIST') {
@@ -136,6 +137,26 @@ router.post('/unregister',
       default:
         return handlerResponse(res, 200, true, result)
     }
+  },
+)
+
+router.get(
+  '/registrations/:id',
+  rateLimiter(1, 10, { motif: 'get-registrations' }),
+  validate(idSchema),
+  authenticate,
+  authorize('COACH'),
+  async (req: Request, res: Response) => {
+    const courseId = Number(req.params.id)
+    
+    // Vérifier si le cours existe
+    const course = await cs.findById(courseId)
+    if (!course || course === 'NOT-EXIST') {
+      return handlerResponse(res, 404, false, 'Cours non trouvé')
+    }
+    
+    const registrations = await cs.getRegistrations(courseId)
+    return handlerResponse(res, 200, true, registrations)
   },
 )
 

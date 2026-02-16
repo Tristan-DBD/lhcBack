@@ -82,7 +82,7 @@ router.put(
   validate(partialStatsSchema),
   authenticate,
   authorize('COACH'),
-  invalidateCacheMiddleware([cachePatterns.stats.all]),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
 
@@ -106,7 +106,7 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('COACH'),
-  invalidateCacheMiddleware([cachePatterns.stats.all]),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
     const exist = await ss.findById(Number(req.params.id))
     if (exist == null) {

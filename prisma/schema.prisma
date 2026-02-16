@@ -40,9 +40,9 @@ model Stats {
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
-  squat    Int
-  bench    Int
-  deadlift Int
+  squat    Float
+  bench    Float
+  deadlift Float
 }
 
 model Courses {

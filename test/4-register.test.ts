@@ -31,8 +31,8 @@ describe('REGISTER/UNREGISTER', () => {
             })
 
         coach = {
-            id: coachRes.body.data.id,
-            token: await createToken(coachRes.body.data.id, 'COACH', 'coach@test.com')
+            id: coachRes.body.data[0].message.id,
+            token: await createToken(coachRes.body.data[0].message.id, 'COACH', 'coach@test.com')
         }
 
         // Créer 5 athlètes pour tester la capacité
@@ -51,8 +51,8 @@ describe('REGISTER/UNREGISTER', () => {
                     password: 'password123',
                 })
             athletes.push({
-                id: res.body.data.id,
-                token: await createToken(res.body.data.id, 'ATHLETE_CO', `athlete${i}@test.com`)
+                id: res.body.data[0].message.id,
+                token: await createToken(res.body.data[0].message.id, 'ATHLETE_CO', `athlete${i}@test.com`)
             })
         }
 
@@ -68,7 +68,7 @@ describe('REGISTER/UNREGISTER', () => {
                 durationMinutes: 60,
                 description: 'Cours pour tester la capacité'
             })
-        limitedCourseId = courseRes.body.data.id
+        limitedCourseId = courseRes.body.data[0].message.id
     })
 
     describe('REGISTER (POST /api/course/register)', () => {
@@ -88,7 +88,7 @@ describe('REGISTER/UNREGISTER', () => {
                 .send({ userId: athletes[0].id, courseId: limitedCourseId })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Déjà inscrit au cours')
+            expect(res.body.data[0].message).toBe('Déjà inscrit au cours')
         })
 
         it('COURS COMPLET -> 400', async () => {
@@ -108,7 +108,7 @@ describe('REGISTER/UNREGISTER', () => {
                 .send({ userId: athletes[3].id, courseId: limitedCourseId })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Cours complet')
+            expect(res.body.data[0].message).toBe('Cours complet')
         })
 
         it('COURS INEXISTANT -> 404', async () => {
@@ -118,7 +118,7 @@ describe('REGISTER/UNREGISTER', () => {
                 .send({ userId: athletes[4].id, courseId: 99999 })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Cours non trouvé')
+            expect(res.body.data[0].message).toBe('Cours non trouvé')
         })
 
         it('COACH -> Unauthorize', async () => {
@@ -155,7 +155,7 @@ describe('REGISTER/UNREGISTER', () => {
                 .send({ userId: athletes[0].id, courseId: limitedCourseId })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Non inscrit au cours')
+            expect(res.body.data[0].message).toBe('Non inscrit au cours')
         })
 
         it('COURS INEXISTANT -> 404', async () => {
@@ -165,7 +165,7 @@ describe('REGISTER/UNREGISTER', () => {
                 .send({ userId: athletes[1].id, courseId: 99999 })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Cours non trouvé')
+            expect(res.body.data[0].message).toBe('Cours non trouvé')
         })
 
         it('COACH -> Authorized', async () => {

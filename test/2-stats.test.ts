@@ -3,44 +3,6 @@ import request from 'supertest'
 import { resetDb } from './resetDb'
 import { createToken } from '../src/routes/login'
 
-beforeAll(async () => {
-  await resetDb()
-  const createdCoach = await request(server)
-    .post('/api/user')
-    .set('Authorization', `Bearer ${coachToken}`)
-    .send({
-      name: 'Test',
-      surname: 'Testest',
-      age: 23,
-      weight: 85,
-      phone: '0601020304',
-      email: 'coach@gmail.com',
-      password: '1234',
-      role: 'COACH',
-    })
-  coachId = createdCoach.body.data.id
-
-  // Création des utilisateurs
-  const createdAth = await request(server)
-    .post('/api/user')
-    .set('Authorization', `Bearer ${coachToken}`)
-    .send({
-      name: 'Test',
-      surname: 'Testest',
-      age: 23,
-      weight: 85,
-      phone: '0601020304',
-      email: 'ahtlete@gmail.com',
-      password: '1234',
-      role: 'ATHLETE_PROG',
-    })
-  athleteId = createdAth.body.data.id
-})
-
-afterAll(async () => {
-  await resetDb()
-})
-
 let coachId: number
 let athleteId: number
 let coachStatId: number
@@ -53,7 +15,47 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
     coachToken = await createToken(1, 'COACH', 'email@gmail.com')
     athleteToken = await createToken(2, 'ATHLETE_PROG', 'email@gmail.com')
   }
-  token()
+  
+  beforeAll(async () => {
+    await token()
+    await resetDb()
+    const createdCoach = await request(server)
+      .post('/api/user')
+      .set('Authorization', `Bearer ${coachToken}`)
+      .send({
+        name: 'Test',
+        surname: 'Testest',
+        age: 23,
+        weight: 85,
+        phone: '0601020304',
+        email: 'coach@gmail.com',
+        password: '1234',
+        role: 'COACH',
+      })
+    
+    coachId = createdCoach.body.data[0].message.id
+
+    // Création des utilisateurs
+    const createdAth = await request(server)
+      .post('/api/user')
+      .set('Authorization', `Bearer ${coachToken}`)
+      .send({
+        name: 'Test',
+        surname: 'Testest',
+        age: 23,
+        weight: 85,
+        phone: '0601020304',
+        email: 'ahtlete@gmail.com',
+        password: '1234',
+        role: 'ATHLETE_PROG',
+      })
+    athleteId = createdAth.body.data[0].message.id
+  })
+  
+  afterAll(async () => {
+    await resetDb()
+  })
+  
   describe('CREATE (POST /api/stats)', () => {
     it('COACH -> Authorize', async () => {
       const res = await request(server)
@@ -66,7 +68,7 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
           deadlift: 200,
         })
 
-      coachStatId = res.body.data.id
+      coachStatId = res.body.data[0].message.id
       expect(res.body.success).toBe(true)
     })
     it('ATHLETE -> Unauthorize', async () => {
@@ -92,7 +94,7 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
           deadlift: 200,
         })
 
-      athStatId = ATH.body.data.id
+      athStatId = ATH.body.data[0].message.id
     })
   })
   describe('GET ALL (/api/stats)', () => {
@@ -138,7 +140,7 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
         })
 
       expect(res.body.success).toBe(true)
-      expect(res.body.data.squat).toBe(99)
+      expect(res.body.data[0].message.squat).toBe(99)
     })
     it('ATHLETE -> Unauthorize', async () => {
       const res = await request(server)

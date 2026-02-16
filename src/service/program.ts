@@ -23,4 +23,10 @@ export const ProgramService = {
       where: { id },
     })
   },
+
+  async deleteAll(userId: number) {
+    return await prisma.program.deleteMany({
+      where: { userId },
+    })
+  },
 }

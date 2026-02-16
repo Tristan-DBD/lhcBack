@@ -20,7 +20,7 @@ export async function createToken(id: number, role: Role, email: string) {
 
 router.post(
   '/login',
-  rateLimiter(1, 20, { motif: 'login', skipSuccessful: true }),
+  rateLimiter(1, 5, { motif: 'login', skipSuccessful: true }),
   validate(loginSchema),
   async (req: Request, res: Response) => {
     const { email, password } = req.body
@@ -43,7 +43,7 @@ router.post(
 
 router.post(
   '/register',
-  rateLimiter(60, 3, { motif: 'register' }),
+  rateLimiter(60, 3, { motif: 'register', skipSuccessful: true }),
   validate(loginSchema),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, phone, email, password, role } =
