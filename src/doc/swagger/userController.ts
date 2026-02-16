@@ -72,6 +72,12 @@ export class UserController {
     return us.findById(id)
   }
 
+  @Get('/get-coach')
+  @Security('BearerAuth')
+  public async findAllCoach() {
+    return us.findAllCoach()
+  }
+
   @Put('/{id}')
   @Security('BearerAuth')
   @Consumes('application/json')

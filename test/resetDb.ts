@@ -1,6 +1,7 @@
 import prisma from '../src/db-config'
 
 async function resetUserTable() {
+  await prisma.program.deleteMany()
   await prisma.user.deleteMany()
 }
 
@@ -21,4 +22,8 @@ export async function resetDb() {
   await resetCourseTable()
   await resetStatTable()
   await resetUserTable()
+}
+
+async function resetProgramTable() {
+  await prisma.program.deleteMany()
 }

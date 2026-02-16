@@ -41,6 +41,22 @@ export const UserService = {
     return user
   },
 
+  async findAllCoach(){
+    const list = await prisma.user.findMany({
+      where: {
+        role: Role.COACH
+      },
+      omit: {
+        password: true,
+      },
+      include: {
+        stat: true,
+        progUri: true,
+      },
+    })
+    return list
+  },
+
   async findAll() {
     const user = await prisma.user.findMany({
       omit: {
@@ -87,7 +103,10 @@ export const UserService = {
   async findByEmailWithPassword(email: string) {
     const user = await prisma.user.findFirst({
       where: { email: email },
-      include: { stat: true },
+      include: { 
+        stat: true,
+        progUri: true 
+      },
     })
     if (user == null) return 'NOT-EXIST'
     return user

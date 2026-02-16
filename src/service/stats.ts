@@ -36,9 +36,9 @@ export const statService = {
 
   async update(userId: number, squat: number, bench: number, deadlift: number) {
     const data = {
-      ...(squat && { squat: squat }),
-      ...(bench && { bench: bench }),
-      ...(deadlift && { deadlift: deadlift }),
+      ...(squat !== undefined && { squat: squat }),
+      ...(bench !== undefined && { bench: bench }),
+      ...(deadlift !== undefined && { deadlift: deadlift }),
     }
 
     const stats = await this.findByUserId(userId)

@@ -34,7 +34,7 @@ describe('AUTHENTICATION', () => {
                 role: 'COACH'
             })
 
-        coachUser = createRes.body.data
+        coachUser = createRes.body.data[0].message
         coachToken = await createToken(coachUser.id, coachUser.role, coachUser.email)
     })
 
@@ -59,7 +59,7 @@ describe('AUTHENTICATION', () => {
                 })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Email ou mot de passe incorect')
+            expect(res.body.data[0].message).toBe('Email ou mot de passe incorect')
         })
 
         it('ERROR -> Invalid password', async () => {
@@ -71,7 +71,7 @@ describe('AUTHENTICATION', () => {
                 })
 
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Email ou mot de passe incorect')
+            expect(res.body.data[0].message).toBe('Email ou mot de passe incorect')
         })
 
         it('ERROR -> Missing email', async () => {
@@ -166,16 +166,16 @@ describe('AUTHENTICATION', () => {
 
             expect(res.status).toBe(200)
             expect(res.body.success).toBe(true)
-            expect(res.body.data).toBeDefined()
-            expect(typeof res.body.data).toBe('string') // JWT token
+            expect(res.body.data[0].message).toBeDefined()
+            expect(typeof res.body.data[0].message).toBe('string') // JWT token
 
             // Vérifier que le token est valide en le décodant
-            const tokenParts = res.body.data.split('.')
+            const tokenParts = res.body.data[0].message.split('.')
             if (tokenParts.length === 3) {
                 const decoded = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString())
                 expect(decoded.email).toBe(newUser.email)
             }
-            expect(res.body.data.password).toBeUndefined() // Password shouldn't be returned
+            expect(res.body.data[0].message.password).toBeUndefined() // Password shouldn't be returned
         })
 
         it('ERROR -> Duplicate email', async () => {
@@ -196,7 +196,7 @@ describe('AUTHENTICATION', () => {
 
             expect(res.status).toBe(409)
             expect(res.body.success).toBe(false)
-            expect(res.body.data).toBe('Utilisateur déjà existant')
+            expect(res.body.data[0].message).toBe('Utilisateur déjà existant')
         })
 
         it('ERROR -> Invalid email format', async () => {

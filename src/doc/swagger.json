@@ -926,6 +926,82 @@
 				]
 			}
 		},
+		"/user/get-coach": {
+			"get": {
+				"operationId": "FindAllCoach",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"properties": {
+											"id": {
+												"type": "number",
+												"format": "double"
+											},
+											"password": {
+												"type": "string"
+											},
+											"email": {
+												"type": "string"
+											},
+											"imageUri": {
+												"type": "string"
+											},
+											"role": {
+												"$ref": "#/components/schemas/_36_Enums.Role"
+											},
+											"phone": {
+												"type": "string"
+											},
+											"weight": {
+												"type": "number",
+												"format": "double"
+											},
+											"age": {
+												"type": "number",
+												"format": "double"
+											},
+											"surname": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"required": [
+											"id",
+											"password",
+											"email",
+											"imageUri",
+											"role",
+											"phone",
+											"weight",
+											"age",
+											"surname",
+											"name"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
 		"/user/{id}/profile-image": {
 			"put": {
 				"operationId": "ImageUpdate",
@@ -2443,6 +2519,69 @@
 						}
 					}
 				}
+			}
+		},
+		"/course/registrations/{courseId}": {
+			"get": {
+				"operationId": "GetRegistrations",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"properties": {
+											"courseId": {
+												"type": "number",
+												"format": "double"
+											},
+											"createdAt": {
+												"type": "string",
+												"format": "date-time"
+											},
+											"userId": {
+												"type": "number",
+												"format": "double"
+											},
+											"id": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"courseId",
+											"createdAt",
+											"userId",
+											"id"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cours Collectifs"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "courseId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/auth/login": {

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx dotenv-cli -e .env.dev -- nodemon",
     "prod": "npx dotenv-cli -e .env.prod -- ts-node src/index.ts",
-    "test": "npx dotenv-cli -e .env.dev -- jest --runInBand --forceExit",
+    "test": "npx dotenv-cli -e .env.test -- jest --runInBand --forceExit",
     "test:prod": "npx dotenv-cli -e .env.prod -- jest --runInBand --forceExit --coverage",
     "test:coverage": "npx dotenv-cli -e .env.dev -- jest --runInBand --forceExit --coverage --coverageReporters=html --coverageReporters=text",
     "test:coverage:ci": "npx dotenv-cli -e .env.test -- jest --runInBand --forceExit --coverage --coverageReporters=html --coverageReporters=text",

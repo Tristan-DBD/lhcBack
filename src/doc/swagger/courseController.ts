@@ -73,4 +73,10 @@ export class CourseController {
   public async unregister(@Body() body: { userId: number; courseId: number }) {
     return cs.unregister(body.userId, body.courseId)
   }
+
+  @Get('/registrations/{courseId}')
+  @Security('BearerAuth')
+  public async getRegistrations(@Path() courseId: number) {
+    return cs.getRegistrations(courseId)
+  }
 }

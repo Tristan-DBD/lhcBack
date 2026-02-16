@@ -4,7 +4,7 @@ import { resetDb } from './resetDb'
 import { createToken } from '../src/routes/login'
 
 beforeAll(async () => {
-  resetDb()
+  await resetDb()
 })
 
 describe('Test CRUD pour les cours', () => {
@@ -48,8 +48,8 @@ describe('Test CRUD pour les cours', () => {
         role: 'ATHLETE_CO',
       })
 
-    coachTestId = coachRes.body.data.id
-    athleteTestId = athleteRes.body.data.id
+    coachTestId = coachRes.body.data[0].message.id
+    athleteTestId = athleteRes.body.data[0].message.id
   })
 
   describe('CREATE (POST /api/course)', () => {
@@ -67,7 +67,7 @@ describe('Test CRUD pour les cours', () => {
         })
 
       expect(res.body.success).toBe(true)
-      courseTestId = res.body.data.id
+      courseTestId = res.body.data[0].message.id
     })
 
     it('ATHLETE -> Unauthorize', async () => {
@@ -109,7 +109,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(true)
-      expect(Array.isArray(res.body.data)).toBe(true)
+      expect(Array.isArray(res.body.data[0].message)).toBe(true)
     })
 
     it('ATHLETE -> Authorize', async () => {
@@ -118,7 +118,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${athleteToken}`)
 
       expect(res.body.success).toBe(true)
-      expect(Array.isArray(res.body.data)).toBe(true)
+      expect(Array.isArray(res.body.data[0].message)).toBe(true)
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
@@ -135,7 +135,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(true)
-      expect(res.body.data.id).toBe(courseTestId)
+      expect(res.body.data[0].message.id).toBe(courseTestId)
     })
 
     it('ATHLETE -> Authorize', async () => {
@@ -144,7 +144,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${athleteToken}`)
 
       expect(res.body.success).toBe(true)
-      expect(res.body.data.id).toBe(courseTestId)
+      expect(res.body.data[0].message.id).toBe(courseTestId)
     })
 
     it('COURSE NOT FOUND -> 404', async () => {
@@ -153,7 +153,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(false)
-      expect(res.body.data).toBe('Cours non trouvé')
+      expect(res.body.data[0].message).toBe('Cours non trouvé')
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
@@ -173,7 +173,7 @@ describe('Test CRUD pour les cours', () => {
         })
 
       expect(res.body.success).toBe(true)
-      expect(res.body.data.title).toBe('Course modifiée coach')
+      expect(res.body.data[0].message.title).toBe('Course modifiée coach')
     })
 
     it('ATHLETE -> Unauthorize', async () => {
@@ -196,7 +196,7 @@ describe('Test CRUD pour les cours', () => {
         })
 
       expect(res.body.success).toBe(false)
-      expect(res.body.data).toBe('Cours non trouvé')
+      expect(res.body.data[0].message).toBe('Cours non trouvé')
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
@@ -225,7 +225,7 @@ describe('Test CRUD pour les cours', () => {
           coachId: coachTestId,
         })
 
-      const courseIdToDelete = createRes.body.data.id
+      const courseIdToDelete = createRes.body.data[0].message.id
 
       const res = await request(server)
         .delete(`/api/course/${courseIdToDelete}`)
@@ -248,12 +248,44 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(false)
-      expect(res.body.data).toBe('Cours non trouvé')
+      expect(res.body.data[0].message).toBe('Cours non trouvé')
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
       const res = await request(server).delete(`/api/course/${courseTestId}`)
 
+      expect(res.status).toBe(401)
+    })
+  })
+
+  describe('GET REGISTRATIONS (GET /api/course/registrations/:id)', () => {
+    it('COACH -> Authorize', async () => {
+      const res = await request(server)
+        .get(`/api/course/registrations/${courseTestId}`)
+        .set('Authorization', `Bearer ${coachToken}`)
+
+      expect(res.body.success).toBe(true)
+      expect(Array.isArray(res.body.data[0].message)).toBe(true)
+    })
+
+    it('ATHLETE -> Unauthorize', async () => {
+      const res = await request(server)
+        .get(`/api/course/registrations/${courseTestId}`)
+        .set('Authorization', `Bearer ${athleteToken}`)
+
+      expect(res.status).toBe(403)
+    })
+
+    it('COURSE NOT FOUND -> 404', async () => {
+      const res = await request(server)
+        .get('/api/course/registrations/99999')
+        .set('Authorization', `Bearer ${coachToken}`)
+
+      expect(res.status).toBe(404)
+    })
+
+    it('NO TOKEN -> Unauthorized', async () => {
+      const res = await request(server).get(`/api/course/registrations/${courseTestId}`)
       expect(res.status).toBe(401)
     })
   })

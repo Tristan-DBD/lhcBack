@@ -15,6 +15,7 @@ import {
   invalidateCacheMiddleware,
   cachePatterns,
 } from '../middleware/cache'
+import { ProgramService } from '../service/program'
 
 const router = Router()
 router.use('/program', programRoute)
@@ -58,7 +59,7 @@ router.post(
 
 router.post(
   '/coach',
-  rateLimiter(1, 1, { motif: 'register' }),
+  rateLimiter(60, 3, { motif: 'register', skipSuccessful: true }),
   validate(createUserSchema),
   authenticate,
   authorize('ADMIN'),
@@ -96,6 +97,12 @@ router.get(
     return handlerResponse(res, 200, true, users)
   },
 )
+
+router.get('/get-coach', rateLimiter(1, 60, { motif: 'get' }), authenticate, authorize('COACH'), async (req: Request, res: Response) => {
+  const users = await us.findAllCoach()
+  if(users == null) return handlerResponse(res, 404, false, 'Aucun coach trouvé')
+  return handlerResponse(res, 200, true, users)
+})
 
 router.get(
   '/:id',
@@ -157,6 +164,11 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
+
+    const deleteAllPrograms = await ProgramService.deleteAll(Number(req.params.id))
+    console.log(deleteAllPrograms)
+
+
     const user = await us.delete(Number(req.params.id))
 
     if (user == 'NOT-EXIST') {

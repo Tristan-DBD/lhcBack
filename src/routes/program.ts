@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { FileService, upload } from '../middleware/upload'
 import { handlerResponse } from '../middleware/handler'
-import { authenticate } from '../middleware/auth'
+import { authenticate, AuthRequest } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
 import { ProgramService } from '../service/program'
@@ -15,13 +15,13 @@ const router = Router()
 // Créer un programme pour un utilisateur
 router.post(
   '/:id',
-  rateLimiter(1, 10, { motif: 'program' }),
+  rateLimiter(1, 20, { motif: 'program' }),
   validate(idSchema),
   authenticate,
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   upload.single('programFile'),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const userId = Number(req.params.id)
 
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
@@ -37,14 +37,13 @@ router.post(
 
 router.get(
   '/:id',
-  rateLimiter(1, 10, { motif: 'program' }),
+  rateLimiter(1, 20, { motif: 'program' }),
   validate(idSchema),
   authenticate,
   authorize('PROG'),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const userId = Number(req.params.id)
     const program = await ProgramService.findByUser(userId)
-    console.log(program)
     return handlerResponse(res, 200, true, program)
   },
 )
@@ -52,12 +51,12 @@ router.get(
 // Supprimer un programme
 router.delete(
   '/:id',
-  rateLimiter(1, 10, { motif: 'program' }),
+  rateLimiter(1, 20, { motif: 'program' }),
   validate(deleteProgramSchema),
   authenticate,
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const userId = Number(req.params.id)
     const { name } = req.body
 
@@ -67,7 +66,7 @@ router.delete(
         res,
         404,
         false,
-        'Aucun programme trouvé pour cette utilisateur',
+        'Aucun programme trouvé pour cet utilisateur',
       )
     }
 
@@ -88,6 +87,36 @@ router.delete(
 
     await ProgramService.delete(programToDelete.id)
     return handlerResponse(res, 200, true, 'Programme supprimé')
+  },
+)
+
+// Mettre à jour un programme pour un utilisateur
+router.put(
+  '/:id',
+  rateLimiter(1, 10, { motif: 'program' }),
+  validate(idSchema),
+  authenticate,
+  authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.users.all]),
+  upload.single('programFile'),
+  async (req: AuthRequest, res: Response) => {
+    const userId = Number(req.params.id)
+    const loggedInUserId = req.user!.id
+    const userRole = req.user!.role
+
+    // Vérifier que l'athlete ne modifie que son propre programme
+    if (userRole === 'ATHLETE_PROG' && userId.toString() !== loggedInUserId) {
+      return handlerResponse(res, 403, false, 'Forbidden')
+    }
+
+    if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
+
+    const filePath = await FileService.save(req.file, 'prog')
+
+    const name = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
+    const program = await ProgramService.create(userId, name, filePath)
+
+    return handlerResponse(res, 201, true, program)
   },
 )
 

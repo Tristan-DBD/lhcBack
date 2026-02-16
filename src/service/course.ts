@@ -53,7 +53,19 @@ export const coursesService = {
     })
     return course
   },
+  async deleteAllRegistrations(courseId: number) {
+    const result = await prisma.registration.deleteMany({
+      where: {
+        courseId: courseId,
+      }
+    })
+    return result
+  },
   async delete(id: number) {
+    // Supprime d'abord toutes les inscriptions au cours
+    await this.deleteAllRegistrations(id)
+    
+    // Puis supprime le cours
     const course = await prisma.courses.delete({
       where: {
         id: id,
@@ -126,5 +138,13 @@ export const coursesService = {
       }
     })
     return registration
+  },
+  async getRegistrations(courseId: number) {
+    const registrations = await prisma.registration.findMany({
+      where: {
+        courseId
+      }
+    })
+    return registrations
   }
 }
