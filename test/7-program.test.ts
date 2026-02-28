@@ -22,8 +22,8 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
 
   beforeAll(async () => {
     // Générer les tokens
-    coachToken = await createToken(1, 'COACH', 'coach@test.com')
-    athleteToken = await createToken(2, 'ATHLETE_PROG', 'athlete@test.com')
+    coachToken = await createToken(1, 'COACH', 'coachuser')
+    athleteToken = await createToken(2, 'ATHLETE_PROG', 'athleteuser')
 
     // Créer les utilisateurs de test
     const coachRes = await request(server)
@@ -35,8 +35,8 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
         age: 30,
         weight: 80,
         phone: '0601020304',
-        email: 'coach@test.com',
-        password: 'password123',
+        username: 'coachuser',
+        password: '123456',
         role: 'COACH',
       })
 
@@ -49,8 +49,8 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
         age: 25,
         weight: 70,
         phone: '0601020305',
-        email: 'athlete@test.com',
-        password: 'password123',
+        username: 'athleteuser',
+        password: '123456',
         role: 'ATHLETE_PROG',
       })
 
@@ -76,7 +76,7 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
       const res = await request(server)
         .post(`/api/user/program/${athleteTestId}`)
         .set('Authorization', `Bearer ${athleteToken}`)
-        // Pas de fichier attaché
+      // Pas de fichier attaché
 
       expect(res.status).toBe(403)
     })
@@ -85,16 +85,17 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
       const res = await request(server)
         .post(`/api/user/program/${athleteTestId}`)
         .set('Authorization', `Bearer ${coachToken}`)
-        // Pas de fichier attaché
+      // Pas de fichier attaché
 
       expect(res.body.success).toBe(false)
       expect(res.body.data[0].message).toBe('Fichier manquant')
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
-      const res = await request(server)
-        .post(`/api/user/program/${athleteTestId}`)
-        // Pas de token ni de fichier
+      const res = await request(server).post(
+        `/api/user/program/${athleteTestId}`,
+      )
+      // Pas de token ni de fichier
 
       expect(res.status).toBe(401)
     })
@@ -121,8 +122,8 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
 
     it('ATHLETE_CO -> Unauthorize', async () => {
       // Créer un athlete ATHLETE_CO
-      const athleteCoToken = await createToken(3, 'ATHLETE_CO', 'athleteco@test.com')
-      
+      const athleteCoToken = await createToken(3, 'ATHLETE_CO', 'athletecouser')
+
       const res = await request(server)
         .get(`/api/user/program/${athleteTestId}`)
         .set('Authorization', `Bearer ${athleteCoToken}`)
@@ -131,7 +132,9 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
-      const res = await request(server).get(`/api/user/program/${athleteTestId}`)
+      const res = await request(server).get(
+        `/api/user/program/${athleteTestId}`,
+      )
       expect(res.status).toBe(401)
     })
   })
@@ -180,7 +183,9 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
         .send({ name: 'nonexistentprogram' })
 
       expect(res.body.success).toBe(false)
-      expect(res.body.data[0].message).toBe('Aucun programme trouvé pour cet utilisateur')
+      expect(res.body.data[0].message).toBe(
+        'Aucun programme trouvé pour cet utilisateur',
+      )
     })
 
     it('NO TOKEN -> Unauthorized', async () => {

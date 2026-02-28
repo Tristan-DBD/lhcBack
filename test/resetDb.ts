@@ -22,6 +22,7 @@ export async function resetDb() {
   await resetCourseTable()
   await resetStatTable()
   await resetUserTable()
+  await resetProgramTable()
 }
 
 async function resetProgramTable() {

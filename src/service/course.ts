@@ -57,14 +57,14 @@ export const coursesService = {
     const result = await prisma.registration.deleteMany({
       where: {
         courseId: courseId,
-      }
+      },
     })
     return result
   },
   async delete(id: number) {
     // Supprime d'abord toutes les inscriptions au cours
     await this.deleteAllRegistrations(id)
-    
+
     // Puis supprime le cours
     const course = await prisma.courses.delete({
       where: {
@@ -74,23 +74,23 @@ export const coursesService = {
     return course
   },
   async register(userId: number, courseId: number) {
-
     // vérifie si le cours existe
     const course = await prisma.courses.findUnique({
       where: {
         id: courseId,
-      }
+      },
     })
     if (course == null) return 'NOT-EXIST'
 
     // vérifie si déjà inscrit
     const existingRegistration = await prisma.registration.findUnique({
       where: {
-        userId_courseId: {  // clé unique composite
+        userId_courseId: {
+          // clé unique composite
           userId: userId,
-          courseId: courseId
-        }
-      }
+          courseId: courseId,
+        },
+      },
     })
     if (existingRegistration != null) return 'ALREADY-REGISTERED'
 
@@ -98,7 +98,7 @@ export const coursesService = {
     const currentRegistration = await prisma.registration.count({
       where: {
         courseId: courseId,
-      }
+      },
     })
     if (currentRegistration >= course.maxParticipants) return 'FULL'
 
@@ -107,7 +107,7 @@ export const coursesService = {
       data: {
         userId: userId,
         courseId: courseId,
-      }
+      },
     })
     return registration
   },
@@ -115,7 +115,7 @@ export const coursesService = {
     const course = await prisma.courses.findUnique({
       where: {
         id: courseId,
-      }
+      },
     })
     if (course == null) return 'NOT-EXIST'
 
@@ -123,28 +123,28 @@ export const coursesService = {
       where: {
         userId_courseId: {
           userId: userId,
-          courseId: courseId
-        }
-      }
+          courseId: courseId,
+        },
+      },
     })
     if (existingRegistration == null) return 'NOT-REGISTERED'
-    
+
     const registration = await prisma.registration.delete({
       where: {
         userId_courseId: {
           userId: userId,
-          courseId: courseId
-        }
-      }
+          courseId: courseId,
+        },
+      },
     })
     return registration
   },
   async getRegistrations(courseId: number) {
     const registrations = await prisma.registration.findMany({
       where: {
-        courseId
-      }
+        courseId,
+      },
     })
     return registrations
-  }
+  },
 }

@@ -8,14 +8,17 @@ class CacheService {
 
   constructor() {
     // Utiliser le cache mémoire si Redis n'est pas configuré ou en dev sans Redis
-    this.useMemoryCache = !process.env.REDIS_URL || process.env.NODE_ENV === 'dev' || process.env.NODE_ENV === 'test'
+    this.useMemoryCache =
+      !process.env.REDIS_URL ||
+      process.env.NODE_ENV === 'dev' ||
+      process.env.NODE_ENV === 'test'
 
     if (!this.useMemoryCache) {
       this.client = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
         socket: {
-          connectTimeout: 5000
-        }
+          connectTimeout: 5000,
+        },
       })
 
       this.client.on('error', (err) => {

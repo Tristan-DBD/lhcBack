@@ -31,8 +31,8 @@ class CreateUserDto {
   @Example('0601020304')
   phone!: string
 
-  @Example('tristan.debord@gmail.com')
-  email!: string
+  @Example('tristanuser')
+  username!: string
 
   @Example('1234')
   password!: string
@@ -53,7 +53,23 @@ export class UserController {
       body.surname,
       body.age,
       body.weight,
-      body.email,
+      body.username,
+      body.phone,
+      body.password,
+      body.role,
+    )
+  }
+
+  @Post('/coach')
+  @Security('BearerAuth')
+  @Consumes('application/json')
+  public async createCoach(@Body() body: CreateUserDto) {
+    return await us.create(
+      body.name,
+      body.surname,
+      body.age,
+      body.weight,
+      body.username,
       body.phone,
       body.password,
       body.role,
@@ -90,7 +106,7 @@ export class UserController {
       age: number
       weight: number
       phone: string
-      email: string
+      username: string
       password: string
       role: Role
     },

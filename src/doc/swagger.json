@@ -44,9 +44,9 @@
 						"type": "string",
 						"example": "0601020304"
 					},
-					"email": {
+					"username": {
 						"type": "string",
-						"example": "tristan.debord@gmail.com"
+						"example": "tristan@gmail.com"
 					},
 					"password": {
 						"type": "string",
@@ -62,7 +62,7 @@
 					"age",
 					"weight",
 					"phone",
-					"email",
+					"username",
 					"password",
 					"role"
 				],
@@ -159,126 +159,54 @@
 								"schema": {
 									"anyOf": [
 										{
-											"allOf": [
-												{
-													"properties": {
-														"stat": {
-															"items": {
-																"properties": {
-																	"deadlift": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"bench": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"squat": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"userId": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"id": {
-																		"type": "number",
-																		"format": "double"
-																	}
-																},
-																"required": [
-																	"deadlift",
-																	"bench",
-																	"squat",
-																	"userId",
-																	"id"
-																],
-																"type": "object"
-															},
-															"type": "array"
-														},
-														"progUri": {
-															"items": {
-																"properties": {
-																	"userId": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"fileUri": {
-																		"type": "string"
-																	},
-																	"id": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"name": {
-																		"type": "string"
-																	}
-																},
-																"required": [
-																	"userId",
-																	"fileUri",
-																	"id",
-																	"name"
-																],
-																"type": "object"
-															},
-															"type": "array"
-														}
-													},
-													"required": [
-														"stat",
-														"progUri"
-													],
-													"type": "object"
+											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
 												},
-												{
-													"properties": {
-														"id": {
-															"type": "number",
-															"format": "double"
-														},
-														"email": {
-															"type": "string"
-														},
-														"imageUri": {
-															"type": "string"
-														},
-														"role": {
-															"$ref": "#/components/schemas/_36_Enums.Role"
-														},
-														"phone": {
-															"type": "string"
-														},
-														"weight": {
-															"type": "number",
-															"format": "double"
-														},
-														"age": {
-															"type": "number",
-															"format": "double"
-														},
-														"surname": {
-															"type": "string"
-														},
-														"name": {
-															"type": "string"
-														}
-													},
-													"required": [
-														"id",
-														"email",
-														"imageUri",
-														"role",
-														"phone",
-														"weight",
-														"age",
-														"surname",
-														"name"
-													],
-													"type": "object"
+												"password": {
+													"type": "string"
+												},
+												"username": {
+													"type": "string"
+												},
+												"imageUri": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
 												}
-											]
+											},
+											"required": [
+												"id",
+												"password",
+												"username",
+												"imageUri",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name"
+											],
+											"type": "object"
 										},
 										{
 											"type": "string",
@@ -400,7 +328,7 @@
 														"type": "number",
 														"format": "double"
 													},
-													"email": {
+													"username": {
 														"type": "string"
 													},
 													"imageUri": {
@@ -429,7 +357,7 @@
 												},
 												"required": [
 													"id",
-													"email",
+													"username",
 													"imageUri",
 													"role",
 													"phone",
@@ -457,6 +385,99 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/user/coach": {
+			"post": {
+				"operationId": "CreateCoach",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"id": {
+													"type": "number",
+													"format": "double"
+												},
+												"password": {
+													"type": "string"
+												},
+												"username": {
+													"type": "string"
+												},
+												"imageUri": {
+													"type": "string"
+												},
+												"role": {
+													"$ref": "#/components/schemas/_36_Enums.Role"
+												},
+												"phone": {
+													"type": "string"
+												},
+												"weight": {
+													"type": "number",
+													"format": "double"
+												},
+												"age": {
+													"type": "number",
+													"format": "double"
+												},
+												"surname": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"id",
+												"password",
+												"username",
+												"imageUri",
+												"role",
+												"phone",
+												"weight",
+												"age",
+												"surname",
+												"name"
+											],
+											"type": "object"
+										},
+										{
+											"type": "string",
+											"enum": [
+												"ALREADY-EXIST"
+											]
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Utilisateur"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/user/{id}": {
@@ -549,7 +570,7 @@
 															"type": "number",
 															"format": "double"
 														},
-														"email": {
+														"username": {
 															"type": "string"
 														},
 														"imageUri": {
@@ -578,7 +599,7 @@
 													},
 													"required": [
 														"id",
-														"email",
+														"username",
 														"imageUri",
 														"role",
 														"phone",
@@ -712,7 +733,7 @@
 															"type": "number",
 															"format": "double"
 														},
-														"email": {
+														"username": {
 															"type": "string"
 														},
 														"imageUri": {
@@ -741,7 +762,7 @@
 													},
 													"required": [
 														"id",
-														"email",
+														"username",
 														"imageUri",
 														"role",
 														"phone",
@@ -797,7 +818,7 @@
 									"password": {
 										"type": "string"
 									},
-									"email": {
+									"username": {
 										"type": "string"
 									},
 									"phone": {
@@ -821,7 +842,7 @@
 								"required": [
 									"role",
 									"password",
-									"email",
+									"username",
 									"phone",
 									"weight",
 									"age",
@@ -852,7 +873,7 @@
 												"password": {
 													"type": "string"
 												},
-												"email": {
+												"username": {
 													"type": "string"
 												},
 												"imageUri": {
@@ -882,7 +903,7 @@
 											"required": [
 												"id",
 												"password",
-												"email",
+												"username",
 												"imageUri",
 												"role",
 												"phone",
@@ -936,54 +957,126 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"properties": {
-											"id": {
-												"type": "number",
-												"format": "double"
+										"allOf": [
+											{
+												"properties": {
+													"stat": {
+														"items": {
+															"properties": {
+																"deadlift": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"bench": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"squat": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"userId": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"id": {
+																	"type": "number",
+																	"format": "double"
+																}
+															},
+															"required": [
+																"deadlift",
+																"bench",
+																"squat",
+																"userId",
+																"id"
+															],
+															"type": "object"
+														},
+														"type": "array"
+													},
+													"progUri": {
+														"items": {
+															"properties": {
+																"userId": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"fileUri": {
+																	"type": "string"
+																},
+																"id": {
+																	"type": "number",
+																	"format": "double"
+																},
+																"name": {
+																	"type": "string"
+																}
+															},
+															"required": [
+																"userId",
+																"fileUri",
+																"id",
+																"name"
+															],
+															"type": "object"
+														},
+														"type": "array"
+													}
+												},
+												"required": [
+													"stat",
+													"progUri"
+												],
+												"type": "object"
 											},
-											"password": {
-												"type": "string"
-											},
-											"email": {
-												"type": "string"
-											},
-											"imageUri": {
-												"type": "string"
-											},
-											"role": {
-												"$ref": "#/components/schemas/_36_Enums.Role"
-											},
-											"phone": {
-												"type": "string"
-											},
-											"weight": {
-												"type": "number",
-												"format": "double"
-											},
-											"age": {
-												"type": "number",
-												"format": "double"
-											},
-											"surname": {
-												"type": "string"
-											},
-											"name": {
-												"type": "string"
+											{
+												"properties": {
+													"id": {
+														"type": "number",
+														"format": "double"
+													},
+													"username": {
+														"type": "string"
+													},
+													"imageUri": {
+														"type": "string"
+													},
+													"role": {
+														"$ref": "#/components/schemas/_36_Enums.Role"
+													},
+													"phone": {
+														"type": "string"
+													},
+													"weight": {
+														"type": "number",
+														"format": "double"
+													},
+													"age": {
+														"type": "number",
+														"format": "double"
+													},
+													"surname": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"id",
+													"username",
+													"imageUri",
+													"role",
+													"phone",
+													"weight",
+													"age",
+													"surname",
+													"name"
+												],
+												"type": "object"
 											}
-										},
-										"required": [
-											"id",
-											"password",
-											"email",
-											"imageUri",
-											"role",
-											"phone",
-											"weight",
-											"age",
-											"surname",
-											"name"
-										],
-										"type": "object"
+										]
 									},
 									"type": "array"
 								}
@@ -1090,7 +1183,7 @@
 													"type": "number",
 													"format": "double"
 												},
-												"email": {
+												"username": {
 													"type": "string"
 												},
 												"imageUri": {
@@ -1119,7 +1212,7 @@
 											},
 											"required": [
 												"id",
-												"email",
+												"username",
 												"imageUri",
 												"role",
 												"phone",
@@ -1265,7 +1358,7 @@
 													"type": "number",
 													"format": "double"
 												},
-												"email": {
+												"username": {
 													"type": "string"
 												},
 												"imageUri": {
@@ -1294,7 +1387,7 @@
 											},
 											"required": [
 												"id",
-												"email",
+												"username",
 												"imageUri",
 												"role",
 												"phone",

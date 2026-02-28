@@ -9,6 +9,7 @@ beforeAll(async () => {
 
 describe('Test CRUD pour les cours', () => {
   let coachTestId: number
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let athleteTestId: number
   let courseTestId: number
   let coachToken: string
@@ -16,8 +17,8 @@ describe('Test CRUD pour les cours', () => {
 
   beforeAll(async () => {
     // Générer les tokens
-    coachToken = await createToken(1, 'COACH', 'coach@test.com')
-    athleteToken = await createToken(2, 'ATHLETE_CO', 'athlete@test.com')
+    coachToken = await createToken(1, 'COACH', 'coachuser')
+    athleteToken = await createToken(2, 'ATHLETE_CO', 'athleteuser')
 
     // Créer les utilisateurs de test
     const coachRes = await request(server)
@@ -29,8 +30,8 @@ describe('Test CRUD pour les cours', () => {
         age: 30,
         weight: 80,
         phone: '0601020304',
-        email: 'coach@test.com',
-        password: 'password123',
+        username: 'coachuser',
+        password: '123456',
         role: 'COACH',
       })
 
@@ -43,8 +44,8 @@ describe('Test CRUD pour les cours', () => {
         age: 25,
         weight: 70,
         phone: '0601020305',
-        email: 'athlete@test.com',
-        password: 'password123',
+        username: 'athleteuser',
+        password: '123456',
         role: 'ATHLETE_CO',
       })
 
@@ -285,7 +286,9 @@ describe('Test CRUD pour les cours', () => {
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
-      const res = await request(server).get(`/api/course/registrations/${courseTestId}`)
+      const res = await request(server).get(
+        `/api/course/registrations/${courseTestId}`,
+      )
       expect(res.status).toBe(401)
     })
   })

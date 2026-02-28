@@ -17,6 +17,13 @@ import {
 } from '../middleware/cache'
 import { ProgramService } from '../service/program'
 
+const DEFAULT_PASSWORD = '123456'
+
+function generateUsername(name: string, surname: string): string {
+  const timestamp = Date.now().toString(36).slice(-4)
+  return (name.charAt(0) + surname + timestamp).toLowerCase().replace(/\s/g, '')
+}
+
 const router = Router()
 router.use('/program', programRoute)
 async function hashedPassword(password: string) {
@@ -32,20 +39,20 @@ router.post(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } =
-      req.body
+    const { name, surname, age, weight, phone, role } = req.body
     const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG', 'ATHLETE_FULL']
 
     const finalRole =
       role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
 
-    const hashed = await hashedPassword(password)
+    const username = generateUsername(name, surname)
+    const hashed = await hashedPassword(DEFAULT_PASSWORD)
     const user = await us.create(
       name,
       surname,
       age,
       weight,
-      email,
+      username,
       phone,
       hashed,
       finalRole,
@@ -65,16 +72,17 @@ router.post(
   authorize('ADMIN'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password } = req.body
+    const { name, surname, age, weight, phone } = req.body
     const role = 'COACH'
 
-    const hashed = await hashedPassword(password)
+    const username = generateUsername(name, surname)
+    const hashed = await hashedPassword(DEFAULT_PASSWORD)
     const user = await us.create(
       name,
       surname,
       age,
       weight,
-      email,
+      username,
       phone,
       hashed,
       role,
@@ -98,11 +106,18 @@ router.get(
   },
 )
 
-router.get('/get-coach', rateLimiter(1, 60, { motif: 'get' }), authenticate, authorize('COACH'), async (req: Request, res: Response) => {
-  const users = await us.findAllCoach()
-  if(users == null) return handlerResponse(res, 404, false, 'Aucun coach trouvé')
-  return handlerResponse(res, 200, true, users)
-})
+router.get(
+  '/get-coach',
+  rateLimiter(1, 60, { motif: 'get' }),
+  authenticate,
+  authorize('COACH'),
+  async (req: Request, res: Response) => {
+    const users = await us.findAllCoach()
+    if (users == null)
+      return handlerResponse(res, 404, false, 'Aucun coach trouvé')
+    return handlerResponse(res, 200, true, users)
+  },
+)
 
 router.get(
   '/:id',
@@ -130,7 +145,7 @@ router.put(
   authorize('PROFILE'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, email, password, phone } = req.body
+    const { name, surname, age, weight, username, password, phone } = req.body
     let hashed
     if (password == undefined) {
       hashed = null
@@ -144,7 +159,7 @@ router.put(
       ...(age && { age: age }),
       ...(weight && { weight: weight }),
       ...(phone && { phone: phone }),
-      ...(email && { email: email }),
+      ...(username && { username: username }),
       ...(password && { password: hashed }),
     }
     const user = await us.update(Number(req.params.id), { ...data })
@@ -164,10 +179,10 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-
-    const deleteAllPrograms = await ProgramService.deleteAll(Number(req.params.id))
+    const deleteAllPrograms = await ProgramService.deleteAll(
+      Number(req.params.id),
+    )
     console.log(deleteAllPrograms)
-
 
     const user = await us.delete(Number(req.params.id))
 

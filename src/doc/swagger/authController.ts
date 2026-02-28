@@ -2,8 +2,8 @@ import { Body, Consumes, Example, Post, Route, Tags } from 'tsoa'
 import { Role } from '@prisma/client'
 
 class loginDto {
-  @Example('tristan.debord@gmail.com')
-  email!: string
+  @Example('tristan')
+  username!: string
 
   @Example('1234')
   password!: string
@@ -25,8 +25,8 @@ class registerDto {
   @Example('0601020304')
   phone!: string
 
-  @Example('tristan.debord@gmail.com')
-  email!: string
+  @Example('tdebord')
+  username!: string
 
   @Example('1234')
   password!: string
@@ -41,12 +41,12 @@ export class AuthController {
   @Post('/login')
   @Consumes('application/json')
   public async login(@Body() body: loginDto) {
-    return
+    return body
   }
 
   @Post('/register')
   @Consumes('application/json')
   public async register(@Body() body: registerDto) {
-    return
+    return body
   }
 }

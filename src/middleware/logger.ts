@@ -10,7 +10,8 @@ export const requestLogger = (
   req.timestamp = Date.now()
   res.on('finish', () => {
     const duration = Date.now() - Number(req.timestamp)
-    const logLevel = res.statusCode == 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info'
+    const logLevel =
+      res.statusCode == 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info'
     logger[logLevel]('HTTP Request', {
       method: req.method,
       path: req.path,

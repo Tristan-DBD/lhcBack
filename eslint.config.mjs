@@ -15,7 +15,7 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
-      quotes: ['error', 'single'],
+      quotes: ['error', 'single', { avoidEscape: true }],
       'prettier/prettier': 'error',
     },
   },

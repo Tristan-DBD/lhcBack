@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 import { Request, Response, Router } from 'express'
 import { statService as ss } from '../service/stats'
 import { handlerResponse } from '../middleware/handler'

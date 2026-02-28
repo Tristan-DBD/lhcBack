@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import { Response, Router } from 'express'
 import { FileService, upload } from '../middleware/upload'
 import { handlerResponse } from '../middleware/handler'
 import { authenticate, AuthRequest } from '../middleware/auth'

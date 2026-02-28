@@ -20,6 +20,6 @@ export default interface User {
   stat: Stats[]
   courses: Course[]
 
-  email: string
+  username: string
   password: string
 }

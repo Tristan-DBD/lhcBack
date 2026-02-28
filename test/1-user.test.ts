@@ -20,8 +20,8 @@ describe('Test CRUD pour les utilisateurs', () => {
   let coachToken: string
   let athleteToken: string
   async function token() {
-    coachToken = await createToken(1, 'COACH', 'email@gmail.com')
-    athleteToken = await createToken(2, 'ATHLETE_PROG', 'email@gmail.com')
+    coachToken = await createToken(1, 'COACH', 'username')
+    athleteToken = await createToken(2, 'ATHLETE_PROG', 'username')
   }
   beforeAll(async () => {
     await token()
@@ -37,8 +37,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 23,
           weight: 85,
           phone: '0601020304',
-          email: 'coach@gmail.com',
-          password: '1234'
         })
 
       coachTestId = res.body.data[0].message.id
@@ -48,13 +46,11 @@ describe('Test CRUD pour les utilisateurs', () => {
         .post('/api/user')
         .set('Authorization', `Bearer ${coachToken}`)
         .send({
-          name: 'Test',
+          name: 'Athlete',
           surname: 'Testest',
           age: 23,
           weight: 85,
-          phone: '0601020304',
-          email: 'ahtlete@gmail.com',
-          password: '1234',
+          phone: '0601020305',
         })
 
       athleteTestId = ath.body.data[0].message.id
@@ -71,8 +67,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 23,
           weight: 85,
           phone: '0601020304',
-          email: 'athelete@gmail.com',
-          password: '1234',
         })
 
       expect(res.body.success).toBe(false)
@@ -156,7 +150,7 @@ describe('Test CRUD pour les utilisateurs', () => {
         .set('Authorization', `Bearer ${coachToken}`)
       const imageUri = user.body.data.imageUri
       console.log(user.body.data)
-      
+
       // Vérifier si imageUri existe avant de tester
       if (imageUri) {
         const res = await request(server)
@@ -195,7 +189,7 @@ describe('Test CRUD pour les utilisateurs', () => {
       const res = await request(server)
         .put(`/api/user/program/${athleteTestId}`)
         .set('Authorization', `Bearer ${athleteToken}`)
-        // Pas de fichier attaché
+      // Pas de fichier attaché
 
       expect(res.status).toBe(403)
     })
@@ -239,9 +233,9 @@ describe('Test CRUD pour les utilisateurs', () => {
         const res = await request(server)
           .delete(`/api/user/program/${athleteTestId}`)
           .set('Authorization', `Bearer ${athleteToken}`)
-          .send({ 
+          .send({
             id: 1, // ID fictice pour la validation
-            name: progUri[0].split('/').pop().split('.')[0] 
+            name: progUri[0].split('/').pop().split('.')[0],
           })
 
         expect(res.status).toBe(403)
@@ -250,9 +244,9 @@ describe('Test CRUD pour les utilisateurs', () => {
         const res = await request(server)
           .delete(`/api/user/program/${athleteTestId}`)
           .set('Authorization', `Bearer ${athleteToken}`)
-          .send({ 
+          .send({
             id: 1,
-            name: 'test-program' 
+            name: 'test-program',
           })
 
         expect(res.status).toBe(403)
@@ -262,7 +256,7 @@ describe('Test CRUD pour les utilisateurs', () => {
   describe('CREATE COACH (POST /api/user/coach)', () => {
     let adminToken: string
     beforeAll(async () => {
-      adminToken = await createToken(98, 'ADMIN', 'admin@gmail.com')
+      adminToken = await createToken(98, 'ADMIN', 'adminuser')
     })
 
     it('ADMIN -> Authorize', async () => {
@@ -275,8 +269,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 35,
           weight: 85,
           phone: '0601020308',
-          email: 'coachadmin@example.com',
-          password: 'password123'
         })
 
       expect(res.body.success).toBe(true)
@@ -288,30 +280,24 @@ describe('Test CRUD pour les utilisateurs', () => {
         .post('/api/user/coach')
         .set('Authorization', `Bearer ${coachToken}`)
         .send({
-          name: 'Coach',
+          name: 'Coach2',
           surname: 'Unauthorized',
           age: 30,
           weight: 80,
           phone: '0601020309',
-          email: 'coachunauth@example.com',
-          password: 'password123'
         })
 
       expect(res.status).toBe(403)
     })
 
     it('NO TOKEN -> Unauthorized', async () => {
-      const res = await request(server)
-        .post('/api/user/coach')
-        .send({
-          name: 'Coach',
-          surname: 'NoToken',
-          age: 30,
-          weight: 80,
-          phone: '0601020310',
-          email: 'coachnotoken@example.com',
-          password: 'password123'
-        })
+      const res = await request(server).post('/api/user/coach').send({
+        name: 'Coach3',
+        surname: 'NoToken',
+        age: 30,
+        weight: 80,
+        phone: '0601020310',
+      })
 
       expect(res.status).toBe(401)
     })

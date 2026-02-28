@@ -6,19 +6,23 @@ class MemoryCacheService {
   async get(key: string): Promise<any> {
     const item = this.cache.get(key)
     if (!item) return null
-    
+
     if (Date.now() > item.expiry) {
       this.cache.delete(key)
       return null
     }
-    
+
     return item.data
   }
 
-  async set(key: string, value: any, ttl: number = this.defaultTTL): Promise<void> {
+  async set(
+    key: string,
+    value: any,
+    ttl: number = this.defaultTTL,
+  ): Promise<void> {
     this.cache.set(key, {
       data: value,
-      expiry: Date.now() + (ttl * 1000)
+      expiry: Date.now() + ttl * 1000,
     })
   }
 
@@ -42,7 +46,7 @@ class MemoryCacheService {
         result[key] = params[key]
         return result
       }, {})
-    
+
     return `${prefix}:${JSON.stringify(sortedParams)}`
   }
 

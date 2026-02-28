@@ -26,6 +26,7 @@ export function globalErrorHandler(
   error: Error,
   req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) {
   logger.error('Server error', {

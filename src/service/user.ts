@@ -9,7 +9,7 @@ export const UserService = {
     surname: string,
     age: number,
     weight: number,
-    email: string,
+    username: string,
     phone: string,
     password: string,
     role: Role,
@@ -20,12 +20,12 @@ export const UserService = {
       age: age,
       weight: weight,
       phone: phone,
-      email: email,
+      username: username,
       password: password,
       role: role,
       imageUri: DEFAULT_PROFILE_IMAGE,
     }
-    const exist = await this.findByEmail(email)
+    const exist = await this.findByusername(username)
     if (exist !== 'NOT-EXIST') return 'ALREADY-EXIST'
 
     const user = await prisma.user.create({
@@ -41,10 +41,10 @@ export const UserService = {
     return user
   },
 
-  async findAllCoach(){
+  async findAllCoach() {
     const list = await prisma.user.findMany({
       where: {
-        role: Role.COACH
+        role: Role.COACH,
       },
       omit: {
         password: true,
@@ -85,9 +85,9 @@ export const UserService = {
     return user
   },
 
-  async findByEmail(email: string) {
+  async findByusername(username: string) {
     const user = await prisma.user.findFirst({
-      where: { email: email },
+      where: { username: username },
       omit: {
         password: true,
       },
@@ -100,12 +100,12 @@ export const UserService = {
     return user
   },
 
-  async findByEmailWithPassword(email: string) {
+  async findByUsernameWithPassword(username: string) {
     const user = await prisma.user.findFirst({
-      where: { email: email },
-      include: { 
+      where: { username: username },
+      include: {
         stat: true,
-        progUri: true 
+        progUri: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
@@ -119,7 +119,7 @@ export const UserService = {
       ...(params.age && { age: params.age }),
       ...(params.weight && { weight: params.weight }),
       ...(params.phone && { phone: params.phone }),
-      ...(params.email && { email: params.email }),
+      ...(params.username && { username: params.username }),
       ...(params.phone && { phone: params.phone }),
       ...(params.password && { password: params.password }),
       ...(params.role && { role: params.role }),

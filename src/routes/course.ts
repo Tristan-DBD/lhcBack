@@ -1,13 +1,21 @@
 import { Request, Response, Router } from 'express'
 import validate from '../middleware/validate'
-import { createCourseSchema, partialCourseSchema, registerSchema } from '../schemas/course'
+import {
+  createCourseSchema,
+  partialCourseSchema,
+  registerSchema,
+} from '../schemas/course'
 import { coursesService as cs } from '../service/course'
 import { handlerResponse } from '../middleware/handler'
 import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
-import { cacheMiddleware, invalidateCacheMiddleware, cachePatterns } from '../middleware/cache'
+import {
+  cacheMiddleware,
+  invalidateCacheMiddleware,
+  cachePatterns,
+} from '../middleware/cache'
 
 const router = Router()
 
@@ -31,7 +39,8 @@ router.post(
   },
 )
 
-router.get('/',
+router.get(
+  '/',
   rateLimiter(1, 40, { motif: 'get' }),
   authenticate,
   authorize('CO'),
@@ -39,7 +48,8 @@ router.get('/',
   async (req: Request, res: Response) => {
     const courses = await cs.findAll()
     return handlerResponse(res, 200, true, courses)
-  })
+  },
+)
 
 router.get(
   '/:id',
@@ -49,7 +59,7 @@ router.get(
   authorize('CO'),
   cacheMiddleware('course', {
     ttl: 600, // Cache de 10 minutes pour les entités individuelles
-    keyGenerator: (req) => `course:${req.params.id}`
+    keyGenerator: (req) => `course:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
     const course = await cs.findById(Number(req.params.id))
@@ -80,7 +90,7 @@ router.put(
 )
 router.delete(
   '/:id',
-  rateLimiter(60, 5, { motif: 'delete' }),
+  rateLimiter(1, 20, { motif: 'delete' }),
   validate(idSchema),
   authenticate,
   authorize('COACH'),
@@ -95,13 +105,14 @@ router.delete(
   },
 )
 
-router.post('/register',
-  rateLimiter(1, 10, { motif: 'register' }),
+router.post(
+  '/register',
+  rateLimiter(1, 40, { motif: 'register' }),
   validate(registerSchema),
   authenticate,
   authorize('CO'),
   async (req: Request, res: Response) => {
-    const { userId, courseId } = req.body;
+    const { userId, courseId } = req.body
 
     const result = await cs.register(userId, courseId)
 
@@ -118,13 +129,13 @@ router.post('/register',
   },
 )
 
-router.post('/unregister',
-  rateLimiter(1, 10, { motif: 'unregister' }),
+router.post(
+  '/unregister',
+  rateLimiter(1, 40, { motif: 'unregister' }),
   validate(registerSchema),
   authenticate,
   authorize('CO'),
   async (req: Request, res: Response) => {
-
     const { userId, courseId } = req.body
 
     const result = await cs.unregister(userId, courseId)
@@ -142,19 +153,19 @@ router.post('/unregister',
 
 router.get(
   '/registrations/:id',
-  rateLimiter(1, 10, { motif: 'get-registrations' }),
+  rateLimiter(1, 40, { motif: 'get-registrations' }),
   validate(idSchema),
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
     const courseId = Number(req.params.id)
-    
+
     // Vérifier si le cours existe
     const course = await cs.findById(courseId)
     if (!course || course === 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Cours non trouvé')
     }
-    
+
     const registrations = await cs.getRegistrations(courseId)
     return handlerResponse(res, 200, true, registrations)
   },

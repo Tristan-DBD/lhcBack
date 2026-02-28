@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import dotenv from 'dotenv'
 const env = process.env.NODE_ENV || 'dev'
 dotenv.config({ path: `.env.${env}` })
@@ -31,7 +32,6 @@ server.use(
         defaultSrc: ['\'self\''],
         styleSrc: ['\'self\'', '\'unsafe-inline\''],
         scriptSrc: ['\'self\''],
-        imgSrc: ["'self'", 'data:', 'https:'],
         connectSrc: [
           "'self'",
           `http://${yourIp}`,
@@ -48,10 +48,13 @@ server.use(
   cors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:5000',
       `http://${yourIp}`,
       `https://${yourIp}`,
       `http://${yourIp}:3000`,
+      `http://${yourIp}:5000`,
       `https://${yourIp}:3000`,
+      `https://${yourIp}:5000`,
       `http://${yourIp}:4000`,
       `https://${yourIp}:4000`,
     ],

@@ -21,10 +21,10 @@ export const cacheMiddleware = (prefix: string, options: CacheOptions = {}) => {
       delete queryParams.t // Supprimer les timestamps si présents
       return cacheService.generateKey(prefix, {
         url: req.originalUrl,
-        ...queryParams
+        ...queryParams,
       })
     },
-    condition = (req) => req.method === 'GET'
+    condition = (req) => req.method === 'GET',
   } = options
 
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -58,7 +58,7 @@ export const cacheMiddleware = (prefix: string, options: CacheOptions = {}) => {
       res.json = function (data: any) {
         // Mettre en cache uniquement les réponses réussies
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          cacheService.set(cacheKey, data, ttl).catch(error => {
+          cacheService.set(cacheKey, data, ttl).catch((error) => {
             console.error('Failed to cache response:', error)
           })
         }
@@ -90,7 +90,7 @@ export const invalidateCacheMiddleware = (patterns: string[]) => {
 
     res.send = function (data: any) {
       responseData = data
-      return originalSend.call(this, data)
+      return originalSend.call(this, responseData)
     }
 
     // Intercepter la fin de la réponse
@@ -119,14 +119,14 @@ export const cachePatterns = {
   courses: {
     all: 'courses:*',
     byId: (id: number) => `courses:*${id}*`,
-    byCoach: (coachId: number) => `courses:*coachId*${coachId}*`
+    byCoach: (coachId: number) => `courses:*coachId*${coachId}*`,
   },
   users: {
     all: 'users:*',
-    byId: (id: number) => `users:*${id}*`
+    byId: (id: number) => `users:*${id}*`,
   },
   stats: {
     all: 'stats:*',
-    byUser: (userId: number) => `stats:*userId*${userId}*`
-  }
+    byUser: (userId: number) => `stats:*userId*${userId}*`,
+  },
 }

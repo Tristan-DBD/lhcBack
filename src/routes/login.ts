@@ -6,12 +6,20 @@ import { Role } from '@prisma/client'
 import { handlerResponse } from '../middleware/handler'
 import { rateLimiter } from '../middleware/rateLimiter'
 import { loginSchema } from '../schemas/auth'
+import { createUserSchema } from '../schemas/user'
 import validate from '../middleware/validate'
 
 const router = Router()
 
-export async function createToken(id: number, role: Role, email: string) {
-  const payload = { id, role, email }
+const DEFAULT_PASSWORD = '123456'
+
+function generateUsername(name: string, surname: string): string {
+  const timestamp = Date.now().toString(36).slice(-4)
+  return (name.charAt(0) + surname + timestamp).toLowerCase().replace(/\s/g, '')
+}
+
+export async function createToken(id: number, role: Role, username: string) {
+  const payload = { id, role, username }
   const token = jwt.sign(payload, String(process.env.JWT_SECRET), {
     expiresIn: '1H',
   })
@@ -23,20 +31,30 @@ router.post(
   rateLimiter(1, 5, { motif: 'login', skipSuccessful: true }),
   validate(loginSchema),
   async (req: Request, res: Response) => {
-    const { email, password } = req.body
-    const user = await us.findByEmailWithPassword(email)
+    const { username, password } = req.body
+    const user = await us.findByUsernameWithPassword(username)
     if (user == 'NOT-EXIST') {
-      return handlerResponse(res, 403, false, 'Email ou mot de passe incorect')
+      return handlerResponse(
+        res,
+        403,
+        false,
+        'Username ou mot de passe incorect',
+      )
     }
     const validPassword = await bcrypt.compare(password, user.password)
     if (validPassword == false) {
-      return handlerResponse(res, 409, false, 'Email ou mot de passe incorect')
+      return handlerResponse(
+        res,
+        409,
+        false,
+        'Username ou mot de passe incorect',
+      )
     }
     return handlerResponse(
       res,
       200,
       true,
-      await createToken(user.id, user.role, user.email),
+      await createToken(user.id, user.role, user.username),
     )
   },
 )
@@ -44,19 +62,22 @@ router.post(
 router.post(
   '/register',
   rateLimiter(60, 3, { motif: 'register', skipSuccessful: true }),
-  validate(loginSchema),
+  validate(createUserSchema),
   async (req: Request, res: Response) => {
-    const { name, surname, age, weight, phone, email, password, role } =
-      req.body
+    const { name, surname, age, weight, phone, role } = req.body
 
-    const hashed = await bcrypt.hash(password, Number(process.env.SALT_ROUND))
+    const username = generateUsername(name, surname)
+    const hashed = await bcrypt.hash(
+      DEFAULT_PASSWORD,
+      Number(process.env.SALT_ROUND),
+    )
 
     const user = await us.create(
       name,
       surname,
       age,
       weight,
-      email,
+      username,
       phone,
       hashed,
       role,
@@ -69,7 +90,7 @@ router.post(
       res,
       200,
       true,
-      await createToken(user.id, user.role, user.email),
+      await createToken(user.id, user.role, user.username),
     )
   },
 )

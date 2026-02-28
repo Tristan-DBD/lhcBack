@@ -7,8 +7,8 @@ describe('Test endpoints de santé', () => {
   let coachToken: string
 
   beforeAll(async () => {
-    adminToken = await createToken(98, 'ADMIN', 'admin@gmail.com')
-    coachToken = await createToken(1, 'COACH', 'coach@test.com')
+    adminToken = await createToken(98, 'ADMIN', 'adminuser')
+    coachToken = await createToken(1, 'COACH', 'coachuser')
   })
 
   describe('GET /api/admin/health', () => {
@@ -22,7 +22,9 @@ describe('Test endpoints de santé', () => {
       expect(res.body.data[0].message.application).toBeDefined()
       expect(res.body.data[0].message.system).toBeDefined()
       expect(res.body.data[0].message.dependencies).toBeDefined()
-      expect(['healthy', 'unhealthy']).toContain(res.body.data[0].message.status)
+      expect(['healthy', 'unhealthy']).toContain(
+        res.body.data[0].message.status,
+      )
     })
 
     it('COACH -> Unauthorize', async () => {
@@ -48,7 +50,9 @@ describe('Test endpoints de santé', () => {
       expect(res.body.success).toBe(true)
       expect(res.body.data[0].message.status).toBeDefined()
       expect(res.body.data[0].message.responseTime).toBeDefined()
-      expect(['Connected', 'Disconnected']).toContain(res.body.data[0].message.status)
+      expect(['Connected', 'Disconnected']).toContain(
+        res.body.data[0].message.status,
+      )
     })
 
     it('COACH -> Unauthorize', async () => {
@@ -77,7 +81,7 @@ describe('Test endpoints de santé', () => {
   describe('GET /doc', () => {
     it('PUBLIC -> Redirection vers swagger', async () => {
       const res = await request(server).get('/doc')
-      
+
       expect([301, 302, 200]).toContain(res.status)
       if (res.status === 301 || res.status === 302) {
         expect(res.headers.location).toBeDefined()
@@ -88,9 +92,9 @@ describe('Test endpoints de santé', () => {
   })
 
   describe('GET /favicon.ico', () => {
-    it('PUBLIC -> Retourne l\'icône', async () => {
+    it("PUBLIC -> Retourne l'icône", async () => {
       const res = await request(server).get('/favicon.ico')
-      
+
       expect(res.status).toBe(200)
       expect(res.headers['content-type']).toContain('image')
     })
@@ -99,7 +103,7 @@ describe('Test endpoints de santé', () => {
   describe('GET /', () => {
     it('PUBLIC -> Redirection vers /doc', async () => {
       const res = await request(server).get('/')
-      
+
       expect(res.status).toBe(302) // Redirect
       expect(res.headers.location).toBe('/doc')
     })

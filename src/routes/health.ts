@@ -49,60 +49,65 @@ const checkSupabaseConnection = async () => {
   }
 }
 
-router.get('/', 
-  rateLimiter(1, 5, { motif: 'health' }), 
+router.get(
+  '/',
+  rateLimiter(1, 5, { motif: 'health' }),
   authenticate,
   authorize('ADMIN'),
   async (req: Request, res: Response) => {
-  const dbHealth = await checkDatabaseConnection()
-  const supabaseHealth =
-    process.env.NODE_ENV === 'prod'
-      ? await checkSupabaseConnection()
-      : { status: 'disabled' }
+    const dbHealth = await checkDatabaseConnection()
+    const supabaseHealth =
+      process.env.NODE_ENV === 'prod'
+        ? await checkSupabaseConnection()
+        : { status: 'disabled' }
 
-  const data = {
-    status: dbHealth.status === 'Connected' ? 'healthy' : 'unhealthy',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
+    const data = {
+      status: dbHealth.status === 'Connected' ? 'healthy' : 'unhealthy',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
 
-    application: {
-      name: process.env.npm_package_name || 'lhcBack',
-      version: process.env.npm_package_version || '1.0.0',
-      environment: process.env.NODE_ENV,
-      port: process.env.PORT || 4000,
-      startTime: new Date(Date.now() - process.uptime() * 1000).toISOString(),
-    },
-
-    system: {
-      nodeVersion: process.version,
-      platform: process.platform,
-      memory: {
-        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
-        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + 'MB',
+      application: {
+        name: process.env.npm_package_name || 'lhcBack',
+        version: process.env.npm_package_version || '1.0.0',
+        environment: process.env.NODE_ENV,
+        port: process.env.PORT || 4000,
+        startTime: new Date(Date.now() - process.uptime() * 1000).toISOString(),
       },
-    },
 
-    dependencies: {
-      database: dbHealth,
-      supabase: supabaseHealth,
-    },
-  }
+      system: {
+        nodeVersion: process.version,
+        platform: process.platform,
+        memory: {
+          used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
+          total:
+            Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + 'MB',
+        },
+      },
 
-  const statusCode = data.status === 'healthy' ? 200 : 503
-  return handlerResponse(res, statusCode, true, data)
-})
+      dependencies: {
+        database: dbHealth,
+        supabase: supabaseHealth,
+      },
+    }
 
-router.get('/database',
-  rateLimiter(1, 5, { motif: 'health' }), 
+    const statusCode = data.status === 'healthy' ? 200 : 503
+    return handlerResponse(res, statusCode, true, data)
+  },
+)
+
+router.get(
+  '/database',
+  rateLimiter(1, 5, { motif: 'health' }),
   authenticate,
   authorize('ADMIN'),
   async (req: Request, res: Response) => {
-  const dbHealth = await checkDatabaseConnection()
-  return handlerResponse(
-    res,
-    dbHealth.status === 'Connected' ? 200 : 503,
-    true,
-    dbHealth,
-  )
-})
+    const dbHealth = await checkDatabaseConnection()
+    return handlerResponse(
+      res,
+      dbHealth.status === 'Connected' ? 200 : 503,
+      true,
+      dbHealth,
+    )
+  },
+)
 export default router

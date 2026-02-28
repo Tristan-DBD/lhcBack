@@ -12,10 +12,10 @@ let athleteToken: string
 
 describe('Test CRUD pour les stats des utilisateurs', () => {
   async function token() {
-    coachToken = await createToken(1, 'COACH', 'email@gmail.com')
-    athleteToken = await createToken(2, 'ATHLETE_PROG', 'email@gmail.com')
+    coachToken = await createToken(1, 'COACH', 'username')
+    athleteToken = await createToken(2, 'ATHLETE_PROG', 'username')
   }
-  
+
   beforeAll(async () => {
     await token()
     await resetDb()
@@ -28,11 +28,11 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
         age: 23,
         weight: 85,
         phone: '0601020304',
-        email: 'coach@gmail.com',
+        username: 'coachuser',
         password: '1234',
         role: 'COACH',
       })
-    
+
     coachId = createdCoach.body.data[0].message.id
 
     // Création des utilisateurs
@@ -45,17 +45,17 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
         age: 23,
         weight: 85,
         phone: '0601020304',
-        email: 'ahtlete@gmail.com',
+        username: 'athleteuser',
         password: '1234',
         role: 'ATHLETE_PROG',
       })
     athleteId = createdAth.body.data[0].message.id
   })
-  
+
   afterAll(async () => {
     await resetDb()
   })
-  
+
   describe('CREATE (POST /api/stats)', () => {
     it('COACH -> Authorize', async () => {
       const res = await request(server)
