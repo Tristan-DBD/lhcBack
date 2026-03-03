@@ -26,20 +26,20 @@ export class StatsController {
       bench: number
       deadlift: number
     },
-  ) {
-    return ss.create(body.userId, body.squat, body.bench, body.deadlift)
+  ): Promise<any> {
+    return {} as any
   }
 
   @Get('/')
   @Security('BearerAuth')
-  public async getAll() {
-    return ss.findAll()
+  public async getAll(): Promise<any[]> {
+    return [] as any
   }
 
   @Get('/{id}')
   @Security('BearerAuth')
-  public async getById(@Path() id: number) {
-    return ss.findById(id)
+  public async getById(@Path() id: number): Promise<any> {
+    return {} as any
   }
 
   @Put('/')
@@ -53,13 +53,13 @@ export class StatsController {
       bench: number
       deadlift: number
     },
-  ) {
-    return ss.update(body.userId, body.squat, body.bench, body.deadlift)
+  ): Promise<any> {
+    return {} as any
   }
 
   @Delete('/{id}')
   @Security('BearerAuth')
-  public async delete(@Path() id: number) {
-    return ss.delete(id)
+  public async delete(@Path() id: number): Promise<any> {
+    return {} as any
   }
 }

@@ -15,7 +15,6 @@ export default function validate(schema: ZodType) {
           field: err.path.join('.'),
           message: err.message,
         }))
-
         return handlerResponse(res, 400, false, formattedErrors[0]!.message, {
           field: formattedErrors[0]!.field,
         })

@@ -44,14 +44,6 @@
 						"type": "string",
 						"example": "0601020304"
 					},
-					"username": {
-						"type": "string",
-						"example": "tristan@gmail.com"
-					},
-					"password": {
-						"type": "string",
-						"example": "1234"
-					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
 					}
@@ -62,18 +54,189 @@
 					"age",
 					"weight",
 					"phone",
-					"username",
-					"password",
 					"role"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"UserResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"surname": {
+						"type": "string"
+					},
+					"age": {
+						"type": "number",
+						"format": "double"
+					},
+					"weight": {
+						"type": "number",
+						"format": "double"
+					},
+					"phone": {
+						"type": "string"
+					},
+					"role": {
+						"type": "string"
+					},
+					"imageUri": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"stat": {
+						"items": {},
+						"type": "array"
+					},
+					"progUri": {
+						"items": {},
+						"type": "array"
+					},
+					"payments": {
+						"items": {},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"surname",
+					"age",
+					"weight",
+					"phone",
+					"role",
+					"imageUri",
+					"username",
+					"stat",
+					"progUri",
+					"payments"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PaymentStatusSchema": {
+				"properties": {
+					"jan": {
+						"type": "boolean"
+					},
+					"feb": {
+						"type": "boolean"
+					},
+					"mar": {
+						"type": "boolean"
+					},
+					"apr": {
+						"type": "boolean"
+					},
+					"may": {
+						"type": "boolean"
+					},
+					"jun": {
+						"type": "boolean"
+					},
+					"jul": {
+						"type": "boolean"
+					},
+					"aug": {
+						"type": "boolean"
+					},
+					"sep": {
+						"type": "boolean"
+					},
+					"oct": {
+						"type": "boolean"
+					},
+					"nov": {
+						"type": "boolean"
+					},
+					"dec": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"jan",
+					"feb",
+					"mar",
+					"apr",
+					"may",
+					"jun",
+					"jul",
+					"aug",
+					"sep",
+					"oct",
+					"nov",
+					"dec"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PaymentYearSchema": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double",
+						"example": 1
+					},
+					"year": {
+						"type": "number",
+						"format": "double",
+						"example": 2024
+					},
+					"status": {
+						"$ref": "#/components/schemas/PaymentStatusSchema"
+					},
+					"userId": {
+						"type": "number",
+						"format": "double",
+						"example": 10
+					}
+				},
+				"required": [
+					"id",
+					"year",
+					"status",
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"TogglePaymentDto": {
+				"properties": {
+					"userId": {
+						"type": "number",
+						"format": "double",
+						"example": 10
+					},
+					"year": {
+						"type": "number",
+						"format": "double",
+						"example": 2024
+					},
+					"month": {
+						"type": "string",
+						"example": "jan"
+					}
+				},
+				"required": [
+					"userId",
+					"year",
+					"month"
 				],
 				"type": "object",
 				"additionalProperties": true
 			},
 			"loginDto": {
 				"properties": {
-					"email": {
+					"username": {
 						"type": "string",
-						"example": "tristan.debord@gmail.com"
+						"example": "tristan"
 					},
 					"password": {
 						"type": "string",
@@ -81,7 +244,7 @@
 					}
 				},
 				"required": [
-					"email",
+					"username",
 					"password"
 				],
 				"type": "object",
@@ -111,14 +274,6 @@
 						"type": "string",
 						"example": "0601020304"
 					},
-					"email": {
-						"type": "string",
-						"example": "tristan.debord@gmail.com"
-					},
-					"password": {
-						"type": "string",
-						"example": "1234"
-					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
 					}
@@ -129,8 +284,6 @@
 					"age",
 					"weight",
 					"phone",
-					"email",
-					"password",
 					"role"
 				],
 				"type": "object",
@@ -152,72 +305,8 @@
 			"post": {
 				"operationId": "Create",
 				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"password": {
-													"type": "string"
-												},
-												"username": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"phone": {
-													"type": "string"
-												},
-												"weight": {
-													"type": "number",
-													"format": "double"
-												},
-												"age": {
-													"type": "number",
-													"format": "double"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"id",
-												"password",
-												"username",
-												"imageUri",
-												"role",
-												"phone",
-												"weight",
-												"age",
-												"surname",
-												"name"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"ALREADY-EXIST"
-											]
-										}
-									]
-								}
-							}
-						}
+					"204": {
+						"description": "No content"
 					}
 				},
 				"tags": [
@@ -249,126 +338,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"allOf": [
-											{
-												"properties": {
-													"stat": {
-														"items": {
-															"properties": {
-																"deadlift": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"bench": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"squat": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"userId": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"id": {
-																	"type": "number",
-																	"format": "double"
-																}
-															},
-															"required": [
-																"deadlift",
-																"bench",
-																"squat",
-																"userId",
-																"id"
-															],
-															"type": "object"
-														},
-														"type": "array"
-													},
-													"progUri": {
-														"items": {
-															"properties": {
-																"userId": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"fileUri": {
-																	"type": "string"
-																},
-																"id": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"name": {
-																	"type": "string"
-																}
-															},
-															"required": [
-																"userId",
-																"fileUri",
-																"id",
-																"name"
-															],
-															"type": "object"
-														},
-														"type": "array"
-													}
-												},
-												"required": [
-													"stat",
-													"progUri"
-												],
-												"type": "object"
-											},
-											{
-												"properties": {
-													"id": {
-														"type": "number",
-														"format": "double"
-													},
-													"username": {
-														"type": "string"
-													},
-													"imageUri": {
-														"type": "string"
-													},
-													"role": {
-														"$ref": "#/components/schemas/_36_Enums.Role"
-													},
-													"phone": {
-														"type": "string"
-													},
-													"weight": {
-														"type": "number",
-														"format": "double"
-													},
-													"age": {
-														"type": "number",
-														"format": "double"
-													},
-													"surname": {
-														"type": "string"
-													},
-													"name": {
-														"type": "string"
-													}
-												},
-												"required": [
-													"id",
-													"username",
-													"imageUri",
-													"role",
-													"phone",
-													"weight",
-													"age",
-													"surname",
-													"name"
-												],
-												"type": "object"
-											}
-										]
+										"$ref": "#/components/schemas/UserResponse"
 									},
 									"type": "array"
 								}
@@ -391,72 +361,8 @@
 			"post": {
 				"operationId": "CreateCoach",
 				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"password": {
-													"type": "string"
-												},
-												"username": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"phone": {
-													"type": "string"
-												},
-												"weight": {
-													"type": "number",
-													"format": "double"
-												},
-												"age": {
-													"type": "number",
-													"format": "double"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"id",
-												"password",
-												"username",
-												"imageUri",
-												"role",
-												"phone",
-												"weight",
-												"age",
-												"surname",
-												"name"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"ALREADY-EXIST"
-											]
-										}
-									]
-								}
-							}
-						}
+					"204": {
+						"description": "No content"
 					}
 				},
 				"tags": [
@@ -491,132 +397,10 @@
 								"schema": {
 									"anyOf": [
 										{
-											"allOf": [
-												{
-													"properties": {
-														"stat": {
-															"items": {
-																"properties": {
-																	"deadlift": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"bench": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"squat": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"userId": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"id": {
-																		"type": "number",
-																		"format": "double"
-																	}
-																},
-																"required": [
-																	"deadlift",
-																	"bench",
-																	"squat",
-																	"userId",
-																	"id"
-																],
-																"type": "object"
-															},
-															"type": "array"
-														},
-														"progUri": {
-															"items": {
-																"properties": {
-																	"userId": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"fileUri": {
-																		"type": "string"
-																	},
-																	"id": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"name": {
-																		"type": "string"
-																	}
-																},
-																"required": [
-																	"userId",
-																	"fileUri",
-																	"id",
-																	"name"
-																],
-																"type": "object"
-															},
-															"type": "array"
-														}
-													},
-													"required": [
-														"stat",
-														"progUri"
-													],
-													"type": "object"
-												},
-												{
-													"properties": {
-														"id": {
-															"type": "number",
-															"format": "double"
-														},
-														"username": {
-															"type": "string"
-														},
-														"imageUri": {
-															"type": "string"
-														},
-														"role": {
-															"$ref": "#/components/schemas/_36_Enums.Role"
-														},
-														"phone": {
-															"type": "string"
-														},
-														"weight": {
-															"type": "number",
-															"format": "double"
-														},
-														"age": {
-															"type": "number",
-															"format": "double"
-														},
-														"surname": {
-															"type": "string"
-														},
-														"name": {
-															"type": "string"
-														}
-													},
-													"required": [
-														"id",
-														"username",
-														"imageUri",
-														"role",
-														"phone",
-														"weight",
-														"age",
-														"surname",
-														"name"
-													],
-													"type": "object"
-												}
-											]
+											"$ref": "#/components/schemas/UserResponse"
 										},
 										{
-											"type": "string",
-											"enum": [
-												"NOT-EXIST"
-											]
+											"type": "string"
 										}
 									]
 								}
@@ -651,138 +435,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"allOf": [
-												{
-													"properties": {
-														"stat": {
-															"items": {
-																"properties": {
-																	"deadlift": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"bench": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"squat": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"userId": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"id": {
-																		"type": "number",
-																		"format": "double"
-																	}
-																},
-																"required": [
-																	"deadlift",
-																	"bench",
-																	"squat",
-																	"userId",
-																	"id"
-																],
-																"type": "object"
-															},
-															"type": "array"
-														},
-														"progUri": {
-															"items": {
-																"properties": {
-																	"userId": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"fileUri": {
-																		"type": "string"
-																	},
-																	"id": {
-																		"type": "number",
-																		"format": "double"
-																	},
-																	"name": {
-																		"type": "string"
-																	}
-																},
-																"required": [
-																	"userId",
-																	"fileUri",
-																	"id",
-																	"name"
-																],
-																"type": "object"
-															},
-															"type": "array"
-														}
-													},
-													"required": [
-														"stat",
-														"progUri"
-													],
-													"type": "object"
-												},
-												{
-													"properties": {
-														"id": {
-															"type": "number",
-															"format": "double"
-														},
-														"username": {
-															"type": "string"
-														},
-														"imageUri": {
-															"type": "string"
-														},
-														"role": {
-															"$ref": "#/components/schemas/_36_Enums.Role"
-														},
-														"phone": {
-															"type": "string"
-														},
-														"weight": {
-															"type": "number",
-															"format": "double"
-														},
-														"age": {
-															"type": "number",
-															"format": "double"
-														},
-														"surname": {
-															"type": "string"
-														},
-														"name": {
-															"type": "string"
-														}
-													},
-													"required": [
-														"id",
-														"username",
-														"imageUri",
-														"role",
-														"phone",
-														"weight",
-														"age",
-														"surname",
-														"name"
-													],
-													"type": "object"
-												}
-											]
-										},
-										{
-											"type": "string",
-											"enum": [
-												"NOT-EXIST"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -815,12 +468,6 @@
 									"role": {
 										"$ref": "#/components/schemas/Role"
 									},
-									"password": {
-										"type": "string"
-									},
-									"username": {
-										"type": "string"
-									},
 									"phone": {
 										"type": "string"
 									},
@@ -841,8 +488,6 @@
 								},
 								"required": [
 									"role",
-									"password",
-									"username",
 									"phone",
 									"weight",
 									"age",
@@ -862,66 +507,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"password": {
-													"type": "string"
-												},
-												"username": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"phone": {
-													"type": "string"
-												},
-												"weight": {
-													"type": "number",
-													"format": "double"
-												},
-												"age": {
-													"type": "number",
-													"format": "double"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"id",
-												"password",
-												"username",
-												"imageUri",
-												"role",
-												"phone",
-												"weight",
-												"age",
-												"surname",
-												"name"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"NOT-EXIST"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -957,126 +543,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"allOf": [
-											{
-												"properties": {
-													"stat": {
-														"items": {
-															"properties": {
-																"deadlift": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"bench": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"squat": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"userId": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"id": {
-																	"type": "number",
-																	"format": "double"
-																}
-															},
-															"required": [
-																"deadlift",
-																"bench",
-																"squat",
-																"userId",
-																"id"
-															],
-															"type": "object"
-														},
-														"type": "array"
-													},
-													"progUri": {
-														"items": {
-															"properties": {
-																"userId": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"fileUri": {
-																	"type": "string"
-																},
-																"id": {
-																	"type": "number",
-																	"format": "double"
-																},
-																"name": {
-																	"type": "string"
-																}
-															},
-															"required": [
-																"userId",
-																"fileUri",
-																"id",
-																"name"
-															],
-															"type": "object"
-														},
-														"type": "array"
-													}
-												},
-												"required": [
-													"stat",
-													"progUri"
-												],
-												"type": "object"
-											},
-											{
-												"properties": {
-													"id": {
-														"type": "number",
-														"format": "double"
-													},
-													"username": {
-														"type": "string"
-													},
-													"imageUri": {
-														"type": "string"
-													},
-													"role": {
-														"$ref": "#/components/schemas/_36_Enums.Role"
-													},
-													"phone": {
-														"type": "string"
-													},
-													"weight": {
-														"type": "number",
-														"format": "double"
-													},
-													"age": {
-														"type": "number",
-														"format": "double"
-													},
-													"surname": {
-														"type": "string"
-													},
-													"name": {
-														"type": "string"
-													}
-												},
-												"required": [
-													"id",
-													"username",
-													"imageUri",
-													"role",
-													"phone",
-													"weight",
-													"age",
-													"surname",
-													"name"
-												],
-												"type": "object"
-											}
-										]
+										"$ref": "#/components/schemas/UserResponse"
 									},
 									"type": "array"
 								}
@@ -1103,128 +570,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"properties": {
-												"stat": {
-													"items": {
-														"properties": {
-															"deadlift": {
-																"type": "number",
-																"format": "double"
-															},
-															"bench": {
-																"type": "number",
-																"format": "double"
-															},
-															"squat": {
-																"type": "number",
-																"format": "double"
-															},
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															}
-														},
-														"required": [
-															"deadlift",
-															"bench",
-															"squat",
-															"userId",
-															"id"
-														],
-														"type": "object"
-													},
-													"type": "array"
-												},
-												"progUri": {
-													"items": {
-														"properties": {
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"fileUri": {
-																"type": "string"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															},
-															"name": {
-																"type": "string"
-															}
-														},
-														"required": [
-															"userId",
-															"fileUri",
-															"id",
-															"name"
-														],
-														"type": "object"
-													},
-													"type": "array"
-												}
-											},
-											"required": [
-												"stat",
-												"progUri"
-											],
-											"type": "object"
-										},
-										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"username": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"phone": {
-													"type": "string"
-												},
-												"weight": {
-													"type": "number",
-													"format": "double"
-												},
-												"age": {
-													"type": "number",
-													"format": "double"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"id",
-												"username",
-												"imageUri",
-												"role",
-												"phone",
-												"weight",
-												"age",
-												"surname",
-												"name"
-											],
-											"type": "object"
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1278,128 +624,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"properties": {
-												"stat": {
-													"items": {
-														"properties": {
-															"deadlift": {
-																"type": "number",
-																"format": "double"
-															},
-															"bench": {
-																"type": "number",
-																"format": "double"
-															},
-															"squat": {
-																"type": "number",
-																"format": "double"
-															},
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															}
-														},
-														"required": [
-															"deadlift",
-															"bench",
-															"squat",
-															"userId",
-															"id"
-														],
-														"type": "object"
-													},
-													"type": "array"
-												},
-												"progUri": {
-													"items": {
-														"properties": {
-															"userId": {
-																"type": "number",
-																"format": "double"
-															},
-															"fileUri": {
-																"type": "string"
-															},
-															"id": {
-																"type": "number",
-																"format": "double"
-															},
-															"name": {
-																"type": "string"
-															}
-														},
-														"required": [
-															"userId",
-															"fileUri",
-															"id",
-															"name"
-														],
-														"type": "object"
-													},
-													"type": "array"
-												}
-											},
-											"required": [
-												"stat",
-												"progUri"
-											],
-											"type": "object"
-										},
-										{
-											"properties": {
-												"id": {
-													"type": "number",
-													"format": "double"
-												},
-												"username": {
-													"type": "string"
-												},
-												"imageUri": {
-													"type": "string"
-												},
-												"role": {
-													"$ref": "#/components/schemas/_36_Enums.Role"
-												},
-												"phone": {
-													"type": "string"
-												},
-												"weight": {
-													"type": "number",
-													"format": "double"
-												},
-												"age": {
-													"type": "number",
-													"format": "double"
-												},
-												"surname": {
-													"type": "string"
-												},
-												"name": {
-													"type": "string"
-												}
-											},
-											"required": [
-												"id",
-												"username",
-												"imageUri",
-												"role",
-												"phone",
-												"weight",
-												"age",
-												"surname",
-												"name"
-											],
-											"type": "object"
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1433,49 +658,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"deadlift": {
-													"type": "number",
-													"format": "double"
-												},
-												"bench": {
-													"type": "number",
-													"format": "double"
-												},
-												"squat": {
-													"type": "number",
-													"format": "double"
-												},
-												"userId": {
-													"type": "number",
-													"format": "double"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
-												}
-											},
-											"required": [
-												"deadlift",
-												"bench",
-												"squat",
-												"userId",
-												"id"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"USER_NOT_EXIST",
-												"ALREADY_EXIST"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1532,38 +715,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"properties": {
-											"deadlift": {
-												"type": "number",
-												"format": "double"
-											},
-											"bench": {
-												"type": "number",
-												"format": "double"
-											},
-											"squat": {
-												"type": "number",
-												"format": "double"
-											},
-											"userId": {
-												"type": "number",
-												"format": "double"
-											},
-											"id": {
-												"type": "number",
-												"format": "double"
-											}
-										},
-										"required": [
-											"deadlift",
-											"bench",
-											"squat",
-											"userId",
-											"id"
-										],
-										"type": "object"
-									},
+									"items": {},
 									"type": "array"
 								}
 							}
@@ -1587,48 +739,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"deadlift": {
-													"type": "number",
-													"format": "double"
-												},
-												"bench": {
-													"type": "number",
-													"format": "double"
-												},
-												"squat": {
-													"type": "number",
-													"format": "double"
-												},
-												"userId": {
-													"type": "number",
-													"format": "double"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
-												}
-											},
-											"required": [
-												"deadlift",
-												"bench",
-												"squat",
-												"userId",
-												"id"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"STATS_NOT_FOUND"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1686,38 +797,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"deadlift": {
-											"type": "number",
-											"format": "double"
-										},
-										"bench": {
-											"type": "number",
-											"format": "double"
-										},
-										"squat": {
-											"type": "number",
-											"format": "double"
-										},
-										"userId": {
-											"type": "number",
-											"format": "double"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"deadlift",
-										"bench",
-										"squat",
-										"userId",
-										"id"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1749,38 +829,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"deadlift": {
-											"type": "number",
-											"format": "double"
-										},
-										"bench": {
-											"type": "number",
-											"format": "double"
-										},
-										"squat": {
-											"type": "number",
-											"format": "double"
-										},
-										"userId": {
-											"type": "number",
-											"format": "double"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"deadlift",
-										"bench",
-										"squat",
-										"userId",
-										"id"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1814,31 +863,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"userId": {
-											"type": "number",
-											"format": "double"
-										},
-										"fileUri": {
-											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										},
-										"name": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"userId",
-										"fileUri",
-										"id",
-										"name"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1889,31 +914,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"userId": {
-											"type": "number",
-											"format": "double"
-										},
-										"fileUri": {
-											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										},
-										"name": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"userId",
-										"fileUri",
-										"id",
-										"name"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1957,6 +958,83 @@
 				}
 			}
 		},
+		"/payment/toggle": {
+			"post": {
+				"operationId": "ToggleMonth",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentYearSchema"
+								}
+							}
+						}
+					}
+				},
+				"description": "Bascule le statut de paiement d'un mois spécifique",
+				"tags": [
+					"Paiement"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TogglePaymentDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/payment/{userId}": {
+			"get": {
+				"operationId": "GetPaymentsByUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/PaymentYearSchema"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Récupère l'historique des paiements d'un utilisateur",
+				"tags": [
+					"Paiement"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
 		"/course": {
 			"post": {
 				"operationId": "Create",
@@ -1965,56 +1043,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"coachId": {
-											"type": "number",
-											"format": "double"
-										},
-										"updatedAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"createdAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"maxParticipants": {
-											"type": "number",
-											"format": "double"
-										},
-										"durationMinutes": {
-											"type": "number",
-											"format": "double"
-										},
-										"startAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"description": {
-											"type": "string"
-										},
-										"title": {
-											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"coachId",
-										"updatedAt",
-										"createdAt",
-										"maxParticipants",
-										"durationMinutes",
-										"startAt",
-										"description",
-										"title",
-										"id"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -2079,56 +1108,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"properties": {
-											"coachId": {
-												"type": "number",
-												"format": "double"
-											},
-											"updatedAt": {
-												"type": "string",
-												"format": "date-time"
-											},
-											"createdAt": {
-												"type": "string",
-												"format": "date-time"
-											},
-											"maxParticipants": {
-												"type": "number",
-												"format": "double"
-											},
-											"durationMinutes": {
-												"type": "number",
-												"format": "double"
-											},
-											"startAt": {
-												"type": "string",
-												"format": "date-time"
-											},
-											"description": {
-												"type": "string"
-											},
-											"title": {
-												"type": "string"
-											},
-											"id": {
-												"type": "number",
-												"format": "double"
-											}
-										},
-										"required": [
-											"coachId",
-											"updatedAt",
-											"createdAt",
-											"maxParticipants",
-											"durationMinutes",
-											"startAt",
-											"description",
-											"title",
-											"id"
-										],
-										"type": "object"
-									},
+									"items": {},
 									"type": "array"
 								}
 							}
@@ -2154,66 +1134,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"coachId": {
-													"type": "number",
-													"format": "double"
-												},
-												"updatedAt": {
-													"type": "string",
-													"format": "date-time"
-												},
-												"createdAt": {
-													"type": "string",
-													"format": "date-time"
-												},
-												"maxParticipants": {
-													"type": "number",
-													"format": "double"
-												},
-												"durationMinutes": {
-													"type": "number",
-													"format": "double"
-												},
-												"startAt": {
-													"type": "string",
-													"format": "date-time"
-												},
-												"description": {
-													"type": "string"
-												},
-												"title": {
-													"type": "string"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
-												}
-											},
-											"required": [
-												"coachId",
-												"updatedAt",
-												"createdAt",
-												"maxParticipants",
-												"durationMinutes",
-												"startAt",
-												"description",
-												"title",
-												"id"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"NOT-EXIST"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -2245,56 +1166,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"coachId": {
-											"type": "number",
-											"format": "double"
-										},
-										"updatedAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"createdAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"maxParticipants": {
-											"type": "number",
-											"format": "double"
-										},
-										"durationMinutes": {
-											"type": "number",
-											"format": "double"
-										},
-										"startAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"description": {
-											"type": "string"
-										},
-										"title": {
-											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"coachId",
-										"updatedAt",
-										"createdAt",
-										"maxParticipants",
-										"durationMinutes",
-										"startAt",
-										"description",
-										"title",
-										"id"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -2368,56 +1240,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"properties": {
-										"coachId": {
-											"type": "number",
-											"format": "double"
-										},
-										"updatedAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"createdAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"maxParticipants": {
-											"type": "number",
-											"format": "double"
-										},
-										"durationMinutes": {
-											"type": "number",
-											"format": "double"
-										},
-										"startAt": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"description": {
-											"type": "string"
-										},
-										"title": {
-											"type": "string"
-										},
-										"id": {
-											"type": "number",
-											"format": "double"
-										}
-									},
-									"required": [
-										"coachId",
-										"updatedAt",
-										"createdAt",
-										"maxParticipants",
-										"durationMinutes",
-										"startAt",
-										"description",
-										"title",
-										"id"
-									],
-									"type": "object"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -2451,45 +1274,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"courseId": {
-													"type": "number",
-													"format": "double"
-												},
-												"createdAt": {
-													"type": "string",
-													"format": "date-time"
-												},
-												"userId": {
-													"type": "number",
-													"format": "double"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
-												}
-											},
-											"required": [
-												"courseId",
-												"createdAt",
-												"userId",
-												"id"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"NOT-EXIST",
-												"ALREADY-REGISTERED",
-												"FULL"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -2537,44 +1322,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"courseId": {
-													"type": "number",
-													"format": "double"
-												},
-												"createdAt": {
-													"type": "string",
-													"format": "date-time"
-												},
-												"userId": {
-													"type": "number",
-													"format": "double"
-												},
-												"id": {
-													"type": "number",
-													"format": "double"
-												}
-											},
-											"required": [
-												"courseId",
-												"createdAt",
-												"userId",
-												"id"
-											],
-											"type": "object"
-										},
-										{
-											"type": "string",
-											"enum": [
-												"NOT-EXIST",
-												"NOT-REGISTERED"
-											]
-										}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -2623,33 +1371,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"properties": {
-											"courseId": {
-												"type": "number",
-												"format": "double"
-											},
-											"createdAt": {
-												"type": "string",
-												"format": "date-time"
-											},
-											"userId": {
-												"type": "number",
-												"format": "double"
-											},
-											"id": {
-												"type": "number",
-												"format": "double"
-											}
-										},
-										"required": [
-											"courseId",
-											"createdAt",
-											"userId",
-											"id"
-										],
-										"type": "object"
-									},
+									"items": {},
 									"type": "array"
 								}
 							}
@@ -2681,8 +1403,15 @@
 			"post": {
 				"operationId": "Login",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/loginDto"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
@@ -2706,8 +1435,15 @@
 			"post": {
 				"operationId": "Register",
 				"responses": {
-					"204": {
-						"description": "No content"
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/registerDto"
+								}
+							}
+						}
 					}
 				},
 				"tags": [

@@ -14,8 +14,7 @@ const router = Router()
 const DEFAULT_PASSWORD = '123456'
 
 function generateUsername(name: string, surname: string): string {
-  const timestamp = Date.now().toString(36).slice(-4)
-  return (name.charAt(0) + surname + timestamp).toLowerCase().replace(/\s/g, '')
+  return (name.charAt(0) + surname).toLowerCase().replace(/\s/g, '')
 }
 
 export async function createToken(id: number, role: Role, username: string) {
@@ -72,6 +71,11 @@ router.post(
       Number(process.env.SALT_ROUND),
     )
 
+    const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG', 'ATHLETE_FULL']
+
+    const finalRole =
+      role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
+
     const user = await us.create(
       name,
       surname,
@@ -80,7 +84,7 @@ router.post(
       username,
       phone,
       hashed,
-      role,
+      finalRole,
     )
 
     if (user == 'ALREADY-EXIST') {

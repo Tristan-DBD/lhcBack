@@ -25,12 +25,6 @@ class registerDto {
   @Example('0601020304')
   phone!: string
 
-  @Example('tdebord')
-  username!: string
-
-  @Example('1234')
-  password!: string
-
   @Example(Role.ATHLETE_PROG)
   role!: Role
 }

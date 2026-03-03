@@ -29,9 +29,21 @@ model User {
   stat          Stats[]
   courses       Courses[]      @relation("CoachCourses")
   registrations Registration[]
+  payments      PaymentYear[]
 
   username  String @unique
   password  String
+}
+
+model PaymentYear {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  year      Int
+  status    Json
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, year])
 }
 
 model Stats {

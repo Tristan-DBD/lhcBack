@@ -20,8 +20,7 @@ import { ProgramService } from '../service/program'
 const DEFAULT_PASSWORD = '123456'
 
 function generateUsername(name: string, surname: string): string {
-  const timestamp = Date.now().toString(36).slice(-4)
-  return (name.charAt(0) + surname + timestamp).toLowerCase().replace(/\s/g, '')
+  return (name.charAt(0) + surname).toLowerCase().replace(/\s/g, '')
 }
 
 const router = Router()
@@ -57,7 +56,6 @@ router.post(
       hashed,
       finalRole,
     )
-
     if (user == 'ALREADY-EXIST')
       return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
     return handlerResponse(res, 201, true, user)

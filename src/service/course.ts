@@ -22,7 +22,15 @@ export const coursesService = {
     return course
   },
   async findAll() {
-    const courses = await prisma.courses.findMany()
+    const courses = await prisma.courses.findMany({
+      include: {
+        registrations: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    })
     return courses
   },
   async findById(id: number) {
@@ -143,6 +151,9 @@ export const coursesService = {
     const registrations = await prisma.registration.findMany({
       where: {
         courseId,
+      },
+      include: {
+        user: true,
       },
     })
     return registrations
