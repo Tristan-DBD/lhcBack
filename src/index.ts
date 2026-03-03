@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import dotenv from 'dotenv'
 const env = process.env.NODE_ENV || 'dev'
 dotenv.config({ path: `.env.${env}` })
@@ -82,9 +81,20 @@ server.get('/', (req: Request, res: Response) => {
   res.redirect('/doc')
 })
 
-// swagger
+// swagger — CSP assoupli nécessaire pour que swagger-ui fonctionne (scripts inline)
 server.use(
   '/doc',
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        workerSrc: ["'self'", 'blob:'],
+      },
+    },
+  }),
   swaggerUi.serve,
   swaggerUi.setup(swagger, {
     swaggerOptions: {

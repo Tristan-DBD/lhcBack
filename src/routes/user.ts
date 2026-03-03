@@ -56,7 +56,6 @@ router.post(
       hashed,
       finalRole,
     )
-
     if (user == 'ALREADY-EXIST')
       return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
     return handlerResponse(res, 201, true, user)

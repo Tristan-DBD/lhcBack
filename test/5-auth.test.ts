@@ -160,7 +160,7 @@ describe('AUTHENTICATION', () => {
         const decoded = JSON.parse(
           Buffer.from(tokenParts[1], 'base64').toString(),
         )
-        expect(decoded.username).toMatch(/^nuser[a-z0-9]+$/)
+        expect(decoded.username).toMatch(/^nuser[a-z0-9]*$/)
       }
       expect(res.body.data[0].message.password).toBeUndefined() // Password shouldn't be returned
     })

@@ -21,7 +21,7 @@ const router = Router()
 
 router.post(
   '/',
-  rateLimiter(1, 10, { motif: 'create' }),
+  rateLimiter(1, 20, { motif: 'create' }),
   validate(createCourseSchema),
   authenticate,
   authorize('COACH'),
@@ -44,7 +44,6 @@ router.get(
   rateLimiter(1, 40, { motif: 'get' }),
   authenticate,
   authorize('CO'),
-  cacheMiddleware('courses', { ttl: 300 }), // Cache de 5 minutes
   async (req: Request, res: Response) => {
     const courses = await cs.findAll()
     return handlerResponse(res, 200, true, courses)

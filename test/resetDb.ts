@@ -17,14 +17,19 @@ async function resetRegisterTable() {
   await prisma.registration.deleteMany()
 }
 
+async function resetProgramTable() {
+  await prisma.program.deleteMany()
+}
+
+async function resetPaymentTable() {
+  await prisma.paymentYear.deleteMany()
+}
+
 export async function resetDb() {
+  await resetPaymentTable()
   await resetRegisterTable()
   await resetCourseTable()
   await resetStatTable()
-  await resetUserTable()
   await resetProgramTable()
-}
-
-async function resetProgramTable() {
-  await prisma.program.deleteMany()
+  await resetUserTable()
 }

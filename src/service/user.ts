@@ -36,8 +36,15 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
+
+    // Initialisation automatique des paiements pour l'année en cours
+    const currentYear = new Date().getFullYear()
+    const { PaymentService } = require('./payment')
+    await PaymentService.getOrCreatePaymentYear(user.id, currentYear)
+
     return user
   },
 
@@ -52,6 +59,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
     return list
@@ -65,6 +73,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
     return user
@@ -79,6 +88,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
@@ -94,6 +104,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
@@ -106,6 +117,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
@@ -136,6 +148,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
     return user
@@ -144,6 +157,8 @@ export const UserService = {
   async delete(id: number) {
     const exist = await this.findById(id)
     if (exist == 'NOT-EXIST') return 'NOT-EXIST'
+    // Supprimer les PaymentYear liées (contrainte FK RESTRICT)
+    await prisma.paymentYear.deleteMany({ where: { userId: id } })
     const user = await prisma.user.delete({ where: { id } })
     return user
   },
@@ -160,6 +175,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
   },
@@ -176,6 +192,7 @@ export const UserService = {
       include: {
         stat: true,
         progUri: true,
+        payments: true,
       },
     })
   },

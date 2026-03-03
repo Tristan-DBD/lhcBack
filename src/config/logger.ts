@@ -19,11 +19,9 @@ const prodFormat = winston.format.combine(
   winston.format.json(),
 )
 
-// Déterminer si on active le log dans des fichiers
-// Activé par défaut en développement, désactivé en prod sauf si ENABLE_FILE_LOGGING est "true"
-const enableFileLogging =
-  process.env.ENABLE_FILE_LOGGING === 'true' ||
-  (process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'production')
+// File logging uniquement si explicitement activé via ENABLE_FILE_LOGGING=true
+// En production/déploiement serverless, le filesystem est read-only → console uniquement
+const enableFileLogging = process.env.ENABLE_FILE_LOGGING === 'true'
 
 const transports: winston.transport[] = [
   new winston.transports.Console({
