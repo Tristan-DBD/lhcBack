@@ -32,7 +32,6 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
         password: '1234',
         role: 'COACH',
       })
-
     coachId = createdCoach.body.data[0].message.id
 
     // Création des utilisateurs
@@ -55,7 +54,6 @@ describe('Test CRUD pour les stats des utilisateurs', () => {
   afterAll(async () => {
     await resetDb()
   })
-
   describe('CREATE (POST /api/stats)', () => {
     it('COACH -> Authorize', async () => {
       const res = await request(server)

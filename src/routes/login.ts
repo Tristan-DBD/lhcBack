@@ -14,8 +14,7 @@ const router = Router()
 const DEFAULT_PASSWORD = '123456'
 
 function generateUsername(name: string, surname: string): string {
-  const timestamp = Date.now().toString(36).slice(-4)
-  return (name.charAt(0) + surname + timestamp).toLowerCase().replace(/\s/g, '')
+  return (name.charAt(0) + surname).toLowerCase()
 }
 
 export async function createToken(id: number, role: Role, username: string) {
@@ -65,6 +64,10 @@ router.post(
   validate(createUserSchema),
   async (req: Request, res: Response) => {
     const { name, surname, age, weight, phone, role } = req.body
+    const allowedRoles = ['ATHLETE_CO', 'ATHLETE_PROG', 'ATHLETE_FULL']
+
+    const finalRole =
+      role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
 
     const username = generateUsername(name, surname)
     const hashed = await bcrypt.hash(
@@ -80,7 +83,7 @@ router.post(
       username,
       phone,
       hashed,
-      role,
+      finalRole,
     )
 
     if (user == 'ALREADY-EXIST') {

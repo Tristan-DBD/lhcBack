@@ -32,12 +32,15 @@ server.use(
         defaultSrc: ['\'self\''],
         styleSrc: ['\'self\'', '\'unsafe-inline\''],
         scriptSrc: ['\'self\''],
+        imgSrc: ["'self'", 'data:', 'https:'],
         connectSrc: [
           "'self'",
           `http://${yourIp}`,
           `https://${yourIp}`,
           `http://${yourIp}:3000`,
           `https://${yourIp}:3000`,
+          `http://${yourIp}:5000`,
+          `https://${yourIp}:5000`,
         ],
       },
     },
@@ -71,7 +74,7 @@ server.use(requestLogger)
 server.use(errorLogger)
 
 server.use('/favicon.ico', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../public', 'logoLhc.png'))
+  res.sendFile(path.join(__dirname, '..', 'public', 'logoLhc.png'))
 })
 
 // redirect vers le swagger

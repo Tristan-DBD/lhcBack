@@ -94,7 +94,6 @@ describe('Test endpoints de santé', () => {
   describe('GET /favicon.ico', () => {
     it("PUBLIC -> Retourne l'icône", async () => {
       const res = await request(server).get('/favicon.ico')
-
       expect(res.status).toBe(200)
       expect(res.headers['content-type']).toContain('image')
     })

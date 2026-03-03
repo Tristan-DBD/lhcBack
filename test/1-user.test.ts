@@ -150,13 +150,11 @@ describe('Test CRUD pour les utilisateurs', () => {
         .set('Authorization', `Bearer ${coachToken}`)
       const imageUri = user.body.data.imageUri
       console.log(user.body.data)
-
       // Vérifier si imageUri existe avant de tester
       if (imageUri) {
         const res = await request(server)
           .delete(`/api/user/${coachTestId}/profile-image`)
           .set('Authorization', `Bearer ${coachToken}`)
-
         await FileTestHelper.expectFileNotExists(imageUri)
         expect(res.body.success).toBe(true)
       } else {
@@ -269,6 +267,7 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 35,
           weight: 85,
           phone: '0601020308',
+
         })
 
       expect(res.body.success).toBe(true)
@@ -285,6 +284,7 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 30,
           weight: 80,
           phone: '0601020309',
+
         })
 
       expect(res.status).toBe(403)

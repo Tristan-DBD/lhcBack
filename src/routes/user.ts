@@ -20,8 +20,7 @@ import { ProgramService } from '../service/program'
 const DEFAULT_PASSWORD = '123456'
 
 function generateUsername(name: string, surname: string): string {
-  const timestamp = Date.now().toString(36).slice(-4)
-  return (name.charAt(0) + surname + timestamp).toLowerCase().replace(/\s/g, '')
+  return (name.charAt(0) + surname).toLowerCase()
 }
 
 const router = Router()
@@ -106,6 +105,8 @@ router.get(
   },
 )
 
+
+
 router.get(
   '/get-coach',
   rateLimiter(1, 60, { motif: 'get' }),
@@ -183,7 +184,6 @@ router.delete(
       Number(req.params.id),
     )
     console.log(deleteAllPrograms)
-
     const user = await us.delete(Number(req.params.id))
 
     if (user == 'NOT-EXIST') {

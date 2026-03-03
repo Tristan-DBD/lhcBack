@@ -123,7 +123,6 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
     it('ATHLETE_CO -> Unauthorize', async () => {
       // Créer un athlete ATHLETE_CO
       const athleteCoToken = await createToken(3, 'ATHLETE_CO', 'athletecouser')
-
       const res = await request(server)
         .get(`/api/user/program/${athleteTestId}`)
         .set('Authorization', `Bearer ${athleteCoToken}`)

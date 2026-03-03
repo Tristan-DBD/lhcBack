@@ -19,15 +19,20 @@ const prodFormat = winston.format.combine(
   winston.format.json(),
 )
 
-// Création du logger
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: prodFormat,
-  defaultMeta: {
-    service: 'lhcBack',
-    version: process.env.npm_package_version || '1.0.0',
-  },
-  transports: [
+// Déterminer si on active le log dans des fichiers
+// Activé par défaut en développement, désactivé en prod sauf si ENABLE_FILE_LOGGING est "true"
+const enableFileLogging =
+  process.env.ENABLE_FILE_LOGGING === 'true' ||
+  (process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'production')
+
+const transports: winston.transport[] = [
+  new winston.transports.Console({
+    format: process.env.NODE_ENV === 'prod' ? prodFormat : devFormat,
+  }),
+]
+
+if (enableFileLogging) {
+  transports.push(
     // fichier pour les erreurs uniquement
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -46,25 +51,28 @@ const logger = winston.createLogger({
       maxsize: 5242880, // 5MB
       maxFiles: 5,
     }),
-  ],
+  )
+}
 
-  // Gestion des exceptions non capturées
-  exceptionHandlers: [
-    new winston.transports.File({ filename: 'logs/exceptions.log' }),
-  ],
-
-  // Gestion des rejects de promises
-  rejectionHandlers: [
-    new winston.transports.File({ filename: 'logs/rejections.log' }),
-  ],
+// Création du logger
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: prodFormat,
+  defaultMeta: {
+    service: 'lhcBack',
+    version: process.env.npm_package_version || '1.0.0',
+  },
+  transports,
+  // Gestion des exceptions et rejets uniquement si le log fichier est activé
+  exitOnError: false,
 })
 
-// Ajouter la console en développement
-if (process.env.NODE_ENV !== 'prod') {
-  logger.add(
-    new winston.transports.Console({
-      format: devFormat,
-    }),
+if (enableFileLogging) {
+  logger.exceptions.handle(
+    new winston.transports.File({ filename: 'logs/exceptions.log' }),
+  )
+  logger.rejections.handle(
+    new winston.transports.File({ filename: 'logs/rejections.log' }),
   )
 }
 
