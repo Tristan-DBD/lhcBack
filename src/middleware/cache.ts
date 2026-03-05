@@ -45,11 +45,11 @@ export const cacheMiddleware = (prefix: string, options: CacheOptions = {}) => {
       const cachedResponse = await cacheService.get(cacheKey)
 
       if (cachedResponse) {
-        console.log(`Cache HIT for key: ${cacheKey}`)
+
         return res.status(200).json(cachedResponse)
       }
 
-      console.log(`Cache MISS for key: ${cacheKey}`)
+
 
       // Intercepter la réponse pour la mettre en cache
       const originalJson = res.json
@@ -100,7 +100,7 @@ export const invalidateCacheMiddleware = (patterns: string[]) => {
         try {
           for (const pattern of patterns) {
             await cacheService.delPattern(pattern)
-            console.log(`Invalidated cache pattern: ${pattern}`)
+
           }
         } catch (error) {
           console.error('Failed to invalidate cache:', error)

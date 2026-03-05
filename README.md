@@ -25,6 +25,7 @@ AppCoach est une API RESTful complète pour la gestion de coaching sportif, perm
 
 ### Gestion des Utilisateurs
 - **Authentification sécurisée** avec JWT et bcrypt
+- **Changement de mot de passe obligatoire** à la première connexion
 - **Rôles multiples** : Coach, Athlète Pro, Athlète Co, Athlète Full, Admin
 - **Profils complets** avec informations sportives (poids, stats)
 - **Gestion des photos de profil** avec upload d'images
@@ -55,9 +56,10 @@ AppCoach est une API RESTful complète pour la gestion de coaching sportif, perm
 - **Emails de confirmation** d'inscription aux cours
 - **Notifications automatiques** pour les nouveaux cours disponibles
 
-### Améliorations Prévues
-- **Suivi de paiement** pour les coachs (validation manuelle des paiements reçus)
-- **Protection anti-brute-force** avancée sur l'authentification
+### Suivi de Paiement & Admin
+- **Suivi de paiement annuel** pour les athlètes
+- **Validation manuelle** des paiements par les coachs/admin
+- **Tableau de bord admin** pour la gestion des accès
 
 ## 📁 Structure du Projet
 
@@ -188,6 +190,10 @@ npm run test:prod
   
 - **Stats** : Performances sportives des athlètes
   - Suivi des 3 mouvements principaux : Squat, Bench, Deadlift
+
+- **PaymentYear** : Suivi des paiements annuels
+  - État de paiement par mois (Janvier à Décembre)
+  - Associé à un utilisateur et une année spécifique
 
 ## 🚀 Déploiement
 

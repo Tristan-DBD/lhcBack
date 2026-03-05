@@ -104,8 +104,6 @@ router.get(
   },
 )
 
-
-
 router.get(
   '/get-coach',
   rateLimiter(1, 60, { motif: 'get' }),
@@ -182,7 +180,7 @@ router.delete(
     const deleteAllPrograms = await ProgramService.deleteAll(
       Number(req.params.id),
     )
-    console.log(deleteAllPrograms)
+
     const user = await us.delete(Number(req.params.id))
 
     if (user == 'NOT-EXIST') {

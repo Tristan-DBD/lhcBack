@@ -13,7 +13,6 @@ import {
   UploadedFiles,
   Security,
 } from 'tsoa'
-import { UserService as us } from '../../service/user'
 
 class CreateUserDto {
   @Example('Tristan')

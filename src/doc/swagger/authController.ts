@@ -29,6 +29,11 @@ class registerDto {
   role!: Role
 }
 
+class changePasswordDto {
+  @Example('123456')
+  newPassword!: string
+}
+
 @Route('auth')
 @Tags('Authentication')
 export class AuthController {
@@ -41,6 +46,12 @@ export class AuthController {
   @Post('/register')
   @Consumes('application/json')
   public async register(@Body() body: registerDto) {
+    return body
+  }
+
+  @Post('/change-password')
+  @Consumes('application/json')
+  public async changePassword(@Body() body: changePasswordDto) {
     return body
   }
 }

@@ -288,6 +288,19 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"changePasswordDto": {
+				"properties": {
+					"newPassword": {
+						"type": "string",
+						"example": "123456"
+					}
+				},
+				"required": [
+					"newPassword"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {}
@@ -1457,6 +1470,38 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/registerDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/change-password": {
+			"post": {
+				"operationId": "ChangePassword",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/changePasswordDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/changePasswordDto"
 							}
 						}
 					}

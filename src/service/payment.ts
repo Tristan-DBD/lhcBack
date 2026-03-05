@@ -44,7 +44,8 @@ export class PaymentService {
      */
     static async toggleMonth(userId: number, year: number, month: string) {
         const paymentYear = await this.getOrCreatePaymentYear(userId, year)
-        const status = paymentYear.status as Record<string, boolean>
+        // Créer une copie pour s'assurer que Prisma détecte le changement du JSON
+        const status = { ...(paymentYear.status as Record<string, boolean>) }
 
         if (status[month] !== undefined) {
             status[month] = !status[month]

@@ -27,16 +27,16 @@ class CacheService {
       })
 
       this.client.on('connect', () => {
-        console.log('Redis Client Connected')
+
         this.isConnected = true
       })
 
       this.client.on('disconnect', () => {
-        console.log('Redis Client Disconnected')
+
         this.isConnected = false
       })
     } else {
-      console.log('Using memory cache (development mode)')
+
     }
   }
 

@@ -5,9 +5,10 @@ import { UserService as us } from '../service/user'
 import { Role } from '@prisma/client'
 import { handlerResponse } from '../middleware/handler'
 import { rateLimiter } from '../middleware/rateLimiter'
-import { loginSchema } from '../schemas/auth'
+import { changePasswordSchema, loginSchema } from '../schemas/auth'
 import { createUserSchema } from '../schemas/user'
 import validate from '../middleware/validate'
+import { authenticate } from '../middleware/auth'
 
 const router = Router()
 
@@ -95,6 +96,33 @@ router.post(
       true,
       await createToken(user.id, user.role, user.username),
     )
+  },
+)
+
+router.post(
+  '/change-password',
+  authenticate,
+  validate(changePasswordSchema),
+  async (req: Request, res: Response) => {
+    const { newPassword } = req.body
+    const userId = (req as any).user.id
+
+    try {
+      const hashed = await bcrypt.hash(
+        newPassword,
+        Number(process.env.SALT_ROUND),
+      )
+      await us.update(Number(userId), { password: hashed })
+
+      return handlerResponse(
+        res,
+        200,
+        true,
+        'Mot de passe mis à jour avec succès',
+      )
+    } catch (e) {
+      return handlerResponse(res, 500, false, 'Erreur lors de la mise à jour')
+    }
   },
 )
 
