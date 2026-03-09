@@ -65,7 +65,7 @@ describe('AUTHENTICATION', () => {
 
     it('ERROR -> Invalid password', async () => {
       const res = await request(server).post('/api/auth/login').send({
-        username: 'coachuser',
+        username: coachUser.username,
         password: 'wrongpassword',
       })
 
@@ -86,7 +86,7 @@ describe('AUTHENTICATION', () => {
 
     it('ERROR -> Missing password', async () => {
       const res = await request(server).post('/api/auth/login').send({
-        username: 'coachuser',
+        username: coachUser.username,
       })
 
       expect([400, 429]).toContain(res.status)
@@ -106,7 +106,7 @@ describe('AUTHENTICATION', () => {
 
     it('RATE LIMIT -> Too many attempts', async () => {
       const loginData = {
-        username: 'coachuser',
+        username: coachUser.username,
         password: 'wrongpassword',
       }
 
@@ -125,7 +125,7 @@ describe('AUTHENTICATION', () => {
     it('SUCCESS -> Rate limit resets after successful login', async () => {
       // Attendre un peu ou faire un login réussi pour réinitialiser
       const res = await request(server).post('/api/auth/login').send({
-        username: 'coachuser',
+        username: coachUser.username,
         password: testPassword,
       })
 
@@ -151,11 +151,11 @@ describe('AUTHENTICATION', () => {
 
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
-      expect(res.body.data[0].message).toBeDefined()
-      expect(typeof res.body.data[0].message).toBe('string') // JWT token
+      expect(res.body.data[0].message.accessToken).toBeDefined()
+      expect(typeof res.body.data[0].message.accessToken).toBe('string') // JWT token
 
       // Vérifier que le token est valide en le décodant
-      const tokenParts = res.body.data[0].message.split('.')
+      const tokenParts = res.body.data[0].message.accessToken.split('.')
       if (tokenParts.length === 3) {
         const decoded = JSON.parse(
           Buffer.from(tokenParts[1], 'base64').toString(),

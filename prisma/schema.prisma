@@ -7,12 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  COACH
-  ATHLETE_PROG
-  ATHLETE_CO
-  ATHLETE_FULL
-  ADMIN
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  users       User[]
 }
 
 model User {
@@ -22,7 +21,8 @@ model User {
   age      Int
   weight   Float
   phone    String
-  role     Role
+  roleId   Int
+  role     Role    @relation(fields: [roleId], references: [id])
   imageUri String
 
   progUri       Program[]
@@ -30,9 +30,19 @@ model User {
   courses       Courses[]      @relation("CoachCourses")
   registrations Registration[]
   payments      PaymentYear[]
+  refreshTokens RefreshToken[]
 
   username  String @unique
   password  String
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model PaymentYear {

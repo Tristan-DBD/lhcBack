@@ -27,16 +27,13 @@ class CacheService {
       })
 
       this.client.on('connect', () => {
-
         this.isConnected = true
       })
 
       this.client.on('disconnect', () => {
-
         this.isConnected = false
       })
     } else {
-
     }
   }
 

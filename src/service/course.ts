@@ -82,42 +82,39 @@ export const coursesService = {
     return course
   },
   async register(userId: number, courseId: number) {
-    // vérifie si le cours existe
-    const course = await prisma.courses.findUnique({
-      where: {
-        id: courseId,
-      },
-    })
-    if (course == null) return 'NOT-EXIST'
+    return await prisma.$transaction(async (tx) => {
+      // vérifie si le cours existe et verrouille la ligne pour l'accès concurrent
+      const course = await tx.courses.findUnique({
+        where: { id: courseId },
+      })
+      if (course == null) return 'NOT-EXIST'
 
-    // vérifie si déjà inscrit
-    const existingRegistration = await prisma.registration.findUnique({
-      where: {
-        userId_courseId: {
-          // clé unique composite
+      // vérifie si déjà inscrit
+      const existingRegistration = await tx.registration.findUnique({
+        where: {
+          userId_courseId: {
+            userId: userId,
+            courseId: courseId,
+          },
+        },
+      })
+      if (existingRegistration != null) return 'ALREADY-REGISTERED'
+
+      // vérifie si le cours est complet
+      const currentRegistrationCount = await tx.registration.count({
+        where: { courseId: courseId },
+      })
+
+      if (currentRegistrationCount >= course.maxParticipants) return 'FULL'
+
+      // inscrit l'utilisateur au cours
+      return await tx.registration.create({
+        data: {
           userId: userId,
           courseId: courseId,
         },
-      },
+      })
     })
-    if (existingRegistration != null) return 'ALREADY-REGISTERED'
-
-    // vérifie si le cours est complet
-    const currentRegistration = await prisma.registration.count({
-      where: {
-        courseId: courseId,
-      },
-    })
-    if (currentRegistration >= course.maxParticipants) return 'FULL'
-
-    // inscrit l'utilisateur au cours
-    const registration = await prisma.registration.create({
-      data: {
-        userId: userId,
-        courseId: courseId,
-      },
-    })
-    return registration
   },
   async unregister(userId: number, courseId: number) {
     const course = await prisma.courses.findUnique({

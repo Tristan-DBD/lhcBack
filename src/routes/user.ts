@@ -17,7 +17,7 @@ import {
 } from '../middleware/cache'
 import { ProgramService } from '../service/program'
 
-const DEFAULT_PASSWORD = '123456'
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD!
 
 function generateUsername(name: string, surname: string): string {
   return (name.charAt(0) + surname).toLowerCase()
@@ -99,7 +99,10 @@ router.get(
   authorize('COACH'),
   cacheMiddleware('users', { ttl: 300 }), // Cache de 5 minutes pour la liste
   async (req: Request, res: Response) => {
-    const users = await us.findAll()
+    const roles = req.query.role as string | string[] | undefined
+    const roleNames = Array.isArray(roles) ? roles : roles ? [roles] : undefined
+
+    const users = await us.findAll(roleNames ? { roleNames } : {})
     return handlerResponse(res, 200, true, users)
   },
 )
@@ -177,21 +180,13 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const deleteAllPrograms = await ProgramService.deleteAll(
-      Number(req.params.id),
-    )
-
     const user = await us.delete(Number(req.params.id))
 
     if (user == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Utilisateur introuvable')
     }
 
-    if (!user.imageUri.includes('default.png')) {
-      await FileService.delete(user.imageUri)
-    }
-
-    return handlerResponse(res, 204, true, user)
+    return handlerResponse(res, 204, true, 'Utilisateur supprimé')
   },
 )
 

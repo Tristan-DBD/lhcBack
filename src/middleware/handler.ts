@@ -54,6 +54,19 @@ export function globalErrorHandler(
     return handlerResponse(res, 400, false, 'ID invalide')
   }
 
+  if (error.name === 'PrismaClientKnownRequestError') {
+    const prismaError = error as any
+    if (prismaError.code === 'P2002') {
+      const target = prismaError.meta?.target?.[0] || 'champ'
+      return handlerResponse(
+        res,
+        409,
+        false,
+        `La valeur pour ${target} est déjà utilisée`,
+      )
+    }
+  }
+
   if (error.name === 'TooManyRequestsError') {
     return handlerResponse(res, 429, false, error.message)
   }

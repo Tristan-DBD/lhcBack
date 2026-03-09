@@ -14,7 +14,7 @@ export default interface User {
   age: number
   weight: number
   phone: string
-  role: Role
+  role: string
   imageUri: string
   progUri: string
   stat: Stats[]

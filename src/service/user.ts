@@ -1,7 +1,7 @@
-import { Role } from '@prisma/client'
 import prisma from '../db-config'
 import user from '../interface/user'
 import { DEFAULT_PROFILE_IMAGE } from '../constants/image'
+import { RoleService } from './role'
 
 export const UserService = {
   async create(
@@ -12,8 +12,10 @@ export const UserService = {
     username: string,
     phone: string,
     password: string,
-    role: Role,
+    roleName: string,
   ) {
+    const role = await RoleService.getOrCreate(roleName)
+
     const data = {
       name: name,
       surname: surname,
@@ -22,13 +24,13 @@ export const UserService = {
       phone: phone,
       username: username,
       password: password,
-      role: role,
+      role: { connect: { id: role.id } },
       imageUri: DEFAULT_PROFILE_IMAGE,
     }
     const exist = await this.findByusername(username)
     if (exist !== 'NOT-EXIST') return 'ALREADY-EXIST'
 
-    const user = await prisma.user.create({
+    const createdUser = await prisma.user.create({
       data,
       omit: {
         password: true,
@@ -37,21 +39,22 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
 
     // Initialisation automatique des paiements pour l'année en cours
     const currentYear = new Date().getFullYear()
     const { PaymentService } = require('./payment')
-    await PaymentService.getOrCreatePaymentYear(user.id, currentYear)
+    await PaymentService.getOrCreatePaymentYear(createdUser.id, currentYear)
 
-    return user
+    return this.transformUser(createdUser)
   },
 
   async findAllCoach() {
     const list = await prisma.user.findMany({
       where: {
-        role: Role.COACH,
+        role: { name: 'COACH' },
       },
       omit: {
         password: true,
@@ -60,13 +63,22 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
-    return list
+    return list.map((u) => this.transformUser(u))
   },
 
-  async findAll() {
-    const user = await prisma.user.findMany({
+  async findAll(filters?: { roleNames?: string[] }) {
+    const users = await prisma.user.findMany({
+      where: {
+        ...(filters?.roleNames &&
+          filters.roleNames.length > 0 && {
+            role: {
+              name: { in: filters.roleNames },
+            },
+          }),
+      },
       omit: {
         password: true,
       },
@@ -74,9 +86,10 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
-    return user
+    return users.map((u) => this.transformUser(u))
   },
 
   async findById(id: number) {
@@ -89,10 +102,11 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
-    return user
+    return this.transformUser(user)
   },
 
   async findByusername(username: string) {
@@ -105,10 +119,11 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
-    return user
+    return this.transformUser(user)
   },
 
   async findByUsernameWithPassword(username: string) {
@@ -118,13 +133,20 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
     if (user == null) return 'NOT-EXIST'
-    return user
+    return this.transformUser(user, true)
   },
 
   async update(id: number, params: Partial<user>) {
+    let roleId: number | undefined
+    if (params.role) {
+      const role = await RoleService.getOrCreate(params.role)
+      roleId = role.id
+    }
+
     const data = {
       ...(params.name && { name: params.name }),
       ...(params.surname && { surname: params.surname }),
@@ -132,14 +154,13 @@ export const UserService = {
       ...(params.weight && { weight: params.weight }),
       ...(params.phone && { phone: params.phone }),
       ...(params.username && { username: params.username }),
-      ...(params.phone && { phone: params.phone }),
       ...(params.password && { password: params.password }),
-      ...(params.role && { role: params.role }),
+      ...(roleId && { role: { connect: { id: roleId } } }),
     }
     const exist = await this.findById(id)
     if (exist == 'NOT-EXIST') return 'NOT-EXIST'
 
-    const user = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id },
       data: { ...data },
       omit: {
@@ -149,22 +170,45 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
-    return user
+    return this.transformUser(updatedUser)
   },
 
   async delete(id: number) {
     const exist = await this.findById(id)
     if (exist == 'NOT-EXIST') return 'NOT-EXIST'
-    // Supprimer les PaymentYear liées (contrainte FK RESTRICT)
+
+    const { FileService } = require('../middleware/upload')
+
+    const programs = await prisma.program.findMany({ where: { userId: id } })
+    for (const prog of programs) {
+      if (prog.fileUri) {
+        try {
+          await FileService.delete(prog.fileUri)
+        } catch (e) {}
+      }
+    }
+
+    if (exist.imageUri && exist.imageUri !== DEFAULT_PROFILE_IMAGE) {
+      try {
+        await FileService.delete(exist.imageUri)
+      } catch (e) {}
+    }
+
     await prisma.paymentYear.deleteMany({ where: { userId: id } })
+    await prisma.program.deleteMany({ where: { userId: id } })
+    await prisma.stats.deleteMany({ where: { userId: id } })
+    await prisma.registration.deleteMany({ where: { userId: id } })
+    await prisma.refreshToken.deleteMany({ where: { userId: id } })
+
     const user = await prisma.user.delete({ where: { id } })
     return user
   },
 
   async updateImage(id: number, file: string) {
-    return await prisma.user.update({
+    const updated = await prisma.user.update({
       where: { id: id },
       data: {
         imageUri: file,
@@ -176,12 +220,14 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
+    return this.transformUser(updated)
   },
 
   async resetImage(id: number) {
-    return await prisma.user.update({
+    const updated = await prisma.user.update({
       where: { id: id },
       data: {
         imageUri: DEFAULT_PROFILE_IMAGE,
@@ -193,7 +239,33 @@ export const UserService = {
         stat: true,
         progUri: true,
         payments: true,
+        role: true,
       },
     })
+    return this.transformUser(updated)
+  },
+
+  // Helper pour transformer la relation Role en string (compatibilité frontend)
+  transformUser(u: any, includePassword = false) {
+    if (!u) return u
+    const { role, roleId, ...rest } = u
+    return {
+      ...rest,
+      role: role ? role.name : 'UNKNOWN',
+      ...(includePassword && u.password && { password: u.password }),
+    }
+  },
+
+  async seedRoles() {
+    const roles = [
+      'COACH',
+      'ATHLETE_PROG',
+      'ATHLETE_CO',
+      'ATHLETE_FULL',
+      'ADMIN',
+    ]
+    for (const name of roles) {
+      await RoleService.getOrCreate(name)
+    }
   },
 }
