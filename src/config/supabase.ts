@@ -8,8 +8,6 @@ export const supabase = () => {
     (process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === 'dev') &&
     !supabaseClient
   ) {
-
-
     const supabaseUrl = process.env.SUPABASE_URL!
     const supabaseAnonKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
     supabaseClient = createClient(supabaseUrl, supabaseAnonKey)

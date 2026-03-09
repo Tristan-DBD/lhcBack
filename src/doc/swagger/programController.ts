@@ -26,7 +26,10 @@ export class ProgramController {
 
   @Delete('/:id')
   @Security('BearerAuth')
-  public async delete(@Path() id: number, @Body() body: { name: string }): Promise<any> {
+  public async delete(
+    @Path() id: number,
+    @Body() body: { name: string },
+  ): Promise<any> {
     return {} as any
   }
 }

@@ -57,13 +57,17 @@ export class CourseController {
 
   @Post('/register')
   @Security('BearerAuth')
-  public async register(@Body() body: { userId: number; courseId: number }): Promise<any> {
+  public async register(
+    @Body() body: { userId: number; courseId: number },
+  ): Promise<any> {
     return {} as any
   }
 
   @Delete('/unregister')
   @Security('BearerAuth')
-  public async unregister(@Body() body: { userId: number; courseId: number }): Promise<any> {
+  public async unregister(
+    @Body() body: { userId: number; courseId: number },
+  ): Promise<any> {
     return {} as any
   }
 

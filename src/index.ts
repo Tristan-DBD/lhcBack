@@ -34,12 +34,13 @@ server.use(
         imgSrc: ["'self'", 'data:', 'https:'],
         connectSrc: [
           "'self'",
-          `http://${yourIp}`,
-          `https://${yourIp}`,
+          'http://localhost:4000',
+          `http://${yourIp}:4000`,
           `http://${yourIp}:3000`,
           `https://${yourIp}:3000`,
           `http://${yourIp}:5000`,
           `https://${yourIp}:5000`,
+          'https://vtcbjghhdlmjjwdieuxk.supabase.co', // Supabase URL
         ],
       },
     },
@@ -51,13 +52,14 @@ server.use(
     origin: [
       'http://localhost:3000',
       'http://localhost:5000',
+      'http://localhost:4000',
       `http://${yourIp}`,
-      `https://${yourIp}`,
       `http://${yourIp}:3000`,
       `http://${yourIp}:5000`,
+      `http://${yourIp}:4000`,
+      `https://${yourIp}`,
       `https://${yourIp}:3000`,
       `https://${yourIp}:5000`,
-      `http://${yourIp}:4000`,
       `https://${yourIp}:4000`,
     ],
     credentials: true,
@@ -133,6 +135,11 @@ async function startServer() {
     // Connexion à Redis (avec fallback si Redis n'est pas disponible)
     await cacheService.connect()
     logger.info('Redis connected successfully')
+
+    // Initialiser les rôles par défaut
+    const { UserService } = require('./service/user')
+    await UserService.seedRoles()
+    logger.info('Roles seeded successfully')
   } catch (error) {
     logger.warn('Redis connection failed, continuing without cache:', error)
   }

@@ -1,8 +1,7 @@
 import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import { UserService as us } from '../service/user'
-import { Role } from '@prisma/client'
+import { AuthService } from '../service/auth'
 import { handlerResponse } from '../middleware/handler'
 import { rateLimiter } from '../middleware/rateLimiter'
 import { changePasswordSchema, loginSchema } from '../schemas/auth'
@@ -12,18 +11,10 @@ import { authenticate } from '../middleware/auth'
 
 const router = Router()
 
-const DEFAULT_PASSWORD = '123456'
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD!
 
 function generateUsername(name: string, surname: string): string {
   return (name.charAt(0) + surname).toLowerCase()
-}
-
-export async function createToken(id: number, role: Role, username: string) {
-  const payload = { id, role, username }
-  const token = jwt.sign(payload, String(process.env.JWT_SECRET), {
-    expiresIn: '1H',
-  })
-  return token
 }
 
 router.post(
@@ -50,14 +41,48 @@ router.post(
         'Username ou mot de passe incorect',
       )
     }
-    return handlerResponse(
-      res,
-      200,
-      true,
-      await createToken(user.id, user.role, user.username),
+
+    const accessToken = await AuthService.generateAccessToken(
+      user.id,
+      user.role,
+      user.username,
     )
+    const refreshToken = await AuthService.generateRefreshToken(user.id)
+
+    return handlerResponse(res, 200, true, { accessToken, refreshToken })
   },
 )
+
+router.post(
+  '/refresh',
+  rateLimiter(1, 10, { motif: 'refresh' }),
+  async (req: Request, res: Response) => {
+    const { refreshToken } = req.body
+    if (!refreshToken) {
+      return handlerResponse(res, 400, false, 'Refresh token manquant')
+    }
+
+    const tokens = await AuthService.refreshTokens(refreshToken)
+    if (!tokens) {
+      return handlerResponse(
+        res,
+        401,
+        false,
+        'Refresh token invalide ou expiré',
+      )
+    }
+
+    return handlerResponse(res, 200, true, tokens)
+  },
+)
+
+router.post('/logout', async (req: Request, res: Response) => {
+  const { refreshToken } = req.body
+  if (refreshToken) {
+    await AuthService.revokeRefreshToken(refreshToken)
+  }
+  return handlerResponse(res, 200, true, 'Déconnecté')
+})
 
 router.post(
   '/register',
@@ -90,12 +115,15 @@ router.post(
     if (user == 'ALREADY-EXIST') {
       return handlerResponse(res, 409, false, 'Utilisateur déjà existant')
     }
-    return handlerResponse(
-      res,
-      200,
-      true,
-      await createToken(user.id, user.role, user.username),
+
+    const accessToken = await AuthService.generateAccessToken(
+      user.id,
+      user.role,
+      user.username,
     )
+    const refreshToken = await AuthService.generateRefreshToken(user.id)
+
+    return handlerResponse(res, 200, true, { accessToken, refreshToken })
   },
 )
 

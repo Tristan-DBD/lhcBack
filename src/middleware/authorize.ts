@@ -5,7 +5,7 @@ import { handlerResponse } from './handler'
 const ROLE_ACCESS: Record<string, string[]> = {
   ATHLETE_CO: ['CO', 'PROFILE'],
   ATHLETE_PROG: ['PROG', 'PROFILE'],
-  ATHLETE_FULL: ['PROG', 'CO', 'PROFILE', 'COACH'],
+  ATHLETE_FULL: ['PROG', 'CO', 'PROFILE'],
   COACH: ['CO', 'PROG', 'PROFILE', 'COACH'],
   ADMIN: ['CO', 'PROG', 'PROFILE', 'COACH', 'ADMIN'],
 }
