@@ -11,7 +11,7 @@ export const RoleService = {
     })
   },
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await prisma.role.findUnique({
       where: { id },
     })

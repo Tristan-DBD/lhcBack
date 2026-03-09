@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client'
+// Role import removed
 import {
   Body,
   Consumes,
@@ -30,8 +30,8 @@ class CreateUserDto {
   @Example('0601020304')
   phone!: string
 
-  @Example(Role.ATHLETE_PROG)
-  role!: Role
+  @Example('ATHLETE_PROG')
+  role!: string
 }
 
 class UserResponse {
@@ -96,7 +96,7 @@ export class UserController {
       age: number
       weight: number
       phone: string
-      role: Role
+      role: string
     },
   ): Promise<any> {
     return {} as any

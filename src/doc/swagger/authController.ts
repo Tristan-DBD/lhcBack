@@ -1,5 +1,5 @@
 import { Body, Consumes, Example, Post, Route, Tags } from 'tsoa'
-import { Role } from '@prisma/client'
+// Role import removed since it's a type and we need a string value for examples
 
 class loginDto {
   @Example('tristan')
@@ -25,8 +25,8 @@ class registerDto {
   @Example('0601020304')
   phone!: string
 
-  @Example(Role.ATHLETE_PROG)
-  role!: Role
+  @Example('ATHLETE_PROG')
+  role!: string
 }
 
 class changePasswordDto {

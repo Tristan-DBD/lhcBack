@@ -141,7 +141,7 @@ export const UserService = {
   },
 
   async update(id: number, params: Partial<user>) {
-    let roleId: number | undefined
+    let roleId: string | undefined
     if (params.role) {
       const role = await RoleService.getOrCreate(params.role)
       roleId = role.id
@@ -258,11 +258,11 @@ export const UserService = {
 
   async seedRoles() {
     const roles = [
+      'ADMIN',
       'COACH',
       'ATHLETE_PROG',
       'ATHLETE_CO',
       'ATHLETE_FULL',
-      'ADMIN',
     ]
     for (const name of roles) {
       await RoleService.getOrCreate(name)
