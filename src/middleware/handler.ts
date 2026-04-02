@@ -22,6 +22,31 @@ export function handlerResponse(
   })
 }
 
+export function handlerPaginatedResponse<T>(
+  res: Response,
+  data: T[],
+  pagination: {
+    total: number
+    page: number
+    limit: number
+  },
+) {
+  const totalPages = Math.ceil(pagination.total / pagination.limit)
+  return res.status(200).json({
+    success: true,
+    data: data,
+    pagination: {
+      total: pagination.total,
+      page: pagination.page,
+      limit: pagination.limit,
+      totalPages,
+      hasNext: pagination.page < totalPages,
+      hasPrev: pagination.page > 1,
+    },
+    timestamp: new Date().toISOString(),
+  })
+}
+
 export function globalErrorHandler(
   error: Error,
   req: Request,

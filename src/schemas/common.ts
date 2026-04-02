@@ -71,3 +71,19 @@ export const idSchema = z.object({
 export const validDate = (field: string) => {
   return z.coerce.date(`${field} doit être une date valide`)
 }
+
+export const paginationSchema = z.object({
+  page: z.coerce
+    .number('page doit être un nombre valide')
+    .int('page doit être un entier')
+    .min(1, 'page doit être au moins 1')
+    .default(1),
+  limit: z.coerce
+    .number('limit doit être un nombre valide')
+    .int('limit doit être un entier')
+    .min(1, 'limit doit être au moins 1')
+    .max(100, 'limit ne peut pas dépasser 100')
+    .default(20),
+})
+
+export type PaginationParams = z.infer<typeof paginationSchema>

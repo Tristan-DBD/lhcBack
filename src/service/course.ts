@@ -21,17 +21,45 @@ export const coursesService = {
     })
     return course
   },
-  async findAll() {
-    const courses = await prisma.courses.findMany({
-      include: {
-        registrations: {
-          include: {
-            user: true,
+  async findAll({
+    page = 1,
+    limit = 20,
+    startDate,
+    endDate,
+  }: {
+    page?: number
+    limit?: number
+    startDate?: Date
+    endDate?: Date
+  } = {}) {
+    const skip = (page - 1) * limit
+    const where = {
+      ...(startDate &&
+        endDate && {
+          startAt: {
+            gte: startDate,
+            lte: endDate,
+          },
+        }),
+    }
+
+    const [courses, total] = await Promise.all([
+      prisma.courses.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { startAt: 'asc' },
+        include: {
+          registrations: {
+            include: {
+              user: true,
+            },
           },
         },
-      },
-    })
-    return courses
+      }),
+      prisma.courses.count({ where }),
+    ])
+    return { data: courses, total }
   },
   async findById(id: number) {
     const course = await prisma.courses.findUnique({

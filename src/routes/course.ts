@@ -4,9 +4,13 @@ import {
   createCourseSchema,
   partialCourseSchema,
   registerSchema,
+  courseQuerySchema,
 } from '../schemas/course'
 import { coursesService as cs } from '../service/course'
-import { handlerResponse } from '../middleware/handler'
+import {
+  handlerResponse,
+  handlerPaginatedResponse,
+} from '../middleware/handler'
 import { idSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
@@ -45,8 +49,26 @@ router.get(
   authenticate,
   authorize('CO'),
   async (req: Request, res: Response) => {
-    const courses = await cs.findAll()
-    return handlerResponse(res, 200, true, courses)
+    const parsed = courseQuerySchema.safeParse(req.query)
+    if (!parsed.success) {
+      return handlerResponse(
+        res,
+        400,
+        false,
+        parsed.error.issues[0]?.message ?? 'Paramètres de requête invalides',
+      )
+    }
+    const { page, limit, startDate, endDate } = parsed.data
+    const sDate = startDate ? new Date(startDate) : undefined
+    const eDate = endDate ? new Date(endDate) : undefined
+
+    const { data, total } = await cs.findAll({
+      page,
+      limit,
+      ...(sDate ? { startDate: sDate } : {}),
+      ...(eDate ? { endDate: eDate } : {}),
+    })
+    return handlerPaginatedResponse(res, data, { total, page, limit })
   },
 )
 

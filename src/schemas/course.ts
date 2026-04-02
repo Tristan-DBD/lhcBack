@@ -19,5 +19,32 @@ export const registerSchema = z.object({
   courseId: positiveNumber("l'id de la séance"),
 })
 
+export const courseQuerySchema = z.object({
+  page: z.preprocess((val) => Number(val), z.number().int().min(1)).default(1),
+  limit: z
+    .preprocess((val) => Number(val), z.number().int().min(1).max(100))
+    .default(20),
+  startDate: z
+    .string()
+    .datetime()
+    .optional()
+    .or(
+      z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/)
+        .optional(),
+    ),
+  endDate: z
+    .string()
+    .datetime()
+    .optional()
+    .or(
+      z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/)
+        .optional(),
+    ),
+})
+
 export const createCourseSchema = courseSchema.omit({ id: true })
 export const partialCourseSchema = courseSchema.partial()

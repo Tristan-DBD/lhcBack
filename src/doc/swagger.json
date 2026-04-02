@@ -7,19 +7,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"_36_Enums.Role": {
-				"type": "string",
-				"enum": [
-					"COACH",
-					"ATHLETE_PROG",
-					"ATHLETE_CO",
-					"ATHLETE_FULL",
-					"ADMIN"
-				]
-			},
-			"Role": {
-				"$ref": "#/components/schemas/_36_Enums.Role"
-			},
 			"CreateUserDto": {
 				"properties": {
 					"name": {
@@ -45,7 +32,8 @@
 						"example": "0601020304"
 					},
 					"role": {
-						"$ref": "#/components/schemas/Role"
+						"type": "string",
+						"example": "ATHLETE_PROG"
 					}
 				},
 				"required": [
@@ -275,7 +263,8 @@
 						"example": "0601020304"
 					},
 					"role": {
-						"$ref": "#/components/schemas/Role"
+						"type": "string",
+						"example": "ATHLETE_PROG"
 					}
 				},
 				"required": [
@@ -479,7 +468,7 @@
 							"schema": {
 								"properties": {
 									"role": {
-										"$ref": "#/components/schemas/Role"
+										"type": "string"
 									},
 									"phone": {
 										"type": "string"
@@ -1420,9 +1409,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/loginDto"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1452,9 +1439,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/registerDto"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1484,9 +1469,7 @@
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/changePasswordDto"
-								}
+								"schema": {}
 							}
 						}
 					}
@@ -1494,7 +1477,11 @@
 				"tags": [
 					"Authentication"
 				],
-				"security": [],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,

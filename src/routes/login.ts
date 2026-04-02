@@ -11,7 +11,8 @@ import { authenticate } from '../middleware/auth'
 
 const router = Router()
 
-const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD!
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD || '123456'
+const SALT_ROUNDS = Number(process.env.SALT_ROUND) || 10
 
 function generateUsername(name: string, surname: string): string {
   return (name.charAt(0) + surname).toLowerCase()
@@ -96,10 +97,7 @@ router.post(
       role && allowedRoles.includes(role) ? role : 'ATHLETE_PROG'
 
     const username = generateUsername(name, surname)
-    const hashed = await bcrypt.hash(
-      DEFAULT_PASSWORD,
-      Number(process.env.SALT_ROUND),
-    )
+    const hashed = await bcrypt.hash(DEFAULT_PASSWORD, SALT_ROUNDS)
 
     const user = await us.create(
       name,
@@ -154,7 +152,11 @@ router.post(
   },
 )
 
-export const createToken = async (id: number, role: string, username: string) => {
+export const createToken = async (
+  id: number,
+  role: string,
+  username: string,
+) => {
   return await AuthService.generateAccessToken(id, role, username)
 }
 

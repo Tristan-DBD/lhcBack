@@ -2,10 +2,13 @@ import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
 import { UserService as us } from '../service/user'
 import { FileService, upload } from '../middleware/upload'
-import { handlerResponse } from '../middleware/handler'
+import {
+  handlerResponse,
+  handlerPaginatedResponse,
+} from '../middleware/handler'
 import validate from '../middleware/validate'
 import { createUserSchema, partialUserSchema } from '../schemas/user'
-import { idSchema } from '../schemas/common'
+import { idSchema, paginationSchema } from '../schemas/common'
 import { authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import programRoute from './program'
@@ -15,9 +18,9 @@ import {
   invalidateCacheMiddleware,
   cachePatterns,
 } from '../middleware/cache'
-import { ProgramService } from '../service/program'
 
-const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD!
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD || '123456'
+const SALT_ROUNDS = Number(process.env.SALT_ROUND) || 10
 
 function generateUsername(name: string, surname: string): string {
   return (name.charAt(0) + surname).toLowerCase()
@@ -26,7 +29,7 @@ function generateUsername(name: string, surname: string): string {
 const router = Router()
 router.use('/program', programRoute)
 async function hashedPassword(password: string) {
-  const hashed = await bcrypt.hash(password, Number(process.env.SALT_ROUND))
+  const hashed = await bcrypt.hash(password, SALT_ROUNDS)
   return hashed
 }
 
@@ -97,13 +100,26 @@ router.get(
   rateLimiter(1, 20, { motif: 'get' }),
   authenticate,
   authorize('COACH'),
-  cacheMiddleware('users', { ttl: 300 }), // Cache de 5 minutes pour la liste
   async (req: Request, res: Response) => {
+    const parsed = paginationSchema.safeParse(req.query)
+    if (!parsed.success) {
+      return handlerResponse(
+        res,
+        400,
+        false,
+        parsed.error.issues[0]?.message ?? 'Paramètres de pagination invalides',
+      )
+    }
+    const { page, limit } = parsed.data
     const roles = req.query.role as string | string[] | undefined
     const roleNames = Array.isArray(roles) ? roles : roles ? [roles] : undefined
 
-    const users = await us.findAll(roleNames ? { roleNames } : {})
-    return handlerResponse(res, 200, true, users)
+    const { data, total } = await us.findAll({
+      ...(roleNames ? { roleNames } : {}),
+      page,
+      limit,
+    })
+    return handlerPaginatedResponse(res, data, { total, page, limit })
   },
 )
 

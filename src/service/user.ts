@@ -66,35 +66,50 @@ export const UserService = {
         role: true,
       },
     })
-    return list.map((u) => this.transformUser(u))
+    return list.map((u: any) => this.transformUser(u))
   },
 
-  async findAll(filters?: { roleNames?: string[] }) {
-    const users = await prisma.user.findMany({
-      where: {
-        ...(filters?.roleNames &&
-          filters.roleNames.length > 0 && {
-            role: {
-              name: { in: filters.roleNames },
-            },
-          }),
-      },
-      omit: {
-        password: true,
-      },
-      include: {
-        stat: true,
-        progUri: true,
-        payments: true,
-        role: true,
-      },
-    })
-    return users.map((u) => this.transformUser(u))
+  async findAll(filters?: {
+    roleNames?: string[]
+    page?: number
+    limit?: number
+  }) {
+    const page = filters?.page ?? 1
+    const limit = filters?.limit ?? 20
+    const skip = (page - 1) * limit
+
+    const where = {
+      ...(filters?.roleNames &&
+        filters.roleNames.length > 0 && {
+          role: {
+            name: { in: filters.roleNames },
+          },
+        }),
+    }
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        skip,
+        take: limit,
+        omit: {
+          password: true,
+        },
+        include: {
+          stat: true,
+          progUri: true,
+          payments: true,
+          role: true,
+        },
+      }),
+      prisma.user.count({ where }),
+    ])
+    return { data: users.map((u: any) => this.transformUser(u)), total }
   },
 
   async findById(id: number) {
     const user = await prisma.user.findUnique({
-      where: { id },
+      where: { id: id },
       omit: {
         password: true,
       },
@@ -155,14 +170,13 @@ export const UserService = {
       ...(params.phone && { phone: params.phone }),
       ...(params.username && { username: params.username }),
       ...(params.password && { password: params.password }),
-      ...(roleId && { role: { connect: { id: roleId } } }),
     }
     const exist = await this.findById(id)
     if (exist == 'NOT-EXIST') return 'NOT-EXIST'
 
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: { ...data },
+      data: { ...data, ...(roleId && { role: { connect: { id: roleId } } }) },
       omit: {
         password: true,
       },
@@ -187,21 +201,21 @@ export const UserService = {
       if (prog.fileUri) {
         try {
           await FileService.delete(prog.fileUri)
-        } catch (e) {}
+        } catch {}
       }
     }
 
     if (exist.imageUri && exist.imageUri !== DEFAULT_PROFILE_IMAGE) {
       try {
         await FileService.delete(exist.imageUri)
-      } catch (e) {}
+      } catch {}
     }
 
     await prisma.paymentYear.deleteMany({ where: { userId: id } })
     await prisma.program.deleteMany({ where: { userId: id } })
     await prisma.stats.deleteMany({ where: { userId: id } })
     await prisma.registration.deleteMany({ where: { userId: id } })
-    await prisma.refreshToken.deleteMany({ where: { userId: id } })
+    await (prisma as any).refreshToken.deleteMany({ where: { userId: id } })
 
     const user = await prisma.user.delete({ where: { id } })
     return user
@@ -248,11 +262,11 @@ export const UserService = {
   // Helper pour transformer la relation Role en string (compatibilité frontend)
   transformUser(u: any, includePassword = false) {
     if (!u) return u
-    const { role, roleId, ...rest } = u
+    const { role, password, ...rest } = u
     return {
       ...rest,
       role: role ? role.name : 'UNKNOWN',
-      ...(includePassword && u.password && { password: u.password }),
+      ...(includePassword && password && { password: password }),
     }
   },
 

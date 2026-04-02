@@ -267,7 +267,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 35,
           weight: 85,
           phone: '0601020308',
-
         })
 
       expect(res.body.success).toBe(true)
@@ -284,7 +283,6 @@ describe('Test CRUD pour les utilisateurs', () => {
           age: 30,
           weight: 80,
           phone: '0601020309',
-
         })
 
       expect(res.status).toBe(403)

@@ -44,7 +44,7 @@ describe('REGISTER/UNREGISTER', () => {
         .post('/api/user')
         .set('Authorization', `Bearer ${coach.token}`)
         .send({
-          name: `Athlete`,
+          name: 'Athlete',
           surname: `Reg${i}`,
           age: 25,
           weight: 70,

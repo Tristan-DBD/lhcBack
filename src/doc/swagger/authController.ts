@@ -1,7 +1,7 @@
-import { Body, Consumes, Example, Post, Route, Tags } from 'tsoa'
+import { Body, Example, Post, Route, Security, Tags } from 'tsoa'
 // Role import removed since it's a type and we need a string value for examples
 
-class loginDto {
+export class loginDto {
   @Example('tristan')
   username!: string
 
@@ -9,7 +9,7 @@ class loginDto {
   password!: string
 }
 
-class registerDto {
+export class registerDto {
   @Example('Tristan')
   name!: string
 
@@ -29,7 +29,7 @@ class registerDto {
   role!: string
 }
 
-class changePasswordDto {
+export class changePasswordDto {
   @Example('123456')
   newPassword!: string
 }
@@ -38,20 +38,18 @@ class changePasswordDto {
 @Tags('Authentication')
 export class AuthController {
   @Post('/login')
-  @Consumes('application/json')
-  public async login(@Body() body: loginDto) {
+  public async login(@Body() body: loginDto): Promise<any> {
     return body
   }
 
   @Post('/register')
-  @Consumes('application/json')
-  public async register(@Body() body: registerDto) {
+  public async register(@Body() body: registerDto): Promise<any> {
     return body
   }
 
   @Post('/change-password')
-  @Consumes('application/json')
-  public async changePassword(@Body() body: changePasswordDto) {
+  @Security('BearerAuth')
+  public async changePassword(@Body() body: changePasswordDto): Promise<any> {
     return body
   }
 }
