@@ -293,3 +293,7 @@ describe('Test CRUD pour les cours', () => {
     })
   })
 })
+
+afterAll(async () => {
+  await resetDb()
+})

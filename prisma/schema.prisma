@@ -32,6 +32,8 @@ model User {
   payments      PaymentYear[]
   refreshTokens RefreshToken[]
   orders        Order[]
+  coachingSlots CoachingSlot[] @relation("CoachSlots")
+  slotBookings  SlotBooking[]
 
   username  String @unique
   password  String
@@ -150,4 +152,34 @@ model OrderItem {
   size      String
   quantity  Int
   price     Float
+}
+
+model CoachingSlot {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime
+  endTime   DateTime
+  coachId   Int
+  
+  coach    User          @relation("CoachSlots", fields: [coachId], references: [id])
+  bookings SlotBooking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([coachId])
+  @@index([startTime])
+}
+
+model SlotBooking {
+  id       Int         @id @default(autoincrement())
+  slotId   Int
+  userId   Int
+  bookedAt DateTime    @default(now())
+
+  slot CoachingSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  user User          @relation(fields: [userId], references: [id])
+
+  @@unique([slotId, userId])
+  @@index([slotId])
+  @@index([userId])
 }

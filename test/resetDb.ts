@@ -1,7 +1,7 @@
 import prisma from '../src/db-config'
 
 async function resetUserTable() {
-  await prisma.program.deleteMany()
+  await prisma.refreshToken.deleteMany()
   await prisma.user.deleteMany()
 }
 
@@ -32,12 +32,22 @@ async function resetShopAndOrders() {
   await prisma.product.deleteMany()
 }
 
+async function resetCoachingSlots() {
+  await prisma.slotBooking.deleteMany()
+  await prisma.coachingSlot.deleteMany()
+}
+
 export async function resetDb() {
-  await resetPaymentTable()
-  await resetRegisterTable()
-  await resetCourseTable()
-  await resetStatTable()
-  await resetProgramTable()
-  await resetShopAndOrders()
-  await resetUserTable()
+  try {
+    await resetPaymentTable()
+    await resetRegisterTable()
+    await resetCourseTable()
+    await resetStatTable()
+    await resetProgramTable()
+    await resetShopAndOrders()
+    await resetCoachingSlots()
+    await resetUserTable()
+  } catch (e) {
+    console.error('Error during resetDb:', e)
+  }
 }

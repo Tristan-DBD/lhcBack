@@ -199,3 +199,7 @@ describe('REGISTER/UNREGISTER', () => {
     })
   })
 })
+
+afterAll(async () => {
+  await resetDb()
+})

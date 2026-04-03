@@ -7,6 +7,7 @@ import healthRoute from './health'
 import paymentRoute from './payment'
 import shopRoute from './shop'
 import orderRoute from './order'
+import coachingSlotRoute from './coaching_slot'
 import { Router } from 'express'
 
 const route = Router()
@@ -19,6 +20,7 @@ route.use('/metric', metricRoute)
 route.use('/payment', paymentRoute)
 route.use('/shop', shopRoute)
 route.use('/order', orderRoute)
+route.use('/coaching-slots', coachingSlotRoute)
 route.use('/admin/health', healthRoute)
 
 export default route

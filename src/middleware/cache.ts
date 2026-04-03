@@ -128,4 +128,9 @@ export const cachePatterns = {
   orders: {
     all: 'orders:*',
   },
+  coachingSlots: {
+    all: 'coaching-slots:*',
+    byId: (id: number) => `coaching-slots:*${id}*`,
+    byCoach: (coachId: number) => `coaching-slots:*coachId*${coachId}*`,
+  },
 }

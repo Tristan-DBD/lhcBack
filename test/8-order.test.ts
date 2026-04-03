@@ -245,3 +245,7 @@ describe('Test E-commerce Orders & Stocks API (Shop)', () => {
     })
   })
 })
+
+afterAll(async () => {
+  await resetDb()
+})
