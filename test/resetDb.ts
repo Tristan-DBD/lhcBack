@@ -25,11 +25,19 @@ async function resetPaymentTable() {
   await prisma.paymentYear.deleteMany()
 }
 
+async function resetShopAndOrders() {
+  await prisma.orderItem.deleteMany()
+  await prisma.order.deleteMany()
+  await prisma.productStock.deleteMany()
+  await prisma.product.deleteMany()
+}
+
 export async function resetDb() {
   await resetPaymentTable()
   await resetRegisterTable()
   await resetCourseTable()
   await resetStatTable()
   await resetProgramTable()
+  await resetShopAndOrders()
   await resetUserTable()
 }

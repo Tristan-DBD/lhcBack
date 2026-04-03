@@ -215,6 +215,7 @@ export const UserService = {
     await prisma.program.deleteMany({ where: { userId: id } })
     await prisma.stats.deleteMany({ where: { userId: id } })
     await prisma.registration.deleteMany({ where: { userId: id } })
+    await prisma.order.deleteMany({ where: { userId: id } })
     await (prisma as any).refreshToken.deleteMany({ where: { userId: id } })
 
     const user = await prisma.user.delete({ where: { id } })

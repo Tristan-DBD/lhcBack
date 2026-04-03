@@ -31,6 +31,7 @@ model User {
   registrations Registration[]
   payments      PaymentYear[]
   refreshTokens RefreshToken[]
+  orders        Order[]
 
   username  String @unique
   password  String
@@ -108,4 +109,45 @@ model Program {
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
+}
+
+model Product {
+  id         Int            @id @default(autoincrement())
+  name       String
+  price      Float          @default(0)
+  imageUri   String         @default("productImage/default.png")
+  stocks     ProductStock[]
+  orderItems OrderItem[]
+}
+
+model ProductStock {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String
+  quantity  Int     @default(0)
+
+  @@unique([productId, size])
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  total     Float
+  status    String      @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  size      String
+  quantity  Int
+  price     Float
 }

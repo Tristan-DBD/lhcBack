@@ -125,4 +125,7 @@ export const cachePatterns = {
     all: 'stats:*',
     byUser: (userId: number) => `stats:*userId*${userId}*`,
   },
+  orders: {
+    all: 'orders:*',
+  },
 }

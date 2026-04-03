@@ -4,8 +4,14 @@ import fs from 'fs/promises'
 import { supabase, getBucketName } from '../config/supabase'
 import logger from '../config/logger'
 
-// fichier image .jpg .png
-const imageAllowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
+// fichier image .jpg .png .heic .heif
+const imageAllowedTypes = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/heic',
+  'image/heif',
+]
 // fichier type excel .xls .xlsx
 const statsAllowedTypes = [
   'application/vnd.ms-excel',
@@ -18,8 +24,13 @@ const localStorage = multer.diskStorage({
     const uploadPath = path.join(
       process.cwd(),
       'public',
-      file.fieldname === 'profileImage' ? 'profileImage' : 'prog',
+      file.fieldname === 'profileImage'
+        ? 'profileImage'
+        : file.fieldname === 'productImage'
+          ? 'productImage'
+          : 'prog',
     )
+    require('fs').mkdirSync(uploadPath, { recursive: true })
     cb(null, uploadPath)
   },
   filename: (req, file, cb) => {
@@ -33,18 +44,40 @@ const localStorage = multer.diskStorage({
 const memoryStorage = multer.memoryStorage()
 
 const fileFilter: multer.Options['fileFilter'] = (req, file, callback) => {
+  logger.info('File upload check', {
+    fieldname: file.fieldname,
+    mimetype: file.mimetype,
+    originalname: file.originalname,
+  })
+
   switch (file.fieldname) {
     case 'profileImage':
-      return imageAllowedTypes.includes(file.mimetype)
-        ? callback(null, true)
-        : callback(new Error('Invalid image type'))
+    case 'productImage':
+      if (imageAllowedTypes.includes(file.mimetype)) {
+        return callback(null, true)
+      } else {
+        logger.warn('Rejet de fichier : Type image invalide', {
+          mimetype: file.mimetype,
+          allowed: imageAllowedTypes,
+        })
+        return callback(new Error('Invalid image type'))
+      }
 
     case 'programFile':
-      return statsAllowedTypes.includes(file.mimetype)
-        ? callback(null, true)
-        : callback(new Error('Invalid program file type'))
+      if (statsAllowedTypes.includes(file.mimetype)) {
+        return callback(null, true)
+      } else {
+        logger.warn('Rejet de fichier : Type programme invalide', {
+          mimetype: file.mimetype,
+          allowed: statsAllowedTypes,
+        })
+        return callback(new Error('Invalid program file type'))
+      }
 
     default:
+      logger.warn('Rejet de fichier : Nom de champ invalide', {
+        fieldname: file.fieldname,
+      })
       return callback(new Error('Invalid field name'))
   }
 }

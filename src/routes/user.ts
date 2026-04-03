@@ -194,7 +194,12 @@ router.delete(
   validate(idSchema),
   authenticate,
   authorize('COACH'),
-  invalidateCacheMiddleware([cachePatterns.users.all]),
+  invalidateCacheMiddleware([
+    cachePatterns.users.all,
+    cachePatterns.orders.all,
+    cachePatterns.stats.all,
+    cachePatterns.courses.all,
+  ]),
   async (req: Request, res: Response) => {
     const user = await us.delete(Number(req.params.id))
 
@@ -202,7 +207,7 @@ router.delete(
       return handlerResponse(res, 404, false, 'Utilisateur introuvable')
     }
 
-    return handlerResponse(res, 204, true, 'Utilisateur supprimé')
+    return handlerResponse(res, 200, true, 'Utilisateur supprimé')
   },
 )
 

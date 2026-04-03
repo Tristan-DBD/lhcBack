@@ -45,6 +45,9 @@ export const rateLimiter = (
     case 'unregister':
       message = 'Limite de désinscription atteinte, veuillez patienter'
       break
+    case 'shop-update':
+      message = 'Limite de mise à jour du stock atteinte, veuillez patienter'
+      break
     default:
       message = 'Trop de requêtes, veuillez patienter'
       break

@@ -18,7 +18,8 @@
     "postinstall": "npx prisma generate",
     "build": "tsc",
     "start": "NODE_ENV=prod node dist/src/index.js",
-    "deploy:prod": "npm run migrate:prod && npm run build"
+    "deploy:prod": "npm run migrate:prod && npm run build",
+    "seed": "npx dotenv-cli -e .env.dev -- ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

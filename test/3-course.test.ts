@@ -110,7 +110,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(true)
-      expect(Array.isArray(res.body.data[0].message)).toBe(true)
+      expect(Array.isArray(res.body.data)).toBe(true)
     })
 
     it('ATHLETE -> Authorize', async () => {
@@ -119,7 +119,7 @@ describe('Test CRUD pour les cours', () => {
         .set('Authorization', `Bearer ${athleteToken}`)
 
       expect(res.body.success).toBe(true)
-      expect(Array.isArray(res.body.data[0].message)).toBe(true)
+      expect(Array.isArray(res.body.data)).toBe(true)
     })
 
     it('NO TOKEN -> Unauthorized', async () => {

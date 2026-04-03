@@ -331,7 +331,7 @@ describe('Test CRUD pour les utilisateurs', () => {
         .delete(`/api/user/${coachTestId}`)
         .set('Authorization', `Bearer ${coachToken}`)
 
-      expect(res.status).toBe(204)
+      expect(res.status).toBe(200)
     })
     it('ATHLETE -> Unauthorize', async () => {
       const res = await request(server)

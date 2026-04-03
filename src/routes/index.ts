@@ -5,6 +5,8 @@ import courseRoute from './course'
 import metricRoute from './metric'
 import healthRoute from './health'
 import paymentRoute from './payment'
+import shopRoute from './shop'
+import orderRoute from './order'
 import { Router } from 'express'
 
 const route = Router()
@@ -15,6 +17,8 @@ route.use('/auth', authRoute)
 route.use('/course', courseRoute)
 route.use('/metric', metricRoute)
 route.use('/payment', paymentRoute)
+route.use('/shop', shopRoute)
+route.use('/order', orderRoute)
 route.use('/admin/health', healthRoute)
 
 export default route
