@@ -12,11 +12,11 @@ describe('Test E-commerce Orders & Stocks API (Shop)', () => {
   let coachToken: string
   let athleteToken: string
 
-  let coachId: number
-  let athleteId: number
-  let productId: number
-  let productStockId: number
-  let orderId: number
+  let coachId: string
+  let athleteId: string
+  let productId: string
+  let productStockId: string
+  let orderId: string
 
   beforeAll(async () => {
     // Inject test users directly since user tests handles the generic creation
@@ -198,7 +198,7 @@ describe('Test E-commerce Orders & Stocks API (Shop)', () => {
   })
 
   describe('CANCEL ORDER (DELETE /api/order/:id)', () => {
-    let secondOrderId: number
+    let secondOrderId: string
 
     beforeAll(async () => {
       const newOrder = await request(server)

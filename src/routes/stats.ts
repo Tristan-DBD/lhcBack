@@ -48,7 +48,7 @@ router.get(
   rateLimiter(1, 30, { motif: 'get' }),
   authenticate,
   authorize('COACH'),
-  cacheMiddleware('stats', { ttl: 120 }), // Cache de 2 minutes pour les stats (court car données changeantes)
+  cacheMiddleware('stats', { ttl: 120 }),
   async (req: Request, res: Response) => {
     const stats = await ss.findAll()
     return handlerResponse(res, 200, true, stats)
@@ -62,11 +62,11 @@ router.get(
   authenticate,
   authorize('COACH'),
   cacheMiddleware('stat', {
-    ttl: 180, // Cache de 3 minutes pour les stats individuelles
+    ttl: 180,
     keyGenerator: (req) => `stat:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
-    const stats = await ss.findById(Number(req.params.id))
+    const stats = await ss.findById(req.params.id as string)
 
     if (stats == null) {
       return handlerResponse(res, 404, false, 'Stats introuvables')
@@ -107,13 +107,14 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const exist = await ss.findById(Number(req.params.id))
+    const exist = await ss.findById(req.params.id as string)
     if (exist == null) {
       return handlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
     }
 
-    await ss.delete(Number(req.params.id))
+    await ss.delete(req.params.id as string)
     return handlerResponse(res, 200, true, 'Stats supprimé')
   },
 )
+
 export default router

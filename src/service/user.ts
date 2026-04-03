@@ -36,8 +36,8 @@ export const UserService = {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -60,8 +60,8 @@ export const UserService = {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -96,8 +96,8 @@ export const UserService = {
           password: true,
         },
         include: {
-          stat: true,
-          progUri: true,
+          stats: true,
+          programs: true,
           payments: true,
           role: true,
         },
@@ -107,15 +107,15 @@ export const UserService = {
     return { data: users.map((u: any) => this.transformUser(u)), total }
   },
 
-  async findById(id: number) {
+  async findById(id: string) {
     const user = await prisma.user.findUnique({
-      where: { id: id },
+      where: { id },
       omit: {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -131,8 +131,8 @@ export const UserService = {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -145,8 +145,8 @@ export const UserService = {
     const user = await prisma.user.findFirst({
       where: { username: username },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -155,7 +155,7 @@ export const UserService = {
     return this.transformUser(user, true)
   },
 
-  async update(id: number, params: Partial<user>) {
+  async update(id: string, params: Partial<user>) {
     let roleId: string | undefined
     if (params.role) {
       const role = await RoleService.getOrCreate(params.role)
@@ -181,8 +181,8 @@ export const UserService = {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -190,7 +190,7 @@ export const UserService = {
     return this.transformUser(updatedUser)
   },
 
-  async delete(id: number) {
+  async delete(id: string) {
     const exist = await this.findById(id)
     if (exist == 'NOT-EXIST') return 'NOT-EXIST'
 
@@ -216,15 +216,15 @@ export const UserService = {
     await prisma.stats.deleteMany({ where: { userId: id } })
     await prisma.registration.deleteMany({ where: { userId: id } })
     await prisma.order.deleteMany({ where: { userId: id } })
-    await (prisma as any).refreshToken.deleteMany({ where: { userId: id } })
+    await prisma.refreshToken.deleteMany({ where: { userId: id } })
 
     const user = await prisma.user.delete({ where: { id } })
     return user
   },
 
-  async updateImage(id: number, file: string) {
+  async updateImage(id: string, file: string) {
     const updated = await prisma.user.update({
-      where: { id: id },
+      where: { id },
       data: {
         imageUri: file,
       },
@@ -232,8 +232,8 @@ export const UserService = {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },
@@ -241,9 +241,9 @@ export const UserService = {
     return this.transformUser(updated)
   },
 
-  async resetImage(id: number) {
+  async resetImage(id: string) {
     const updated = await prisma.user.update({
-      where: { id: id },
+      where: { id },
       data: {
         imageUri: DEFAULT_PROFILE_IMAGE,
       },
@@ -251,8 +251,8 @@ export const UserService = {
         password: true,
       },
       include: {
-        stat: true,
-        progUri: true,
+        stats: true,
+        programs: true,
         payments: true,
         role: true,
       },

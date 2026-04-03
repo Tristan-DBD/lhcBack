@@ -16,10 +16,7 @@ export const DEFAULT_PAYMENT_STATUS = {
 }
 
 export class PaymentService {
-  /**
-   * Récupère ou crée (initialise) les paiements d'un utilisateur pour une année donnée.
-   */
-  static async getOrCreatePaymentYear(userId: number, year: number) {
+  static async getOrCreatePaymentYear(userId: string, year: number) {
     let paymentYear = await prisma.paymentYear.findUnique({
       where: {
         userId_year: { userId, year },
@@ -39,12 +36,8 @@ export class PaymentService {
     return paymentYear
   }
 
-  /**
-   * Bascule l'état d'un mois spécifique pour une année donnée.
-   */
-  static async toggleMonth(userId: number, year: number, month: string) {
+  static async toggleMonth(userId: string, year: number, month: string) {
     const paymentYear = await this.getOrCreatePaymentYear(userId, year)
-    // Créer une copie pour s'assurer que Prisma détecte le changement du JSON
     const status = { ...(paymentYear.status as Record<string, boolean>) }
 
     if (status[month] !== undefined) {
@@ -59,10 +52,7 @@ export class PaymentService {
     })
   }
 
-  /**
-   * Récupère tous les paiements d'un utilisateur.
-   */
-  static async getPaymentsByUser(userId: number) {
+  static async getPaymentsByUser(userId: string) {
     return await prisma.paymentYear.findMany({
       where: { userId },
       orderBy: { year: 'desc' },

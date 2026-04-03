@@ -10,7 +10,7 @@ async function resetStatTable() {
 }
 
 async function resetCourseTable() {
-  await prisma.courses.deleteMany()
+  await prisma.course.deleteMany()
 }
 
 async function resetRegisterTable() {

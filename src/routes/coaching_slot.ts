@@ -23,13 +23,8 @@ import {
 
 const router = Router()
 
-// Helper function pour gérer les réponses de booking
 const handleBookingResult = (
-  result:
-    | 'NOT-EXIST'
-    | 'ALREADY-BOOKED'
-    | 'ALREADY-TAKEN'
-    | { id: number; userId: number; slotId: number; bookedAt: Date },
+  result: 'NOT-EXIST' | 'ALREADY-BOOKED' | 'ALREADY-TAKEN' | object,
   res: Response,
 ) => {
   switch (result) {
@@ -40,17 +35,12 @@ const handleBookingResult = (
     case 'ALREADY-TAKEN':
       return handlerResponse(res, 400, false, 'Créneau déjà réservé')
     default:
-      // result is now a booking object
       return handlerResponse(res, 200, true, 'Réservation réussie')
   }
 }
 
-// Helper function pour gérer les réponses de cancellation
 const handleCancelResult = (
-  result:
-    | 'NOT-EXIST'
-    | 'NOT-BOOKED'
-    | { id: number; userId: number; slotId: number; bookedAt: Date },
+  result: 'NOT-EXIST' | 'NOT-BOOKED' | object,
   res: Response,
 ) => {
   switch (result) {
@@ -59,19 +49,16 @@ const handleCancelResult = (
     case 'NOT-BOOKED':
       return handlerResponse(res, 400, false, 'Non réservé par vous')
     default:
-      // result is now a booking object
       return handlerResponse(res, 200, true, 'Réservation annulée')
   }
 }
 
-// Middleware commun pour les routes de booking
 const bookingMiddleware = [
   rateLimiter(1, 40, { motif: 'booking' }),
   validate(slotBookingSchema),
   authenticate,
 ]
 
-// Middleware commun pour les routes de cancel
 const cancelMiddleware = [
   rateLimiter(1, 40, { motif: 'cancel' }),
   validate(slotBookingSchema),
@@ -132,11 +119,11 @@ router.get(
   authenticate,
   authorize('CO'),
   cacheMiddleware('coaching-slot', {
-    ttl: 600, // Cache de 10 minutes pour les entités individuelles
+    ttl: 600,
     keyGenerator: (req) => `coaching-slot:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
-    const slot = await cs.findById(Number(req.params.id))
+    const slot = await cs.findById(req.params.id as string)
     if (slot == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Créneau non trouvé')
     }
@@ -152,7 +139,7 @@ router.put(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.coachingSlots.all]),
   async (req: Request, res: Response) => {
-    const exist = await cs.findById(Number(req.params.id))
+    const exist = await cs.findById(req.params.id as string)
     if (exist == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Créneau non trouvé')
     }
@@ -164,7 +151,7 @@ router.put(
     if (req.body.endTime !== undefined)
       updateData.endTime = new Date(req.body.endTime)
 
-    const slot = await cs.update(Number(req.params.id), updateData)
+    const slot = await cs.update(req.params.id as string, updateData)
 
     return handlerResponse(res, 200, true, slot)
   },
@@ -178,11 +165,11 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.coachingSlots.all]),
   async (req: Request, res: Response) => {
-    const exist = await cs.findById(Number(req.params.id))
+    const exist = await cs.findById(req.params.id as string)
     if (exist == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Créneau non trouvé')
     }
-    const slot = await cs.delete(Number(req.params.id))
+    const slot = await cs.delete(req.params.id as string)
     return handlerResponse(res, 200, true, slot)
   },
 )
@@ -214,15 +201,14 @@ router.get(
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
-    const slotId = Number(req.params.id)
+    const slotId = req.params.id
 
-    // Vérifier si le créneau existe
-    const slot = await cs.findById(slotId)
+    const slot = await cs.findById(slotId as string)
     if (!slot || slot === 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Créneau non trouvé')
     }
 
-    const bookings = await cs.getBookings(slotId)
+    const bookings = await cs.getBookings(slotId as string)
     return handlerResponse(res, 200, true, bookings)
   },
 )

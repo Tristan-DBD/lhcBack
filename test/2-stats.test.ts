@@ -3,17 +3,17 @@ import request from 'supertest'
 import { resetDb } from './resetDb'
 import { createToken } from '../src/routes/login'
 
-let coachId: number
-let athleteId: number
-let coachStatId: number
-let athStatId: number
+let coachId: string
+let athleteId: string
+let coachStatId: string
+let athStatId: string
 let coachToken: string
 let athleteToken: string
 
 describe('Test CRUD pour les stats des utilisateurs', () => {
   async function token() {
-    coachToken = await createToken(1, 'COACH', 'username')
-    athleteToken = await createToken(2, 'ATHLETE_PROG', 'username')
+    coachToken = await createToken('1', 'COACH', 'username')
+    athleteToken = await createToken('2', 'ATHLETE_PROG', 'username')
   }
 
   beforeAll(async () => {

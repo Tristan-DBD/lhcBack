@@ -15,7 +15,7 @@ router.get(
   authenticate,
   async (req: AuthRequest, res: Response) => {
     try {
-      const userId = parseInt(req.params.userId as string)
+      const userId = req.params.userId as string
       const payments = await PaymentService.getPaymentsByUser(userId)
       return handlerResponse(res, 200, true, payments)
     } catch (error: any) {

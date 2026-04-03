@@ -1,7 +1,7 @@
 import prisma from '../db-config'
 
 export const ProgramService = {
-  async create(userId: number, name: string, fileUri: string) {
+  async create(userId: string, name: string, fileUri: string) {
     return await prisma.program.create({
       data: {
         userId: userId,
@@ -11,20 +11,20 @@ export const ProgramService = {
     })
   },
 
-  async findByUser(userId: number) {
+  async findByUser(userId: string) {
     return await prisma.program.findMany({
       where: { userId },
       orderBy: { id: 'desc' },
     })
   },
 
-  async delete(id: number) {
+  async delete(id: string) {
     return await prisma.program.delete({
       where: { id },
     })
   },
 
-  async deleteAll(userId: number) {
+  async deleteAll(userId: string) {
     return await prisma.program.deleteMany({
       where: { userId },
     })

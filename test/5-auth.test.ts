@@ -24,7 +24,7 @@ describe('AUTHENTICATION', () => {
       .post('/api/user')
       .set(
         'Authorization',
-        `Bearer ${await createToken(1, 'ADMIN', 'adminuser')}`,
+        `Bearer ${await createToken('1', 'ADMIN', 'adminuser')}`,
       )
       .send({
         name: 'Coach',

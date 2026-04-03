@@ -15,15 +15,15 @@ afterAll(async () => {
 })
 
 describe('Test CRUD pour les programmes utilisateurs', () => {
-  let coachTestId: number
-  let athleteTestId: number
+  let coachTestId: string
+  let athleteTestId: string
   let coachToken: string
   let athleteToken: string
 
   beforeAll(async () => {
     // Générer les tokens
-    coachToken = await createToken(1, 'COACH', 'coachuser')
-    athleteToken = await createToken(2, 'ATHLETE_PROG', 'athleteuser')
+    coachToken = await createToken('1', 'COACH', 'coachuser')
+    athleteToken = await createToken('2', 'ATHLETE_PROG', 'athleteuser')
 
     // Créer les utilisateurs de test
     const coachRes = await request(server)
@@ -122,7 +122,11 @@ describe('Test CRUD pour les programmes utilisateurs', () => {
 
     it('ATHLETE_CO -> Unauthorize', async () => {
       // Créer un athlete ATHLETE_CO
-      const athleteCoToken = await createToken(3, 'ATHLETE_CO', 'athletecouser')
+      const athleteCoToken = await createToken(
+        '3',
+        'ATHLETE_CO',
+        'athletecouser',
+      )
       const res = await request(server)
         .get(`/api/user/program/${athleteTestId}`)
         .set('Authorization', `Bearer ${athleteCoToken}`)

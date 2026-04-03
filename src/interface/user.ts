@@ -1,14 +1,7 @@
-import { Role } from '@prisma/client'
 import { Course } from './course'
 
-export default interface Stats {
-  squat: number
-  bench: number
-  deadlift: number
-}
-
 export default interface User {
-  id: number
+  id: string
   name: string
   surname: string
   age: number
@@ -16,8 +9,8 @@ export default interface User {
   phone: string
   role: string
   imageUri: string
-  progUri: string
-  stat: Stats[]
+  programs: { id: string; name: string; fileUri: string }[]
+  stats: { squat: number; bench: number; deadlift: number }[]
   courses: Course[]
 
   username: string

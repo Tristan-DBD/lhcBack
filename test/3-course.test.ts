@@ -8,17 +8,17 @@ beforeAll(async () => {
 })
 
 describe('Test CRUD pour les cours', () => {
-  let coachTestId: number
+  let coachTestId: string
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let athleteTestId: number
-  let courseTestId: number
+  let athleteTestId: string
+  let courseTestId: string
   let coachToken: string
   let athleteToken: string
 
   beforeAll(async () => {
     // Générer les tokens
-    coachToken = await createToken(1, 'COACH', 'coachuser')
-    athleteToken = await createToken(2, 'ATHLETE_CO', 'athleteuser')
+    coachToken = await createToken('1', 'COACH', 'coachuser')
+    athleteToken = await createToken('2', 'ATHLETE_CO', 'athleteuser')
 
     // Créer les utilisateurs de test
     const coachRes = await request(server)
@@ -150,7 +150,7 @@ describe('Test CRUD pour les cours', () => {
 
     it('COURSE NOT FOUND -> 404', async () => {
       const res = await request(server)
-        .get('/api/course/99999')
+        .get('/api/course/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(false)
@@ -190,7 +190,7 @@ describe('Test CRUD pour les cours', () => {
 
     it('COURSE NOT FOUND -> 404', async () => {
       const res = await request(server)
-        .put('/api/course/99999')
+        .put('/api/course/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
         .send({
           title: 'Course inexistante',
@@ -245,7 +245,7 @@ describe('Test CRUD pour les cours', () => {
 
     it('COURSE NOT FOUND -> 404', async () => {
       const res = await request(server)
-        .delete('/api/course/99999')
+        .delete('/api/course/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.body.success).toBe(false)
@@ -279,7 +279,7 @@ describe('Test CRUD pour les cours', () => {
 
     it('COURSE NOT FOUND -> 404', async () => {
       const res = await request(server)
-        .get('/api/course/registrations/99999')
+        .get('/api/course/registrations/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.status).toBe(404)

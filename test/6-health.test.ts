@@ -7,8 +7,8 @@ describe('Test endpoints de santé', () => {
   let coachToken: string
 
   beforeAll(async () => {
-    adminToken = await createToken(98, 'ADMIN', 'adminuser')
-    coachToken = await createToken(1, 'COACH', 'coachuser')
+    adminToken = await createToken('98', 'ADMIN', 'adminuser')
+    coachToken = await createToken('1', 'COACH', 'coachuser')
   })
 
   describe('GET /api/admin/health', () => {

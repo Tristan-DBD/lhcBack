@@ -18,9 +18,9 @@ afterAll(async () => {
 describe('Test CRUD Produits & Stocks (Shop)', () => {
   let coachToken: string
   let athleteToken: string
-  let coachId: number
-  let athleteId: number
-  let productId: number
+  let coachId: string
+  let athleteId: string
+  let productId: string
 
   beforeAll(async () => {
     const coach = await prisma.user.create({
@@ -157,7 +157,7 @@ describe('Test CRUD Produits & Stocks (Shop)', () => {
 
     it('COACH -> 404 sur un ID inexistant', async () => {
       const res = await request(server)
-        .get('/api/shop/999999')
+        .get('/api/shop/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.status).toBe(404)
@@ -196,7 +196,7 @@ describe('Test CRUD Produits & Stocks (Shop)', () => {
 
     it('COACH -> 404 sur un ID inexistant', async () => {
       const res = await request(server)
-        .put('/api/shop/999999/price')
+        .put('/api/shop/00000000-0000-0000-0000-000000000000/price')
         .set('Authorization', `Bearer ${coachToken}`)
         .send({ price: 20 })
 

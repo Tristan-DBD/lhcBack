@@ -22,14 +22,18 @@ router.post(
   invalidateCacheMiddleware([cachePatterns.users.all]),
   upload.single('programFile'),
   async (req: AuthRequest, res: Response) => {
-    const userId = Number(req.params.id)
+    const userId = req.params.id
 
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 
     const filePath = await FileService.save(req.file, 'prog')
 
     const name = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
-    const program = await ProgramService.create(userId, name, filePath)
+    const program = await ProgramService.create(
+      userId as string,
+      name,
+      filePath,
+    )
 
     return handlerResponse(res, 201, true, program)
   },
@@ -42,8 +46,8 @@ router.get(
   authenticate,
   authorize('PROG'),
   async (req: AuthRequest, res: Response) => {
-    const userId = Number(req.params.id)
-    const program = await ProgramService.findByUser(userId)
+    const userId = req.params.id
+    const program = await ProgramService.findByUser(userId as string)
     return handlerResponse(res, 200, true, program)
   },
 )
@@ -57,10 +61,10 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: AuthRequest, res: Response) => {
-    const userId = Number(req.params.id)
+    const userId = req.params.id
     const { name } = req.body
 
-    const program = await ProgramService.findByUser(userId)
+    const program = await ProgramService.findByUser(userId as string)
     if (!program[0]) {
       return handlerResponse(
         res,
@@ -100,12 +104,12 @@ router.put(
   invalidateCacheMiddleware([cachePatterns.users.all]),
   upload.single('programFile'),
   async (req: AuthRequest, res: Response) => {
-    const userId = Number(req.params.id)
+    const userId = req.params.id
     const loggedInUserId = req.user!.id
     const userRole = req.user!.role
 
     // Vérifier que l'athlete ne modifie que son propre programme
-    if (userRole === 'ATHLETE_PROG' && userId.toString() !== loggedInUserId) {
+    if (userRole === 'ATHLETE_PROG' && userId !== loggedInUserId) {
       return handlerResponse(res, 403, false, 'Forbidden')
     }
 
@@ -114,7 +118,11 @@ router.put(
     const filePath = await FileService.save(req.file, 'prog')
 
     const name = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
-    const program = await ProgramService.create(userId, name, filePath)
+    const program = await ProgramService.create(
+      userId as string,
+      name,
+      filePath,
+    )
 
     return handlerResponse(res, 201, true, program)
   },

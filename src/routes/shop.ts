@@ -28,7 +28,6 @@ router.post(
         imageUri = await FileService.save(req.file, 'productImage')
       }
 
-      // Parser les tailles si elles viennent sous forme de string (JSON) depuis multipart/form-data
       const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes
 
       const product = await ss.create(
@@ -57,7 +56,7 @@ router.put(
   authorize('COACH'),
   async (req: Request, res: Response) => {
     const { price } = req.body
-    const product = await ss.updatePrice(Number(req.params.id), Number(price))
+    const product = await ss.updatePrice(req.params.id as string, Number(price))
     if (product == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Produit introuvable')
     }
@@ -83,7 +82,7 @@ router.get(
   validate(idSchema),
   authenticate,
   async (req: Request, res: Response) => {
-    const product = await ss.findById(Number(req.params.id))
+    const product = await ss.findById(req.params.id as string)
     if (product == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Produit introuvable')
     }
@@ -101,7 +100,7 @@ router.put(
     const { quantity } = req.body
     const size = req.params.size as string
     const product = await ss.updateStock(
-      Number(req.params.id),
+      req.params.id as string,
       size,
       Number(quantity),
     )
@@ -118,7 +117,7 @@ router.post(
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id as string)
+    const id = req.params.id as string
     const { size } = req.body
 
     if (!size) {
@@ -146,7 +145,7 @@ router.put(
   authorize('COACH'),
   upload.single('productImage'),
   async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id as string)
+    const id = req.params.id as string
     let imageUri: string | undefined
 
     if (req.file) {
@@ -174,7 +173,7 @@ router.delete(
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id as string)
+    const id = req.params.id as string
     const size = req.params.size as string
 
     const result = await ss.deleteStockBySize(id, size)
@@ -200,7 +199,7 @@ router.delete(
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
-    const result = await ss.delete(Number(req.params.id))
+    const result = await ss.delete(req.params.id as string)
     if (result == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Produit introuvable')
     }

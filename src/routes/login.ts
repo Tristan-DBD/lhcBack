@@ -138,7 +138,7 @@ router.post(
         newPassword,
         Number(process.env.SALT_ROUND),
       )
-      await us.update(Number(userId), { password: hashed })
+      await us.update(userId as string, { password: hashed })
 
       return handlerResponse(
         res,
@@ -153,7 +153,7 @@ router.post(
 )
 
 export const createToken = async (
-  id: number,
+  id: string,
   role: string,
   username: string,
 ) => {

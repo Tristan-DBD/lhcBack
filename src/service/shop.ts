@@ -35,7 +35,7 @@ export const ShopService = {
     return products
   },
 
-  async findById(id: number) {
+  async findById(id: string) {
     const product = await prisma.product.findUnique({
       where: { id },
       include: {
@@ -45,7 +45,7 @@ export const ShopService = {
     return product || 'NOT-EXIST'
   },
 
-  async updateStock(productId: number, size: string, quantity: number) {
+  async updateStock(productId: string, size: string, quantity: number) {
     const stock = await prisma.productStock.findFirst({
       where: { productId, size },
     })
@@ -58,13 +58,12 @@ export const ShopService = {
     })
   },
 
-  async addSize(productId: number, size: string) {
+  async addSize(productId: string, size: string) {
     const product = await prisma.product.findUnique({
       where: { id: productId },
     })
     if (!product) return 'NOT-EXIST'
 
-    // Vérifier si la taille existe déjà
     const existing = await prisma.productStock.findFirst({
       where: { productId, size },
     })
@@ -79,7 +78,7 @@ export const ShopService = {
     })
   },
 
-  async updateImage(productId: number, imageUri: string) {
+  async updateImage(productId: string, imageUri: string) {
     const product = await prisma.product.findUnique({
       where: { id: productId },
     })
@@ -92,7 +91,6 @@ export const ShopService = {
       data: { imageUri },
     })
 
-    // Supprimer l'ancienne image si elle n'est pas par défaut
     if (oldImage && !oldImage.includes('default.png')) {
       const { FileService } = require('../middleware/upload')
       try {
@@ -105,7 +103,7 @@ export const ShopService = {
     return updated
   },
 
-  async deleteStockBySize(productId: number, size: string) {
+  async deleteStockBySize(productId: string, size: string) {
     const stock = await prisma.productStock.findFirst({
       where: { productId, size },
     })
@@ -117,18 +115,15 @@ export const ShopService = {
     })
   },
 
-  async delete(id: number) {
+  async delete(id: string) {
     const product = await prisma.product.findUnique({ where: { id } })
     if (!product) return 'NOT-EXIST'
 
-    // Suppression de l'image si ce n'est pas celle par défaut
     if (product.imageUri && !product.imageUri.includes('default.png')) {
       const { FileService } = require('../middleware/upload')
       try {
         await FileService.delete(product.imageUri)
-      } catch {
-        // Ignorer l'erreur si le fichier n'existe plus
-      }
+      } catch {}
     }
 
     return await prisma.product.delete({
@@ -136,7 +131,7 @@ export const ShopService = {
     })
   },
 
-  async updatePrice(id: number, price: number) {
+  async updatePrice(id: string, price: number) {
     const product = await prisma.product.findUnique({ where: { id } })
     if (!product) return 'NOT-EXIST'
 

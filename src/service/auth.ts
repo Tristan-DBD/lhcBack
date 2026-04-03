@@ -1,17 +1,16 @@
 import jwt from 'jsonwebtoken'
 import prisma from '../db-config'
-import { Role } from '@prisma/client'
 import crypto from 'crypto'
 
 export const AuthService = {
-  async generateAccessToken(id: number, roleName: string, username: string) {
+  async generateAccessToken(id: string, roleName: string, username: string) {
     const payload = { id, role: roleName, username }
     return jwt.sign(payload, String(process.env.JWT_SECRET), {
       expiresIn: '1H',
     })
   },
 
-  async generateRefreshToken(userId: number) {
+  async generateRefreshToken(userId: string) {
     const token = crypto.randomBytes(40).toString('hex')
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 7) // 7 jours
@@ -65,7 +64,7 @@ export const AuthService = {
     }
   },
 
-  async revokeAllUserTokens(userId: number) {
+  async revokeAllUserTokens(userId: string) {
     await prisma.refreshToken.deleteMany({ where: { userId } })
   },
 }

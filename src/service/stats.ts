@@ -2,7 +2,7 @@ import prisma from '../db-config'
 import { UserService as us } from './user'
 
 export const statService = {
-  async create(userId: number, squat: number, bench: number, deadlift: number) {
+  async create(userId: string, squat: number, bench: number, deadlift: number) {
     const data = {
       userId: userId,
       squat: squat,
@@ -26,15 +26,15 @@ export const statService = {
     return await prisma.stats.findMany()
   },
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await prisma.stats.findUnique({ where: { id } })
   },
 
-  async findByUserId(userId: number) {
-    return await prisma.stats.findFirst({ where: { userId: userId } })
+  async findByUserId(userId: string) {
+    return await prisma.stats.findFirst({ where: { userId } })
   },
 
-  async update(userId: number, squat: number, bench: number, deadlift: number) {
+  async update(userId: string, squat: number, bench: number, deadlift: number) {
     const data = {
       ...(squat !== undefined && { squat: squat }),
       ...(bench !== undefined && { bench: bench }),
@@ -57,7 +57,7 @@ export const statService = {
     return updated
   },
 
-  async delete(id: number) {
+  async delete(id: string) {
     return await prisma.stats.delete({ where: { id } })
   },
 }

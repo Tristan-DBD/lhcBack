@@ -79,11 +79,11 @@ router.get(
   authenticate,
   authorize('CO'),
   cacheMiddleware('course', {
-    ttl: 600, // Cache de 10 minutes pour les entités individuelles
+    ttl: 600,
     keyGenerator: (req) => `course:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
-    const course = await cs.findById(Number(req.params.id))
+    const course = await cs.findById(req.params.id as string)
     if (course == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Cours non trouvé')
     }
@@ -99,16 +99,17 @@ router.put(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.courses.all]),
   async (req: Request, res: Response) => {
-    const exist = await cs.findById(Number(req.params.id))
+    const exist = await cs.findById(req.params.id as string)
     if (exist == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Cours non trouvé')
     }
 
-    const course = await cs.update(Number(req.params.id), req.body)
+    const course = await cs.update(req.params.id as string, req.body)
 
     return handlerResponse(res, 200, true, course)
   },
 )
+
 router.delete(
   '/:id',
   rateLimiter(1, 20, { motif: 'delete' }),
@@ -117,11 +118,11 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.courses.all]),
   async (req: Request, res: Response) => {
-    const exist = await cs.findById(Number(req.params.id))
+    const exist = await cs.findById(req.params.id as string)
     if (exist == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Cours non trouvé')
     }
-    const course = await cs.delete(Number(req.params.id))
+    const course = await cs.delete(req.params.id as string)
     return handlerResponse(res, 200, true, course)
   },
 )
@@ -179,15 +180,14 @@ router.get(
   authenticate,
   authorize('COACH'),
   async (req: Request, res: Response) => {
-    const courseId = Number(req.params.id)
+    const courseId = req.params.id
 
-    // Vérifier si le cours existe
-    const course = await cs.findById(courseId)
+    const course = await cs.findById(courseId as string)
     if (!course || course === 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Cours non trouvé')
     }
 
-    const registrations = await cs.getRegistrations(courseId)
+    const registrations = await cs.getRegistrations(courseId as string)
     return handlerResponse(res, 200, true, registrations)
   },
 )
