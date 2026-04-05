@@ -86,7 +86,6 @@ router.get(
   '/',
   rateLimiter(1, 40, { motif: 'get' }),
   authenticate,
-  authorize('CO'),
   async (req: Request, res: Response) => {
     const parsed = coachingSlotQuerySchema.safeParse(req.query)
     if (!parsed.success) {
