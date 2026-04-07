@@ -20,8 +20,8 @@ describe('Test CRUD pour les utilisateurs', () => {
   let coachToken: string
   let athleteToken: string
   async function token() {
-    coachToken = await createToken('1', 'COACH', 'username')
-    athleteToken = await createToken('2', 'ATHLETE_PROG', 'username')
+    coachToken = await createToken('00000000-0000-0000-0000-000000000001', 'COACH', 'username')
+    athleteToken = await createToken('00000000-0000-0000-0000-000000000002', 'ATHLETE_PROG', 'username')
   }
   beforeAll(async () => {
     await token()
@@ -254,7 +254,7 @@ describe('Test CRUD pour les utilisateurs', () => {
   describe('CREATE COACH (POST /api/user/coach)', () => {
     let adminToken: string
     beforeAll(async () => {
-      adminToken = await createToken('98', 'ADMIN', 'adminuser')
+      adminToken = await createToken('00000000-0000-0000-0000-000000000099', 'ADMIN', 'adminuser')
     })
 
     it('ADMIN -> Authorize', async () => {

@@ -40,20 +40,20 @@ class UpdateCoachingSlotDto {
 }
 
 class SlotBookingDto {
-  @Example(1)
-  slotId!: number
+  @Example('uuid-here')
+  slotId!: string
 }
 
 class CoachingSlotResponse {
-  id!: number
-  coachId!: number
+  id!: string
+  coachId!: string
   startAt!: Date
   durationMinutes!: number
   description!: string
   price!: number
   isBooked!: boolean
   bookedBy?: {
-    id: number
+    id: string
     name: string
     surname: string
   }
@@ -78,14 +78,14 @@ export class CoachingSlotController {
 
   @Get('/:id')
   @Security('BearerAuth')
-  public async getById(@Path() id: number): Promise<CoachingSlotResponse> {
+  public async getById(@Path() id: string): Promise<CoachingSlotResponse> {
     return {} as any
   }
 
   @Put('/:id')
   @Security('BearerAuth')
   public async update(
-    @Path() id: number,
+    @Path() id: string,
     @Body() body: UpdateCoachingSlotDto,
   ): Promise<CoachingSlotResponse> {
     return {} as any
@@ -93,7 +93,7 @@ export class CoachingSlotController {
 
   @Delete('/:id')
   @Security('BearerAuth')
-  public async delete(@Path() id: number): Promise<any> {
+  public async delete(@Path() id: string): Promise<any> {
     return {} as any
   }
 

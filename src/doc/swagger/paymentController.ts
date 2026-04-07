@@ -26,18 +26,18 @@ class PaymentStatusSchema {
 }
 
 class PaymentYearSchema {
-  @Example(1)
-  id!: number
+  @Example('uuid-id')
+  id!: string
   @Example(2024)
   year!: number
   status!: PaymentStatusSchema
-  @Example(10)
-  userId!: number
+  @Example('uuid-user')
+  userId!: string
 }
 
 class TogglePaymentDto {
-  @Example(10)
-  userId!: number
+  @Example('uuid-user')
+  userId!: string
   @Example(2024)
   year!: number
   @Example('jan')
@@ -65,7 +65,7 @@ export class PaymentController {
   @Get('/{userId}')
   @Security('BearerAuth')
   public async getPaymentsByUser(
-    @Path() userId: number,
+    @Path() userId: string,
   ): Promise<PaymentYearSchema[]> {
     return [] as any
   }

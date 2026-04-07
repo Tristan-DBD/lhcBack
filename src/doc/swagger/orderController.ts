@@ -11,8 +11,8 @@ import {
 } from 'tsoa'
 
 class OrderItemDto {
-  @Example(1)
-  productId!: number
+  @Example('uuid-prod')
+  productId!: string
 
   @Example('L')
   size!: string
@@ -23,8 +23,8 @@ class OrderItemDto {
 
 class CreateOrderDto {
   @Example([
-    { productId: 1, size: 'L', quantity: 2 },
-    { productId: 2, size: 'M', quantity: 1 }
+    { productId: 'uuid-prod-1', size: 'L', quantity: 2 },
+    { productId: 'uuid-prod-2', size: 'M', quantity: 1 }
   ])
   items!: OrderItemDto[]
 }

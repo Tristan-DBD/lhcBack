@@ -21,7 +21,7 @@ export class StatsController {
   public async create(
     @Body()
     body: {
-      userId: number
+      userId: string
       squat: number
       bench: number
       deadlift: number
@@ -38,7 +38,7 @@ export class StatsController {
 
   @Get('/{id}')
   @Security('BearerAuth')
-  public async getById(@Path() id: number): Promise<any> {
+  public async getById(@Path() id: string): Promise<any> {
     return {} as any
   }
 
@@ -48,7 +48,7 @@ export class StatsController {
   public async update(
     @Body()
     body: {
-      userId: number
+      userId: string
       squat: number
       bench: number
       deadlift: number
@@ -59,7 +59,7 @@ export class StatsController {
 
   @Delete('/{id}')
   @Security('BearerAuth')
-  public async delete(@Path() id: number): Promise<any> {
+  public async delete(@Path() id: string): Promise<any> {
     return {} as any
   }
 }

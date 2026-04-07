@@ -1,11 +1,11 @@
 export interface Course {
-  id: number
+  id: string
   title: string
   description: string | null
   startAt: Date
   durationMinutes: number
   maxParticipants: number
-  coachId: number | null
+  coachId: string | null
   createdAt: Date
   updatedAt: Date
 }

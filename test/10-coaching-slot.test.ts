@@ -19,8 +19,8 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
   let athleteToken: string
 
   beforeAll(async () => {
-    coachToken = await createToken('1', 'COACH', 'coachuser')
-    athleteToken = await createToken('2', 'ATHLETE_CO', 'athleteuser')
+    coachToken = await createToken('00000000-0000-0000-0000-000000000001', 'COACH', 'coachuser')
+    athleteToken = await createToken('00000000-0000-0000-0000-000000000002', 'ATHLETE_CO', 'athleteuser')
 
     const coachRes = await request(server)
       .post('/api/user')

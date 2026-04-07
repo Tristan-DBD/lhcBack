@@ -24,7 +24,7 @@ class CreateProductDto {
 }
 
 class ProductResponse {
-  id!: number
+  id!: string
   name!: string
   sizes!: Array<{ size: string; stock: number }>
   price!: number
@@ -65,7 +65,7 @@ export class ShopController {
   @Put('/:id/price')
   @Security('BearerAuth')
   public async updatePrice(
-    @Path() id: number,
+    @Path() id: string,
     @Body() body: UpdatePriceDto,
   ): Promise<ProductResponse> {
     return {} as any
@@ -79,14 +79,14 @@ export class ShopController {
 
   @Get('/:id')
   @Security('BearerAuth')
-  public async getById(@Path() id: number): Promise<ProductResponse> {
+  public async getById(@Path() id: string): Promise<ProductResponse> {
     return {} as any
   }
 
   @Put('/:id/stock/:size')
   @Security('BearerAuth')
   public async updateStock(
-    @Path() id: number,
+    @Path() id: string,
     @Path() size: string,
     @Body() body: UpdateStockDto,
   ): Promise<ProductResponse> {
@@ -96,7 +96,7 @@ export class ShopController {
   @Post('/:id/size')
   @Security('BearerAuth')
   public async addSize(
-    @Path() id: number,
+    @Path() id: string,
     @Body() body: AddSizeDto,
   ): Promise<ProductResponse> {
     return {} as any
@@ -105,7 +105,7 @@ export class ShopController {
   @Put('/:id/image')
   @Security('BearerAuth')
   public async updateImage(
-    @Path() id: number,
+    @Path() id: string,
     @UploadedFile() productImage: any,
   ): Promise<ProductResponse> {
     return {} as any
@@ -114,7 +114,7 @@ export class ShopController {
   @Delete('/:id/stock/:size')
   @Security('BearerAuth')
   public async deleteSize(
-    @Path() id: number,
+    @Path() id: string,
     @Path() size: string,
   ): Promise<ProductResponse> {
     return {} as any
@@ -122,7 +122,7 @@ export class ShopController {
 
   @Delete('/:id')
   @Security('BearerAuth')
-  public async delete(@Path() id: number): Promise<any> {
+  public async delete(@Path() id: string): Promise<any> {
     return {} as any
   }
 }

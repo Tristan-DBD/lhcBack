@@ -13,7 +13,7 @@ describe('REGISTER/UNREGISTER', () => {
   let coach: any
 
   beforeAll(async () => {
-    const adminToken = await createToken('98', 'ADMIN', 'adminuser')
+    const adminToken = await createToken('00000000-0000-0000-0000-000000000099', 'ADMIN', 'adminuser')
 
     // Créer le coach
     const coachRes = await request(server)

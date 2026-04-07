@@ -114,23 +114,23 @@ export const invalidateCacheMiddleware = (patterns: string[]) => {
 export const cachePatterns = {
   courses: {
     all: 'courses:*',
-    byId: (id: number) => `courses:*${id}*`,
-    byCoach: (coachId: number) => `courses:*coachId*${coachId}*`,
+    byId: (id: string) => `courses:*${id}*`,
+    byCoach: (coachId: string) => `courses:*coachId*${coachId}*`,
   },
   users: {
     all: 'users:*',
-    byId: (id: number) => `users:*${id}*`,
+    byId: (id: string) => `users:*${id}*`,
   },
   stats: {
     all: 'stats:*',
-    byUser: (userId: number) => `stats:*userId*${userId}*`,
+    byUser: (userId: string) => `stats:*userId*${userId}*`,
   },
   orders: {
     all: 'orders:*',
   },
   coachingSlots: {
     all: 'coaching-slots:*',
-    byId: (id: number) => `coaching-slots:*${id}*`,
-    byCoach: (coachId: number) => `coaching-slots:*coachId*${coachId}*`,
+    byId: (id: string) => `coaching-slots:*${id}*`,
+    byCoach: (coachId: string) => `coaching-slots:*coachId*${coachId}*`,
   },
 }
