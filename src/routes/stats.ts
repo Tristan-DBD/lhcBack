@@ -76,7 +76,7 @@ router.get(
     keyGenerator: (req) => `stat:${req.params.id}`,
   }),
   async (req: AuthRequest, res: Response) => {
-    const stats = await ss.findById(req.params.id)
+    const stats = await ss.findById(req.params.id as string)
 
     if (stats == null) {
       return handlerResponse(res, 404, false, 'Stats introuvables')
@@ -127,12 +127,12 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: AuthRequest, res: Response) => {
-    const exist = await ss.findById(req.params.id)
+    const exist = await ss.findById(req.params.id as string)
     if (exist == null) {
       return handlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
     }
 
-    await ss.delete(req.params.id)
+    await ss.delete(req.params.id as string)
     return handlerResponse(res, 200, true, 'Stats supprimé')
   },
 )

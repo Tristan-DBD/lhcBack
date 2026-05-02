@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import { cacheService } from '../config/cache'
+import { AuthRequest } from './auth'
 
 interface CacheOptions {
   ttl?: number
-  keyGenerator?: (req: Request) => string
-  condition?: (req: Request) => boolean
+  keyGenerator?: (req: any) => string
+  condition?: (req: any) => boolean
 }
 
 /**
@@ -15,7 +16,7 @@ interface CacheOptions {
 export const cacheMiddleware = (prefix: string, options: CacheOptions = {}) => {
   const {
     ttl = 300, // 5 minutes par défaut
-    keyGenerator = (req) => {
+    keyGenerator = (req: Request) => {
       // Génère une clé basée sur l'URL et les paramètres de requête
       const queryParams = { ...req.query }
       delete queryParams.t // Supprimer les timestamps si présents
@@ -24,10 +25,10 @@ export const cacheMiddleware = (prefix: string, options: CacheOptions = {}) => {
         ...queryParams,
       })
     },
-    condition = (req) => req.method === 'GET',
+    condition = (req: Request) => req.method === 'GET',
   } = options
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
     // Vérifier si le cache doit être appliqué
     if (!condition(req)) {
       return next()
@@ -80,7 +81,7 @@ export const cacheMiddleware = (prefix: string, options: CacheOptions = {}) => {
  * @param patterns Patterns des clés à invalider
  */
 export const invalidateCacheMiddleware = (patterns: string[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
     // Exécuter la route d'abord
     const originalSend = res.send
     let responseData: any
@@ -134,3 +135,4 @@ export const cachePatterns = {
     byCoach: (coachId: string) => `coaching-slots:*coachId*${coachId}*`,
   },
 }
+
