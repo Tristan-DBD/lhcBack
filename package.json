@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx dotenv-cli -e .env.dev -- nodemon",
+    "dev": "npx dotenv-cli -e .env.dev -- ts-node src/index.ts",
     "prod": "npx dotenv-cli -e .env.prod -- ts-node src/index.ts",
     "test": "npx dotenv-cli -e .env.test -- jest --runInBand --forceExit --detectOpenHandles --verbose",
     "test:prod": "npx dotenv-cli -e .env.prod -- jest --runInBand --forceExit --coverage",
@@ -19,7 +19,8 @@
     "build": "tsc",
     "start": "NODE_ENV=prod node dist/src/index.js",
     "deploy:prod": "npm run migrate:prod && npm run build",
-    "seed": "npx dotenv-cli -e .env.dev -- ts-node prisma/seed.ts"
+    "seed": "npx dotenv-cli -e .env.dev -- ts-node prisma/seed.ts",
+    "studio": "npx dotenv-cli -e .env.dev -- prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -47,8 +48,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "jest": "^30.2.0",
-    "nodemon": "^3.1.11",
-    "prettier": "^3.7.4",
+        "prettier": "^3.7.4",
     "prisma": "^7.1.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.6",

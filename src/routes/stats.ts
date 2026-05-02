@@ -4,7 +4,7 @@ import { handlerResponse } from '../middleware/handler'
 import validate from '../middleware/validate'
 import { partialStatsSchema, statsSchema } from '../schemas/stats'
 import { idSchema } from '../schemas/common'
-import { authenticate } from '../middleware/auth'
+import { AuthRequest, authenticate } from '../middleware/auth'
 import { authorize } from '../middleware/authorize'
 import { rateLimiter } from '../middleware/rateLimiter'
 import {
@@ -20,10 +20,20 @@ router.post(
   rateLimiter(1, 10, { motif: 'create' }),
   validate(statsSchema),
   authenticate,
-  authorize('COACH'),
+  authorize('PROFILE'),
   invalidateCacheMiddleware([cachePatterns.stats.all]),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
+
+    // Vérifier que l'utilisateur est soit un COACH, soit le propriétaire des stats
+    if (req.user?.role !== 'COACH' && Number(req.user?.id) !== Number(userId)) {
+      return handlerResponse(
+        res,
+        403,
+        false,
+        'Vous n\'avez pas l\'autorisation de créer des stats pour un autre utilisateur',
+      )
+    }
 
     const stats = await ss.create(userId, squat, bench, deadlift)
 
@@ -49,7 +59,7 @@ router.get(
   authenticate,
   authorize('COACH'),
   cacheMiddleware('stats', { ttl: 120 }), // Cache de 2 minutes pour les stats (court car données changeantes)
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const stats = await ss.findAll()
     return handlerResponse(res, 200, true, stats)
   },
@@ -65,7 +75,7 @@ router.get(
     ttl: 180, // Cache de 3 minutes pour les stats individuelles
     keyGenerator: (req) => `stat:${req.params.id}`,
   }),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const stats = await ss.findById(Number(req.params.id))
 
     if (stats == null) {
@@ -80,10 +90,20 @@ router.put(
   rateLimiter(1, 20, { motif: 'update' }),
   validate(partialStatsSchema),
   authenticate,
-  authorize('COACH'),
+  authorize('PROFILE'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const { userId, squat, bench, deadlift } = req.body
+
+    // Vérifier que l'utilisateur est soit un COACH, soit le propriétaire des stats
+    if (req.user?.role !== 'COACH' && Number(req.user?.id) !== Number(userId)) {
+      return handlerResponse(
+        res,
+        403,
+        false,
+        'Vous n\'avez pas l\'autorisation de modifier les stats d\'un autre utilisateur',
+      )
+    }
 
     const updated = await ss.update(userId, squat, bench, deadlift)
 
@@ -106,7 +126,7 @@ router.delete(
   authenticate,
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const exist = await ss.findById(Number(req.params.id))
     if (exist == null) {
       return handlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
@@ -116,4 +136,5 @@ router.delete(
     return handlerResponse(res, 200, true, 'Stats supprimé')
   },
 )
+
 export default router
