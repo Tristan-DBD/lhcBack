@@ -1,11 +1,11 @@
+import { OrderStatus } from '@prisma/client'
 import prisma from '../db-config'
 
 export const OrderService = {
   async create(
-    userId: number,
-    items: { productId: number; size: string; quantity: number }[],
+    userId: string,
+    items: { productId: string; size: string; quantity: number }[],
   ) {
-    // 1. Calculer le total et vérifier le stock
     let total = 0
     const itemDetails = []
 
@@ -23,8 +23,6 @@ export const OrderService = {
           `Taille ${item.size} non trouvée pour le produit ${product.name}`,
         )
 
-      // On permet la commande même si stock <= 0 (pré-commande)
-      // Mais on enregistre le prix actuel
       total += product.price * item.quantity
       itemDetails.push({
         productId: item.productId,
@@ -33,14 +31,12 @@ export const OrderService = {
         price: product.price,
       })
 
-      // 2. Décrémenter le stock (peut devenir négatif)
       await prisma.productStock.update({
         where: { id: stock.id },
         data: { quantity: stock.quantity - item.quantity },
       })
     }
 
-    // 3. Créer la commande
     return await prisma.order.create({
       data: {
         userId,
@@ -75,7 +71,7 @@ export const OrderService = {
     })
   },
 
-  async findByUserId(userId: number) {
+  async findByUserId(userId: string) {
     return await prisma.order.findMany({
       where: { userId },
       include: {
@@ -89,16 +85,14 @@ export const OrderService = {
     })
   },
 
-  async updateStatus(orderId: number, status: string) {
+  async updateStatus(orderId: string, status: OrderStatus) {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true },
     })
     if (!order) return 'NOT-EXIST'
 
-    // Handle stock changes if changing to or from CANCELLED state
     if (status === 'CANCELLED' && order.status !== 'CANCELLED') {
-      // Re-créditer les stocks
       for (const item of order.items) {
         if (item.productId && item.size) {
           const stock = await prisma.productStock.findFirst({
@@ -113,7 +107,6 @@ export const OrderService = {
         }
       }
     } else if (order.status === 'CANCELLED' && status !== 'CANCELLED') {
-      // Déduire les stocks si on repasse la commande en actif
       for (const item of order.items) {
         if (item.productId && item.size) {
           const stock = await prisma.productStock.findFirst({
@@ -143,7 +136,7 @@ export const OrderService = {
     })
   },
 
-  async cancelOrder(orderId: number, userId: number) {
+  async cancelOrder(orderId: string, userId: string) {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true },
@@ -153,7 +146,6 @@ export const OrderService = {
     if (order.userId !== userId) return 'UNAUTHORIZED'
     if (order.status !== 'PENDING') return 'ALREADY-PROCESSED'
 
-    // Re-créditer le stock
     for (const item of order.items) {
       if (item.productId && item.size) {
         const stock = await prisma.productStock.findFirst({
@@ -175,7 +167,6 @@ export const OrderService = {
   },
 
   async getAggregatedSummary() {
-    // Récupérer tous les OrderItems des commandes non annulées
     const items = await prisma.orderItem.findMany({
       where: {
         order: {
@@ -187,7 +178,6 @@ export const OrderService = {
       },
     })
 
-    // Aggrégation par produit et taille
     const summary: Record<string, any> = {}
 
     for (const item of items) {

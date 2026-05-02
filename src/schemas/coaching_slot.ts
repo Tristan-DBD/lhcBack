@@ -1,16 +1,16 @@
 import { z } from 'zod'
-import { positiveNumber, validDate } from './common'
+import { validDate } from './common'
 
 const baseCoachingSlotSchema = z.object({
-  id: positiveNumber("L'id"),
-  coachId: positiveNumber("l'id du coach"),
+  id: z.string().uuid("L'id"),
+  coachId: z.string().uuid("l'id du coach"),
   startTime: validDate("L'heure de début"),
   endTime: validDate("L'heure de fin"),
 })
 
 export const slotBookingSchema = z.object({
-  slotId: positiveNumber("l'id du créneau"),
-  userId: positiveNumber("l'id de l'utilisateur"),
+  slotId: z.string().uuid("l'id du créneau"),
+  userId: z.string().uuid("l'id de l'utilisateur"),
 })
 
 export const coachingSlotQuerySchema = z.object({
@@ -38,9 +38,7 @@ export const coachingSlotQuerySchema = z.object({
         .regex(/^\d{4}-\d{2}-\d{2}$/)
         .optional(),
     ),
-  coachId: z
-    .preprocess((val) => Number(val), z.number().int().min(1))
-    .optional(),
+  coachId: z.string().uuid().optional(),
 })
 
 export const createCoachingSlotSchema = baseCoachingSlotSchema

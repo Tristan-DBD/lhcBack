@@ -66,7 +66,20 @@ server.use(
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type', 
+      'Authorization', 
+      'cache-control',
+      'pragma',
+      'expires',
+      'accept',
+      'origin',
+      'user-agent',
+      'referer',
+      'sec-ch-ua',
+      'sec-ch-ua-mobile',
+      'sec-ch-ua-platform'
+    ],
   }),
 )
 

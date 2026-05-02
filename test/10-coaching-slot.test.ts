@@ -12,15 +12,15 @@ afterAll(async () => {
 })
 
 describe("Test CRUD pour les créneaux d'appel coach", () => {
-  let coachTestId: number
-  let athleteTestId: number
-  let slotTestId: number
+  let coachTestId: string
+  let athleteTestId: string
+  let slotTestId: string
   let coachToken: string
   let athleteToken: string
 
   beforeAll(async () => {
-    coachToken = await createToken(1, 'COACH', 'coachuser')
-    athleteToken = await createToken(2, 'ATHLETE_CO', 'athleteuser')
+    coachToken = await createToken('00000000-0000-0000-0000-000000000001', 'COACH', 'coachuser')
+    athleteToken = await createToken('00000000-0000-0000-0000-000000000002', 'ATHLETE_CO', 'athleteuser')
 
     const coachRes = await request(server)
       .post('/api/user')
@@ -208,7 +208,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
 
     it('Not found -> 404', async () => {
       const res = await request(server)
-        .get('/api/coaching-slots/99999')
+        .get('/api/coaching-slots/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.status).toBe(404)
@@ -255,7 +255,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
 
     it('Not found -> 404', async () => {
       const res = await request(server)
-        .put('/api/coaching-slots/99999')
+        .put('/api/coaching-slots/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
         .send({
           startTime: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
@@ -282,7 +282,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
   // BOOK
   // ─────────────────────────────────────────────────────────
   describe('BOOK (POST /api/coaching-slots/book)', () => {
-    let slotToBookId: number
+    let slotToBookId: string
 
     beforeAll(async () => {
       const startTime = new Date(Date.now() + 96 * 60 * 60 * 1000)
@@ -334,7 +334,10 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
       const res = await request(server)
         .post('/api/coaching-slots/book')
         .set('Authorization', `Bearer ${athleteToken}`)
-        .send({ userId: athleteTestId, slotId: 99999 })
+        .send({
+          userId: athleteTestId,
+          slotId: '00000000-0000-0000-0000-000000000000',
+        })
 
       expect(res.status).toBe(404)
       expect(res.body.success).toBe(false)
@@ -362,7 +365,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
   // CANCEL
   // ─────────────────────────────────────────────────────────
   describe('CANCEL (POST /api/coaching-slots/cancel)', () => {
-    let slotToCancelId: number
+    let slotToCancelId: string
 
     beforeAll(async () => {
       const startTime = new Date(Date.now() + 120 * 60 * 60 * 1000)
@@ -409,7 +412,10 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
       const res = await request(server)
         .post('/api/coaching-slots/cancel')
         .set('Authorization', `Bearer ${athleteToken}`)
-        .send({ userId: athleteTestId, slotId: 99999 })
+        .send({
+          userId: athleteTestId,
+          slotId: '00000000-0000-0000-0000-000000000000',
+        })
 
       expect(res.status).toBe(404)
       expect(res.body.success).toBe(false)
@@ -437,7 +443,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
   // GET BOOKINGS BY SLOT
   // ─────────────────────────────────────────────────────────
   describe('GET BOOKINGS (GET /api/coaching-slots/bookings/:id)', () => {
-    let slotWithBookingId: number
+    let slotWithBookingId: string
 
     beforeAll(async () => {
       const startTime = new Date(Date.now() + 144 * 60 * 60 * 1000)
@@ -481,7 +487,9 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
 
     it('NOT FOUND -> 404', async () => {
       const res = await request(server)
-        .get('/api/coaching-slots/bookings/99999')
+        .get(
+          '/api/coaching-slots/bookings/00000000-0000-0000-0000-000000000000',
+        )
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.status).toBe(404)
@@ -501,7 +509,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
   // DELETE
   // ─────────────────────────────────────────────────────────
   describe('DELETE (DELETE /api/coaching-slots/:id)', () => {
-    let slotToDeleteId: number
+    let slotToDeleteId: string
 
     beforeAll(async () => {
       const startTime = new Date(Date.now() + 72 * 60 * 60 * 1000)
@@ -529,7 +537,7 @@ describe("Test CRUD pour les créneaux d'appel coach", () => {
 
     it('Not found -> 404', async () => {
       const res = await request(server)
-        .delete('/api/coaching-slots/99999')
+        .delete('/api/coaching-slots/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${coachToken}`)
 
       expect(res.status).toBe(404)

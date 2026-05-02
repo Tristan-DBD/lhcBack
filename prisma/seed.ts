@@ -1,16 +1,43 @@
-import { UserService } from '../src/service/user'
-import logger from '../src/config/logger'
+import prisma from '../src/db-config'
+
+const ROLES = [
+  { name: 'ADMIN', description: 'Administrateur de la plateforme' },
+  { name: 'COACH', description: 'Coach sportif' },
+  { name: 'ATHLETE_PROG', description: 'Athlète avec programme uniquement' },
+  {
+    name: 'ATHLETE_CO',
+    description: 'Athlète avec cours collectifs uniquement',
+  },
+  { name: 'ATHLETE_FULL', description: 'Athlète avec accès complet' },
+]
+
+async function seedRoles() {
+  console.log('🚀 Seeding des rôles...')
+
+  for (const role of ROLES) {
+    const existing = await prisma.role.findUnique({
+      where: { name: role.name },
+    })
+
+    if (existing) {
+      console.log(`  ⏭️  Role "${role.name}" déjà existant, skip.`)
+    } else {
+      await prisma.role.create({ data: role })
+      console.log(`  ✅ Role "${role.name}" créé.`)
+    }
+  }
+
+  console.log('🎉 Seeding terminé !')
+}
 
 async function main() {
   try {
-    logger.info('🚀 Début du seeding des rôles...')
-    await UserService.seedRoles()
-    logger.info('✅ Roles seedés avec succès !')
+    await seedRoles()
   } catch (error) {
-    logger.error('❌ Erreur lors du seeding :', error)
+    console.error('❌ Erreur lors du seeding :', error)
     process.exit(1)
   } finally {
-    process.exit(0)
+    await prisma.$disconnect()
   }
 }
 

@@ -65,7 +65,7 @@ export const validString = (
 }
 
 export const idSchema = z.object({
-  id: positiveNumber('Id'),
+  id: z.string().uuid('Id doit être un UUID valide'),
 })
 
 export const validDate = (field: string) => {

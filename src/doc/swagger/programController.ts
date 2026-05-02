@@ -18,7 +18,7 @@ export class ProgramController {
   @Security('BearerAuth')
   @Consumes('multipart/form-data')
   public async create(
-    @Path() id: number,
+    @Path() id: string,
     @UploadedFile() programFile: any,
   ): Promise<any> {
     return {} as any
@@ -27,7 +27,7 @@ export class ProgramController {
   @Delete('/:id')
   @Security('BearerAuth')
   public async delete(
-    @Path() id: number,
+    @Path() id: string,
     @Body() body: { name: string },
   ): Promise<any> {
     return {} as any

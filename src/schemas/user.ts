@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { positiveNumber, validString } from './common'
 
 const userSchema = z.object({
-  id: positiveNumber('Id'),
+  id: z.string().uuid('Id'),
   name: validString('Name', { min: 4, max: 10 }),
   surname: validString('Surname', { min: 4, max: 20 }),
   age: positiveNumber('Age', { min: 16, max: 100 }),

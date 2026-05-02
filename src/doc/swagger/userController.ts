@@ -35,7 +35,7 @@ class CreateUserDto {
 }
 
 class UserResponse {
-  id!: number
+  id!: string
   name!: string
   surname!: string
   age!: number
@@ -74,7 +74,7 @@ export class UserController {
 
   @Get('/{id}')
   @Security('BearerAuth')
-  public async findById(@Path() id: number): Promise<UserResponse | string> {
+  public async findById(@Path() id: string): Promise<UserResponse | string> {
     return {} as any
   }
 
@@ -88,7 +88,7 @@ export class UserController {
   @Security('BearerAuth')
   @Consumes('application/json')
   public async update(
-    @Path() id: number,
+    @Path() id: string,
     @Body()
     body: {
       name: string
@@ -104,14 +104,14 @@ export class UserController {
 
   @Delete('/{id}')
   @Security('BearerAuth')
-  public async delete(@Path() id: number): Promise<any> {
+  public async delete(@Path() id: string): Promise<any> {
     return {} as any
   }
 
   @Put('/{id}/profile-image')
   @Security('BearerAuth')
   public async imageUpdate(
-    @Path() id: number,
+    @Path() id: string,
     @UploadedFiles() profileImage: any,
   ): Promise<any> {
     return {} as any
@@ -119,7 +119,7 @@ export class UserController {
 
   @Delete('/{id}/profile-image')
   @Security('BearerAuth')
-  public async resetProfileImage(@Path() id: number): Promise<any> {
+  public async resetProfileImage(@Path() id: string): Promise<any> {
     return {} as any
   }
 }

@@ -109,6 +109,108 @@
 				"type": "object",
 				"additionalProperties": true
 			},
+			"ProductResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"sizes": {
+						"items": {
+							"properties": {
+								"stock": {
+									"type": "number",
+									"format": "double"
+								},
+								"size": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"stock",
+								"size"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"imageUri": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"sizes",
+					"price",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"UpdatePriceDto": {
+				"properties": {
+					"price": {
+						"type": "number",
+						"format": "double",
+						"example": 39.99
+					}
+				},
+				"required": [
+					"price"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"UpdateStockDto": {
+				"properties": {
+					"stock": {
+						"type": "number",
+						"format": "double",
+						"example": 5
+					}
+				},
+				"required": [
+					"stock"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"AddSizeDto": {
+				"properties": {
+					"size": {
+						"type": "string",
+						"example": "XXL"
+					},
+					"stock": {
+						"type": "number",
+						"format": "double",
+						"example": 10
+					}
+				},
+				"required": [
+					"size",
+					"stock"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
 			"PaymentStatusSchema": {
 				"properties": {
 					"jan": {
@@ -216,6 +318,430 @@
 					"userId",
 					"year",
 					"month"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"OrderItemDto": {
+				"properties": {
+					"productId": {
+						"type": "number",
+						"format": "double",
+						"example": 1
+					},
+					"size": {
+						"type": "string",
+						"example": "L"
+					},
+					"quantity": {
+						"type": "number",
+						"format": "double",
+						"example": 2
+					}
+				},
+				"required": [
+					"productId",
+					"size",
+					"quantity"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"OrderResponse": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemDto"
+						},
+						"type": "array"
+					},
+					"totalAmount": {
+						"type": "number",
+						"format": "double"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"PENDING",
+							"CONFIRMED",
+							"CANCELLED"
+						]
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"userId",
+					"items",
+					"totalAmount",
+					"status",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"CreateOrderDto": {
+				"properties": {
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderItemDto"
+						},
+						"type": "array",
+						"example": [
+							{
+								"productId": 1,
+								"size": "L",
+								"quantity": 2
+							},
+							{
+								"productId": 2,
+								"size": "M",
+								"quantity": 1
+							}
+						]
+					}
+				},
+				"required": [
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"OrderSummary": {
+				"properties": {
+					"totalOrders": {
+						"type": "number",
+						"format": "double"
+					},
+					"pendingOrders": {
+						"type": "number",
+						"format": "double"
+					},
+					"confirmedOrders": {
+						"type": "number",
+						"format": "double"
+					},
+					"cancelledOrders": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalRevenue": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"totalOrders",
+					"pendingOrders",
+					"confirmedOrders",
+					"cancelledOrders",
+					"totalRevenue"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"HealthCheckResponse": {
+				"properties": {
+					"status": {
+						"type": "string",
+						"enum": [
+							"healthy",
+							"unhealthy"
+						]
+					},
+					"uptime": {
+						"type": "number",
+						"format": "double"
+					},
+					"timestamp": {
+						"type": "string"
+					},
+					"application": {
+						"properties": {
+							"startTime": {
+								"type": "string"
+							},
+							"port": {
+								"type": "number",
+								"format": "double"
+							},
+							"environment": {
+								"type": "string"
+							},
+							"version": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"startTime",
+							"port",
+							"environment",
+							"version",
+							"name"
+						],
+						"type": "object"
+					},
+					"system": {
+						"properties": {
+							"memory": {
+								"properties": {
+									"total": {
+										"type": "string"
+									},
+									"used": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"total",
+									"used"
+								],
+								"type": "object"
+							},
+							"platform": {
+								"type": "string"
+							},
+							"nodeVersion": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"memory",
+							"platform",
+							"nodeVersion"
+						],
+						"type": "object"
+					},
+					"dependencies": {
+						"properties": {
+							"supabase": {
+								"properties": {
+									"error": {
+										"type": "string"
+									},
+									"responseTime": {
+										"type": "string"
+									},
+									"status": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"responseTime",
+									"status"
+								],
+								"type": "object"
+							},
+							"database": {
+								"properties": {
+									"error": {
+										"type": "string"
+									},
+									"responseTime": {
+										"type": "string"
+									},
+									"status": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"responseTime",
+									"status"
+								],
+								"type": "object"
+							}
+						},
+						"required": [
+							"supabase",
+							"database"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"status",
+					"uptime",
+					"timestamp",
+					"application",
+					"system",
+					"dependencies"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"DatabaseHealthResponse": {
+				"properties": {
+					"status": {
+						"type": "string"
+					},
+					"responseTime": {
+						"type": "string"
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"responseTime"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"CoachingSlotResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"coachId": {
+						"type": "number",
+						"format": "double"
+					},
+					"startAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"durationMinutes": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"isBooked": {
+						"type": "boolean"
+					},
+					"bookedBy": {
+						"properties": {
+							"surname": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							},
+							"id": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"surname",
+							"name",
+							"id"
+						],
+						"type": "object"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"coachId",
+					"startAt",
+					"durationMinutes",
+					"description",
+					"price",
+					"isBooked",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"CreateCoachingSlotDto": {
+				"properties": {
+					"startAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2024-01-15T10:00:00Z"
+					},
+					"durationMinutes": {
+						"type": "number",
+						"format": "double",
+						"example": 60
+					},
+					"description": {
+						"type": "string",
+						"example": "Séance de musculation"
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"example": 50
+					}
+				},
+				"required": [
+					"startAt",
+					"durationMinutes",
+					"description",
+					"price"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"UpdateCoachingSlotDto": {
+				"properties": {
+					"startAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2024-01-15T14:00:00Z"
+					},
+					"durationMinutes": {
+						"type": "number",
+						"format": "double",
+						"example": 90
+					},
+					"description": {
+						"type": "string",
+						"example": "Séance de cardio"
+					},
+					"price": {
+						"type": "number",
+						"format": "double",
+						"example": 60
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			},
+			"SlotBookingDto": {
+				"properties": {
+					"slotId": {
+						"type": "number",
+						"format": "double",
+						"example": 1
+					}
+				},
+				"required": [
+					"slotId"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -857,6 +1383,386 @@
 				]
 			}
 		},
+		"/shop": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": false,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"productImage": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/ProductResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/shop/{id}/price": {
+			"put": {
+				"operationId": "UpdatePrice",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdatePriceDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/shop/{id}": {
+			"get": {
+				"operationId": "GetById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/shop/{id}/stock/{size}": {
+			"put": {
+				"operationId": "UpdateStock",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "path",
+						"name": "size",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateStockDto"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteSize",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "path",
+						"name": "size",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/shop/{id}/size": {
+			"post": {
+				"operationId": "AddSize",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AddSizeDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/shop/{id}/image": {
+			"put": {
+				"operationId": "UpdateImage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProductResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Boutique"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"productImage": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"productImage"
+								]
+							}
+						}
+					}
+				}
+			}
+		},
 		"/user/program/{id}": {
 			"post": {
 				"operationId": "Create",
@@ -1035,6 +1941,235 @@
 						}
 					}
 				]
+			}
+		},
+		"/order": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Commandes"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateOrderDto"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Commandes"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/order/my": {
+			"get": {
+				"operationId": "GetMyOrders",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OrderResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Commandes"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/order/{id}": {
+			"delete": {
+				"operationId": "Cancel",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Commandes"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/order/summary": {
+			"get": {
+				"operationId": "GetSummary",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderSummary"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Commandes"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/metric/coverage": {
+			"get": {
+				"operationId": "GetCoverage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Métriques"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/admin/health": {
+			"get": {
+				"operationId": "GetHealth",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HealthCheckResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Santé Système"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/admin/health/database": {
+			"get": {
+				"operationId": "GetDatabaseHealth",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DatabaseHealthResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Santé Système"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
 			}
 		},
 		"/course": {
@@ -1399,6 +2534,278 @@
 						}
 					}
 				]
+			}
+		},
+		"/coaching-slots": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CoachingSlotResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateCoachingSlotDto"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/CoachingSlotResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/coaching-slots/{id}": {
+			"get": {
+				"operationId": "GetById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CoachingSlotResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "Update",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CoachingSlotResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCoachingSlotDto"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/coaching-slots/book": {
+			"post": {
+				"operationId": "Book",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SlotBookingDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/coaching-slots/cancel": {
+			"post": {
+				"operationId": "Cancel",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SlotBookingDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/coaching-slots/my/bookings": {
+			"get": {
+				"operationId": "GetMyBookings",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/CoachingSlotResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
 			}
 		},
 		"/auth/login": {

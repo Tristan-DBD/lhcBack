@@ -9,11 +9,11 @@ beforeAll(async () => {
 
 describe('REGISTER/UNREGISTER', () => {
   let athletes: any[]
-  let limitedCourseId: number
+  let limitedCourseId: string
   let coach: any
 
   beforeAll(async () => {
-    const adminToken = await createToken(98, 'ADMIN', 'adminuser')
+    const adminToken = await createToken('00000000-0000-0000-0000-000000000099', 'ADMIN', 'adminuser')
 
     // Créer le coach
     const coachRes = await request(server)
@@ -122,13 +122,15 @@ describe('REGISTER/UNREGISTER', () => {
       const res = await request(server)
         .post('/api/course/register')
         .set('Authorization', `Bearer ${athletes[4].token}`)
-        .send({ userId: athletes[4].id, courseId: 0 })
+        .send({
+          userId: athletes[4].id,
+          courseId: '00000000-0000-0000-0000-000000000000',
+        })
 
       expect(res.body.success).toBe(false)
-      expect([
-        'Cours non trouvé',
-        "l'id de la séance doit être positif",
-      ]).toContain(res.body.data[0].message)
+      expect(['Cours non trouvé', 'Id incorrect']).toContain(
+        res.body.data[0].message,
+      )
     })
 
     it('COACH -> Unauthorize', async () => {
@@ -172,13 +174,15 @@ describe('REGISTER/UNREGISTER', () => {
       const res = await request(server)
         .post('/api/course/unregister')
         .set('Authorization', `Bearer ${athletes[1].token}`)
-        .send({ userId: athletes[1].id, courseId: 0 })
+        .send({
+          userId: athletes[1].id,
+          courseId: '00000000-0000-0000-0000-000000000000',
+        })
 
       expect(res.body.success).toBe(false)
-      expect([
-        'Cours non trouvé',
-        "l'id de la séance doit être positif",
-      ]).toContain(res.body.data[0].message)
+      expect(['Cours non trouvé', 'Id incorrect']).toContain(
+        res.body.data[0].message,
+      )
     })
 
     it('COACH -> Authorized', async () => {

@@ -143,11 +143,11 @@ router.get(
   authenticate,
   authorize('PROFILE'),
   cacheMiddleware('users', {
-    ttl: 600, // Cache de 10 minutes pour les profils individuels
+    ttl: 600,
     keyGenerator: (req) => `users:${req.params.id}`,
   }),
   async (req: Request, res: Response) => {
-    const user = await us.findById(Number(req.params.id))
+    const user = await us.findById(req.params.id as string)
     if (user == 'NOT-EXIST')
       return handlerResponse(res, 404, false, 'Id incorrect')
     return handlerResponse(res, 200, true, user)
@@ -179,7 +179,7 @@ router.put(
       ...(username && { username: username }),
       ...(password && { password: hashed }),
     }
-    const user = await us.update(Number(req.params.id), { ...data })
+    const user = await us.update(req.params.id as string, { ...data })
     if (user == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Id incorrect')
     }
@@ -201,7 +201,7 @@ router.delete(
     cachePatterns.courses.all,
   ]),
   async (req: Request, res: Response) => {
-    const user = await us.delete(Number(req.params.id))
+    const user = await us.delete(req.params.id as string)
 
     if (user == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, 'Utilisateur introuvable')
@@ -223,7 +223,7 @@ router.put(
   async (req: Request, res: Response) => {
     if (!req.file) return handlerResponse(res, 400, false, 'Fichier manquant')
 
-    const user = await us.findById(Number(req.params.id))
+    const user = await us.findById(req.params.id as string)
     if (user == 'NOT-EXIST') {
       return handlerResponse(res, 404, false, user)
     }
@@ -233,7 +233,7 @@ router.put(
 
     const filePath = await FileService.save(req.file, 'profileImage')
 
-    const updated = await us.updateImage(Number(req.params.id), filePath)
+    const updated = await us.updateImage(req.params.id as string, filePath)
     return handlerResponse(res, 200, true, updated)
   },
 )
@@ -246,9 +246,9 @@ router.delete(
   authorize('PROFILE'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: Request, res: Response) => {
-    const id = Number(req.params.id)
+    const id = req.params.id as string
 
-    const user = await us.findById(id)
+    const user = await us.findById(id as string)
     if (user == 'NOT-EXIST') {
       return handlerResponse(res, 400, false, user)
     }
@@ -258,7 +258,7 @@ router.delete(
 
     await FileService.delete(user.imageUri)
 
-    await us.resetImage(Number(req.params.id))
+    await us.resetImage(id as string)
     return handlerResponse(res, 200, true, 'ok')
   },
 )

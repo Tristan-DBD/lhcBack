@@ -12,7 +12,7 @@ export class CourseController {
       title: string
       maxParticipants: number
       startAt: Date
-      coachId: number
+      coachId: string
       durationMinutes: number
       description: string
     },
@@ -28,20 +28,20 @@ export class CourseController {
 
   @Get('/{id}')
   @Security('BearerAuth')
-  public async getById(@Path() id: number): Promise<any> {
+  public async getById(@Path() id: string): Promise<any> {
     return {} as any
   }
 
   @Put('/{id}')
   @Security('BearerAuth')
   public async update(
-    @Path() id: number,
+    @Path() id: string,
     @Body()
     body: {
       title: string
       maxParticipants: number
       startAt: Date
-      coachId: number
+      coachId: string
       durationMinutes: number
       description: string
     },
@@ -51,14 +51,14 @@ export class CourseController {
 
   @Delete('/{id}')
   @Security('BearerAuth')
-  public async delete(@Path() id: number): Promise<any> {
+  public async delete(@Path() id: string): Promise<any> {
     return {} as any
   }
 
   @Post('/register')
   @Security('BearerAuth')
   public async register(
-    @Body() body: { userId: number; courseId: number },
+    @Body() body: { userId: string; courseId: string },
   ): Promise<any> {
     return {} as any
   }
@@ -66,14 +66,14 @@ export class CourseController {
   @Delete('/unregister')
   @Security('BearerAuth')
   public async unregister(
-    @Body() body: { userId: number; courseId: number },
+    @Body() body: { userId: string; courseId: string },
   ): Promise<any> {
     return {} as any
   }
 
   @Get('/registrations/{courseId}')
   @Security('BearerAuth')
-  public async getRegistrations(@Path() courseId: number): Promise<any[]> {
+  public async getRegistrations(@Path() courseId: string): Promise<any[]> {
     return [] as any
   }
 }

@@ -7,27 +7,50 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
+// AUTH & USERS
+// ─────────────────────────────────────────────
+
 model Role {
-  id          String  @id @default(cuid())
+  id          String  @id @default(uuid())
   name        String  @unique
   description String?
   users       User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(uuid())
   name     String
   surname  String
   age      Int
   weight   Float
   phone    String
-  roleId   String
-  role     Role    @relation(fields: [roleId], references: [id])
   imageUri String
 
-  progUri       Program[]
-  stat          Stats[]
-  courses       Courses[]      @relation("CoachCourses")
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  username String @unique
+  password String
+
+  // Relations
+  programs      Program[]
+  stats         Stats[]
+  courses       Course[]       @relation("CoachCourses")
   registrations Registration[]
   payments      PaymentYear[]
   refreshTokens RefreshToken[]
@@ -35,51 +58,92 @@ model User {
   coachingSlots CoachingSlot[] @relation("CoachSlots")
   slotBookings  SlotBooking[]
 
-  username  String @unique
-  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roleId])
 }
 
 model RefreshToken {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   token     String   @unique
-  userId    Int
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
+// ─────────────────────────────────────────────
+// PAYMENTS & STATS
+// ─────────────────────────────────────────────
+
 model PaymentYear {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   year      Int
   status    Json
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, year])
+  @@index([userId])
 }
 
 model Stats {
-  id Int @id @default(autoincrement())
-
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   squat    Float
   bench    Float
   deadlift Float
+
+  // Permet de tracker l'évolution dans le temps
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([recordedAt])
 }
 
-model Courses {
-  id              Int      @id @default(autoincrement())
+// ─────────────────────────────────────────────
+// PROGRAMS
+// ─────────────────────────────────────────────
+
+model Program {
+  id      String @id @default(uuid())
+  name    String
+  fileUri String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────
+// COURSES
+// ─────────────────────────────────────────────
+
+model Course {
+  id              String   @id @default(uuid())
   title           String
   description     String?
   startAt         DateTime
   durationMinutes Int
   maxParticipants Int
 
-  coachId Int?
-  coach   User? @relation("CoachCourses", fields: [coachId], references: [id])
+  coachId String?
+  coach   User?   @relation("CoachCourses", fields: [coachId], references: [id], onDelete: SetNull)
 
   registrations Registration[]
 
@@ -91,75 +155,96 @@ model Courses {
 }
 
 model Registration {
-  id       Int @id @default(autoincrement())
-  userId   Int
-  courseId Int
+  id       String @id @default(uuid())
+  userId   String
+  courseId String
 
-  user   User    @relation(fields: [userId], references: [id])
-  course Courses @relation(fields: [courseId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, courseId])
+  @@index([userId])
   @@index([courseId])
 }
 
-model Program {
-  id Int @id @default(autoincrement())
-  name String
-  fileUri String
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-}
+// ─────────────────────────────────────────────
+// SHOP
+// ─────────────────────────────────────────────
 
 model Product {
-  id         Int            @id @default(autoincrement())
-  name       String
-  price      Float          @default(0)
-  imageUri   String         @default("productImage/default.png")
+  id       String @id @default(uuid())
+  name     String
+  price    Float  @default(0)
+  imageUri String @default("productImage/default.png")
+
   stocks     ProductStock[]
   orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ProductStock {
-  id        Int     @id @default(autoincrement())
-  productId Int
+  id        String  @id @default(uuid())
+  productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   size      String
   quantity  Int     @default(0)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([productId, size])
+  @@index([productId])
+  @@index([size])
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  items     OrderItem[]
-  total     Float
-  status    String      @default("PENDING") // PENDING, COMPLETED, CANCELLED
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id     String      @id @default(uuid())
+  userId String
+  user   User        @relation(fields: [userId], references: [id])
+  items  OrderItem[]
+  total  Float
+
+  status OrderStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
+  id        String  @id @default(uuid())
+  orderId   String
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId Int
+  productId String
   product   Product @relation(fields: [productId], references: [id])
   size      String
   quantity  Int
   price     Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
 }
 
+// ─────────────────────────────────────────────
+// COACHING SLOTS
+// ─────────────────────────────────────────────
+
 model CoachingSlot {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   startTime DateTime
   endTime   DateTime
-  coachId   Int
-  
+  coachId   String
+
   coach    User          @relation("CoachSlots", fields: [coachId], references: [id])
   bookings SlotBooking[]
 
@@ -171,13 +256,15 @@ model CoachingSlot {
 }
 
 model SlotBooking {
-  id       Int         @id @default(autoincrement())
-  slotId   Int
-  userId   Int
-  bookedAt DateTime    @default(now())
+  id     String @id @default(uuid())
+  slotId String
+  userId String
 
   slot CoachingSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  user User          @relation(fields: [userId], references: [id])
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([slotId, userId])
   @@index([slotId])

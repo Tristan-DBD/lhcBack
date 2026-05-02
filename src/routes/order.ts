@@ -21,7 +21,7 @@ router.post(
   authenticate,
   async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).user.id
+      const userId = (req as any).user.id as string
       const { items } = req.body
 
       if (!items || !Array.isArray(items) || items.length === 0) {
@@ -46,7 +46,7 @@ router.get(
   '/',
   authenticate,
   authorize('COACH'),
-  cacheMiddleware('orders', { ttl: 60 }), // Short 1 minute cache since orders update dynamically
+  cacheMiddleware('orders', { ttl: 60 }),
   async (req: Request, res: Response) => {
     try {
       const orders = await os.findAll()
@@ -65,7 +65,7 @@ router.get(
 // Lister mes commandes (Athlète)
 router.get('/my', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id
+    const userId = (req as any).user.id as string
     const orders = await os.findByUserId(userId)
     return handlerResponse(res, 200, true, orders)
   } catch {
@@ -81,9 +81,8 @@ router.get('/my', authenticate, async (req: Request, res: Response) => {
 // Annuler ma commande (Athlète)
 router.delete('/:id', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user.id
-    const orderId = Number(req.params.id)
-    const result = await os.cancelOrder(orderId, userId)
+    const userId = (req as any).user.id as string
+    const result = await os.cancelOrder(req.params.id as string, userId)
 
     if (result === 'NOT-EXIST')
       return handlerResponse(res, 404, false, 'Commande introuvable')
@@ -128,7 +127,7 @@ router.patch(
   async (req: Request, res: Response) => {
     try {
       const { status } = req.body
-      const order = await os.updateStatus(Number(req.params.id), status)
+      const order = await os.updateStatus(req.params.id as string, status)
 
       if (order === 'NOT-EXIST')
         return handlerResponse(res, 404, false, 'Commande introuvable')

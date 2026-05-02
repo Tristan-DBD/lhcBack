@@ -5,11 +5,11 @@ export const coursesService = {
     title: string,
     maxParticipants: number,
     startAt: Date,
-    coachId: number,
+    coachId: string,
     durationMinutes: number,
     description?: string,
   ) {
-    const course = await prisma.courses.create({
+    const course = await prisma.course.create({
       data: {
         title: title,
         maxParticipants: maxParticipants,
@@ -44,7 +44,7 @@ export const coursesService = {
     }
 
     const [courses, total] = await Promise.all([
-      prisma.courses.findMany({
+      prisma.course.findMany({
         where,
         skip,
         take: limit,
@@ -57,67 +57,57 @@ export const coursesService = {
           },
         },
       }),
-      prisma.courses.count({ where }),
+      prisma.course.count({ where }),
     ])
     return { data: courses, total }
   },
-  async findById(id: number) {
-    const course = await prisma.courses.findUnique({
-      where: {
-        id: id,
-      },
+  async findById(id: string) {
+    const course = await prisma.course.findUnique({
+      where: { id },
     })
     if (course == null) return 'NOT-EXIST'
     return course
   },
   async update(
-    id: number,
+    id: string,
     data: Partial<{
       title: string
       maxParticipants: number
       startAt: Date
-      coachId: number
+      coachId: string
       durationMinutes: number
       description: string
     }>,
   ) {
-    const course = await prisma.courses.update({
-      where: {
-        id: id,
-      },
+    const course = await prisma.course.update({
+      where: { id },
       data: data,
     })
     return course
   },
-  async deleteAllRegistrations(courseId: number) {
+  async deleteAllRegistrations(courseId: string) {
     const result = await prisma.registration.deleteMany({
-      where: {
-        courseId: courseId,
-      },
+      where: { courseId },
     })
     return result
   },
-  async delete(id: number) {
+  async delete(id: string) {
     // Supprime d'abord toutes les inscriptions au cours
     await this.deleteAllRegistrations(id)
 
     // Puis supprime le cours
-    const course = await prisma.courses.delete({
-      where: {
-        id: id,
-      },
+    const course = await prisma.course.delete({
+      where: { id },
     })
     return course
   },
-  async register(userId: number, courseId: number) {
+  async register(userId: string, courseId: string) {
     return await prisma.$transaction(async (tx) => {
-      // vérifie si le cours existe et verrouille la ligne pour l'accès concurrent
-      const course = await tx.courses.findUnique({
+      const course = await tx.course.findUnique({
         where: { id: courseId },
       })
       if (course == null) return 'NOT-EXIST'
 
-      // vérifie si déjà inscrit
       const existingRegistration = await tx.registration.findUnique({
         where: {
           userId_courseId: {
@@ -128,14 +118,12 @@ export const coursesService = {
       })
       if (existingRegistration != null) return 'ALREADY-REGISTERED'
 
-      // vérifie si le cours est complet
       const currentRegistrationCount = await tx.registration.count({
         where: { courseId: courseId },
       })
 
       if (currentRegistrationCount >= course.maxParticipants) return 'FULL'
 
-      // inscrit l'utilisateur au cours
       return await tx.registration.create({
         data: {
           userId: userId,
@@ -144,11 +132,9 @@ export const coursesService = {
       })
     })
   },
-  async unregister(userId: number, courseId: number) {
-    const course = await prisma.courses.findUnique({
-      where: {
-        id: courseId,
-      },
+  async unregister(userId: string, courseId: string) {
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
     })
     if (course == null) return 'NOT-EXIST'
 
@@ -172,11 +158,9 @@ export const coursesService = {
     })
     return registration
   },
-  async getRegistrations(courseId: number) {
+  async getRegistrations(courseId: string) {
     const registrations = await prisma.registration.findMany({
-      where: {
-        courseId,
-      },
+      where: { courseId },
       include: {
         user: true,
       },

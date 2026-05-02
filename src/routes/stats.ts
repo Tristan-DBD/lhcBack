@@ -26,7 +26,7 @@ router.post(
     const { userId, squat, bench, deadlift } = req.body
 
     // Vérifier que l'utilisateur est soit un COACH, soit le propriétaire des stats
-    if (req.user?.role !== 'COACH' && Number(req.user?.id) !== Number(userId)) {
+    if (req.user?.role !== 'COACH' && req.user?.id !== userId) {
       return handlerResponse(
         res,
         403,
@@ -72,11 +72,11 @@ router.get(
   authenticate,
   authorize('COACH'),
   cacheMiddleware('stat', {
-    ttl: 180, // Cache de 3 minutes pour les stats individuelles
+    ttl: 180,
     keyGenerator: (req) => `stat:${req.params.id}`,
   }),
   async (req: AuthRequest, res: Response) => {
-    const stats = await ss.findById(Number(req.params.id))
+    const stats = await ss.findById(req.params.id)
 
     if (stats == null) {
       return handlerResponse(res, 404, false, 'Stats introuvables')
@@ -96,7 +96,7 @@ router.put(
     const { userId, squat, bench, deadlift } = req.body
 
     // Vérifier que l'utilisateur est soit un COACH, soit le propriétaire des stats
-    if (req.user?.role !== 'COACH' && Number(req.user?.id) !== Number(userId)) {
+    if (req.user?.role !== 'COACH' && req.user?.id !== userId) {
       return handlerResponse(
         res,
         403,
@@ -127,12 +127,12 @@ router.delete(
   authorize('COACH'),
   invalidateCacheMiddleware([cachePatterns.users.all]),
   async (req: AuthRequest, res: Response) => {
-    const exist = await ss.findById(Number(req.params.id))
+    const exist = await ss.findById(req.params.id)
     if (exist == null) {
       return handlerResponse(res, 404, false, "La fiche de stats n'existe pas ")
     }
 
-    await ss.delete(Number(req.params.id))
+    await ss.delete(req.params.id)
     return handlerResponse(res, 200, true, 'Stats supprimé')
   },
 )

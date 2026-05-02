@@ -1,7 +1,7 @@
 import prisma from '../db-config'
 
 export const coachingSlotService = {
-  async create(coachId: number, startTime: Date, endTime: Date) {
+  async create(coachId: string, startTime: Date, endTime: Date) {
     const slot = await prisma.coachingSlot.create({
       data: {
         coachId: coachId,
@@ -23,7 +23,7 @@ export const coachingSlotService = {
     limit?: number
     startDate?: Date
     endDate?: Date
-    coachId?: number
+    coachId?: string
   } = {}) {
     const skip = (page - 1) * limit
     const where = {
@@ -57,11 +57,9 @@ export const coachingSlotService = {
     return { data: slots, total }
   },
 
-  async findById(id: number) {
+  async findById(id: string) {
     const slot = await prisma.coachingSlot.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
       include: {
         coach: true,
         bookings: {
@@ -76,53 +74,42 @@ export const coachingSlotService = {
   },
 
   async update(
-    id: number,
+    id: string,
     data: Partial<{
-      coachId: number
+      coachId: string
       startTime: Date
       endTime: Date
     }>,
   ) {
     const slot = await prisma.coachingSlot.update({
-      where: {
-        id: id,
-      },
+      where: { id },
       data: data,
     })
     return slot
   },
 
-  async delete(id: number) {
-    // Supprime d'abord toutes les réservations du créneau
+  async delete(id: string) {
     await this.deleteAllBookings(id)
-
-    // Puis supprime le créneau
     const slot = await prisma.coachingSlot.delete({
-      where: {
-        id: id,
-      },
+      where: { id },
     })
     return slot
   },
 
-  async deleteAllBookings(slotId: number) {
+  async deleteAllBookings(slotId: string) {
     const result = await prisma.slotBooking.deleteMany({
-      where: {
-        slotId: slotId,
-      },
+      where: { slotId },
     })
     return result
   },
 
-  async bookSlot(userId: number, slotId: number) {
+  async bookSlot(userId: string, slotId: string) {
     return await prisma.$transaction(async (tx) => {
-      // vérifie si le créneau existe et verrouille la ligne pour l'accès concurrent
       const slot = await tx.coachingSlot.findUnique({
         where: { id: slotId },
       })
       if (slot == null) return 'NOT-EXIST'
 
-      // vérifie si déjà réservé
       const existingBooking = await tx.slotBooking.findUnique({
         where: {
           slotId_userId: {
@@ -133,14 +120,12 @@ export const coachingSlotService = {
       })
       if (existingBooking != null) return 'ALREADY-BOOKED'
 
-      // vérifie si le créneau est déjà réservé par quelqu'un d'autre
       const currentBookingCount = await tx.slotBooking.count({
         where: { slotId: slotId },
       })
 
       if (currentBookingCount >= 1) return 'ALREADY-TAKEN'
 
-      // réserve le créneau pour l'utilisateur
       return await tx.slotBooking.create({
         data: {
           slotId: slotId,
@@ -150,11 +135,9 @@ export const coachingSlotService = {
     })
   },
 
-  async cancelBooking(userId: number, slotId: number) {
+  async cancelBooking(userId: string, slotId: string) {
     const slot = await prisma.coachingSlot.findUnique({
-      where: {
-        id: slotId,
-      },
+      where: { id: slotId },
     })
     if (slot == null) return 'NOT-EXIST'
 
@@ -179,11 +162,9 @@ export const coachingSlotService = {
     return booking
   },
 
-  async getBookings(slotId: number) {
+  async getBookings(slotId: string) {
     const bookings = await prisma.slotBooking.findMany({
-      where: {
-        slotId,
-      },
+      where: { slotId },
       include: {
         user: true,
       },
