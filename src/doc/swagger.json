@@ -50,8 +50,7 @@
 			"UserResponse": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"name": {
 						"type": "string"
@@ -112,8 +111,7 @@
 			"ProductResponse": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"name": {
 						"type": "string"
@@ -270,9 +268,8 @@
 			"PaymentYearSchema": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double",
-						"example": 1
+						"type": "string",
+						"example": "uuid-id"
 					},
 					"year": {
 						"type": "number",
@@ -283,9 +280,8 @@
 						"$ref": "#/components/schemas/PaymentStatusSchema"
 					},
 					"userId": {
-						"type": "number",
-						"format": "double",
-						"example": 10
+						"type": "string",
+						"example": "uuid-user"
 					}
 				},
 				"required": [
@@ -300,9 +296,8 @@
 			"TogglePaymentDto": {
 				"properties": {
 					"userId": {
-						"type": "number",
-						"format": "double",
-						"example": 10
+						"type": "string",
+						"example": "uuid-user"
 					},
 					"year": {
 						"type": "number",
@@ -325,9 +320,8 @@
 			"OrderItemDto": {
 				"properties": {
 					"productId": {
-						"type": "number",
-						"format": "double",
-						"example": 1
+						"type": "string",
+						"example": "uuid-prod"
 					},
 					"size": {
 						"type": "string",
@@ -403,12 +397,12 @@
 						"type": "array",
 						"example": [
 							{
-								"productId": 1,
+								"productId": "uuid-prod-1",
 								"size": "L",
 								"quantity": 2
 							},
 							{
-								"productId": 2,
+								"productId": "uuid-prod-2",
 								"size": "M",
 								"quantity": 1
 							}
@@ -608,12 +602,10 @@
 			"CoachingSlotResponse": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"coachId": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"startAt": {
 						"type": "string",
@@ -642,8 +634,7 @@
 								"type": "string"
 							},
 							"id": {
-								"type": "number",
-								"format": "double"
+								"type": "string"
 							}
 						},
 						"required": [
@@ -735,9 +726,8 @@
 			"SlotBookingDto": {
 				"properties": {
 					"slotId": {
-						"type": "number",
-						"format": "double",
-						"example": 1
+						"type": "string",
+						"example": "uuid-here"
 					}
 				},
 				"required": [
@@ -950,8 +940,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -982,8 +971,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1054,8 +1042,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -1117,8 +1104,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1171,8 +1157,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -1219,8 +1204,7 @@
 										"format": "double"
 									},
 									"userId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									}
 								},
 								"required": [
@@ -1300,8 +1284,7 @@
 										"format": "double"
 									},
 									"userId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									}
 								},
 								"required": [
@@ -1344,8 +1327,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -1376,8 +1358,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -1481,8 +1462,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1527,8 +1507,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -1559,8 +1538,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -1595,8 +1573,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					},
 					{
@@ -1647,8 +1624,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					},
 					{
@@ -1691,8 +1667,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1737,8 +1712,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1790,8 +1764,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1841,8 +1814,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -1936,8 +1908,7 @@
 						"name": "userId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -2208,8 +2179,7 @@
 										"format": "double"
 									},
 									"coachId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									},
 									"startAt": {
 										"type": "string",
@@ -2290,8 +2260,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -2322,8 +2291,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -2341,8 +2309,7 @@
 										"format": "double"
 									},
 									"coachId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									},
 									"startAt": {
 										"type": "string",
@@ -2396,8 +2363,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -2432,12 +2398,10 @@
 							"schema": {
 								"properties": {
 									"courseId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									},
 									"userId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									}
 								},
 								"required": [
@@ -2480,12 +2444,10 @@
 							"schema": {
 								"properties": {
 									"courseId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									},
 									"userId": {
-										"type": "number",
-										"format": "double"
+										"type": "string"
 									}
 								},
 								"required": [
@@ -2529,8 +2491,7 @@
 						"name": "courseId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -2628,8 +2589,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -2662,8 +2622,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				],
@@ -2704,8 +2663,7 @@
 						"name": "id",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
