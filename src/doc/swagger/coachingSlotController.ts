@@ -109,6 +109,27 @@ export class CoachingSlotController {
     return {} as any
   }
 
+  @Post('/batch')
+  @Security('BearerAuth')
+  public async createBatch(
+    @Body()
+    body: {
+      coachId: string
+      startTime: string
+      endTime: string
+      startDate: Date
+      endDate: Date
+    },
+  ): Promise<any[]> {
+    return [] as any
+  }
+
+  @Get('/bookings/{slotId}')
+  @Security('BearerAuth')
+  public async getBookings(@Path() slotId: string): Promise<any[]> {
+    return [] as any
+  }
+
   @Get('/my/bookings')
   @Security('BearerAuth')
   public async getMyBookings(): Promise<CoachingSlotResponse[]> {

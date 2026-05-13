@@ -1,5 +1,12 @@
 import prisma from '../db-config'
 
+function setTimeOnDate(dateStr: string, timeStr: string): Date {
+  const [h, m] = timeStr.split(':').map(Number)
+  const d = new Date(dateStr)
+  d.setUTCHours(h!, m!, 0, 0)
+  return d
+}
+
 export const coachingSlotService = {
   async create(coachId: string, startTime: Date, endTime: Date) {
     const slot = await prisma.coachingSlot.create({
@@ -170,5 +177,28 @@ export const coachingSlotService = {
       },
     })
     return bookings
+  },
+
+  async createBatch(coachId: string, startTimeStr: string, endTimeStr: string, startDateStr: string, endDateStr: string) {
+    const start = new Date(startDateStr)
+    const end = new Date(endDateStr)
+    const slots: { coachId: string; startTime: Date; endTime: Date }[] = []
+
+    const current = new Date(start)
+    while (current <= end) {
+      const datePart = current.toISOString().split('T')[0]!
+      slots.push({
+        coachId,
+        startTime: setTimeOnDate(datePart, startTimeStr),
+        endTime: setTimeOnDate(datePart, endTimeStr),
+      })
+      current.setDate(current.getDate() + 1)
+    }
+
+    return await prisma.$transaction(
+      slots.map((slot) =>
+        prisma.coachingSlot.create({ data: slot }),
+      ),
+    )
   },
 }

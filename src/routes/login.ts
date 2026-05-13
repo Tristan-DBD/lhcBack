@@ -8,6 +8,12 @@ import { changePasswordSchema, loginSchema } from '../schemas/auth'
 import { createUserSchema } from '../schemas/user'
 import validate from '../middleware/validate'
 import { authenticate } from '../middleware/auth'
+import { authorize } from '../middleware/authorize'
+import { z } from 'zod'
+
+const adminResetPasswordSchema = z.object({
+  userId: z.string().uuid("l'id de l'utilisateur"),
+})
 
 const router = Router()
 
@@ -148,6 +154,36 @@ router.post(
       )
     } catch (e) {
       return handlerResponse(res, 500, false, 'Erreur lors de la mise à jour')
+    }
+  },
+)
+
+router.post(
+  '/admin/reset-password',
+  rateLimiter(1, 20, { motif: 'admin-reset' }),
+  validate(adminResetPasswordSchema),
+  authenticate,
+  authorize('ADMIN'),
+  async (req: Request, res: Response) => {
+    const { userId } = req.body
+
+    try {
+      const user = await us.findById(userId)
+      if (user == 'NOT-EXIST') {
+        return handlerResponse(res, 404, false, 'Utilisateur non trouvé')
+      }
+
+      const hashed = await bcrypt.hash(DEFAULT_PASSWORD, SALT_ROUNDS)
+      await us.update(userId, { password: hashed })
+
+      return handlerResponse(
+        res,
+        200,
+        true,
+        `Mot de passe réinitialisé pour ${user.username}`,
+      )
+    } catch (e) {
+      return handlerResponse(res, 500, false, 'Erreur lors de la réinitialisation')
     }
   },
 )

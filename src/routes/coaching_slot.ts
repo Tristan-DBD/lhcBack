@@ -5,6 +5,7 @@ import {
   partialCoachingSlotSchema,
   slotBookingSchema,
   coachingSlotQuerySchema,
+  batchCoachingSlotSchema,
 } from '../schemas/coaching_slot'
 import { coachingSlotService as cs } from '../service/coaching_slot'
 import {
@@ -190,6 +191,20 @@ router.post(
     const { userId, slotId } = req.body
     const result = await cs.cancelBooking(userId, slotId)
     return handleCancelResult(result, res)
+  },
+)
+
+router.post(
+  '/batch',
+  rateLimiter(1, 10, { motif: 'batch' }),
+  validate(batchCoachingSlotSchema),
+  authenticate,
+  authorize('COACH'),
+  invalidateCacheMiddleware([cachePatterns.coachingSlots.all]),
+  async (req: Request, res: Response) => {
+    const { coachId, startTime, endTime, startDate, endDate } = req.body
+    const slots = await cs.createBatch(coachId, startTime, endTime, startDate, endDate)
+    return handlerResponse(res, 201, true, slots)
   },
 )
 

@@ -34,6 +34,7 @@ export const coursesService = {
   } = {}) {
     const skip = (page - 1) * limit
     const where = {
+      isIndividual: false,
       ...(startDate &&
         endDate && {
           startAt: {

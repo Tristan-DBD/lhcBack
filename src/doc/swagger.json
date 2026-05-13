@@ -806,6 +806,19 @@
 				],
 				"type": "object",
 				"additionalProperties": true
+			},
+			"adminResetPasswordDto": {
+				"properties": {
+					"userId": {
+						"type": "string",
+						"example": "uuid-de-lutilisateur"
+					}
+				},
+				"required": [
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": true
 			}
 		},
 		"securitySchemes": {}
@@ -2091,6 +2104,342 @@
 				"parameters": []
 			}
 		},
+		"/individual-session": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"description": {
+										"type": "string"
+									},
+									"durationMinutes": {
+										"type": "number",
+										"format": "double"
+									},
+									"coachId": {
+										"type": "string"
+									},
+									"startAt": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"title": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"durationMinutes",
+									"coachId",
+									"startAt",
+									"title"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/individual-session/{id}": {
+			"get": {
+				"operationId": "GetById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "Update",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"description": {
+										"type": "string"
+									},
+									"durationMinutes": {
+										"type": "number",
+										"format": "double"
+									},
+									"coachId": {
+										"type": "string"
+									},
+									"startAt": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"title": {
+										"type": "string"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "Delete",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/individual-session/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"courseId": {
+										"type": "string"
+									},
+									"userId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"courseId",
+									"userId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/individual-session/unregister": {
+			"post": {
+				"operationId": "Unregister",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"courseId": {
+										"type": "string"
+									},
+									"userId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"courseId",
+									"userId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/individual-session/registrations/{courseId}": {
+			"get": {
+				"operationId": "GetRegistrations",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Séances Individuelles"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "courseId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/admin/health": {
 			"get": {
 				"operationId": "GetHealth",
@@ -2737,6 +3086,105 @@
 				}
 			}
 		},
+		"/coaching-slots/batch": {
+			"post": {
+				"operationId": "CreateBatch",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"endDate": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"startDate": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"endTime": {
+										"type": "string"
+									},
+									"startTime": {
+										"type": "string"
+									},
+									"coachId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"endDate",
+									"startDate",
+									"endTime",
+									"startTime",
+									"coachId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/coaching-slots/bookings/{slotId}": {
+			"get": {
+				"operationId": "GetBookings",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Créneaux Coaching"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "slotId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/coaching-slots/my/bookings": {
 			"get": {
 				"operationId": "GetMyBookings",
@@ -2854,6 +3302,40 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/changePasswordDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/admin/reset-password": {
+			"post": {
+				"operationId": "AdminResetPassword",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/adminResetPasswordDto"
 							}
 						}
 					}

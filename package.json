@@ -20,6 +20,8 @@
     "start": "NODE_ENV=prod node dist/src/index.js",
     "deploy:prod": "npm run migrate:prod && npm run build",
     "seed": "npx dotenv-cli -e .env.dev -- ts-node prisma/seed.ts",
+    "seed:users": "npx dotenv-cli -e .env.dev -- ts-node prisma/seed-users.ts",
+    "seed:users:test": "npx dotenv-cli -e .env.test -- ts-node prisma/seed-users.ts",
     "studio": "npx dotenv-cli -e .env.dev -- prisma studio",
     "swagger": "tsoa spec"
   },

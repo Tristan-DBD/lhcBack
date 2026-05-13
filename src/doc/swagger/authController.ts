@@ -34,6 +34,11 @@ export class changePasswordDto {
   newPassword!: string
 }
 
+export class adminResetPasswordDto {
+  @Example('uuid-de-lutilisateur')
+  userId!: string
+}
+
 @Route('auth')
 @Tags('Authentication')
 export class AuthController {
@@ -50,6 +55,14 @@ export class AuthController {
   @Post('/change-password')
   @Security('BearerAuth')
   public async changePassword(@Body() body: changePasswordDto): Promise<any> {
+    return body
+  }
+
+  @Post('/admin/reset-password')
+  @Security('BearerAuth')
+  public async adminResetPassword(
+    @Body() body: adminResetPasswordDto,
+  ): Promise<any> {
     return body
   }
 }

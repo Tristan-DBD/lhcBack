@@ -141,6 +141,7 @@ model Course {
   startAt         DateTime
   durationMinutes Int
   maxParticipants Int
+  isIndividual    Boolean  @default(false)
 
   coachId String?
   coach   User?   @relation("CoachCourses", fields: [coachId], references: [id], onDelete: SetNull)
