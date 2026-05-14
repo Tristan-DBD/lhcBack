@@ -16,7 +16,7 @@ export const slotBookingSchema = z.object({
 export const coachingSlotQuerySchema = z.object({
   page: z.preprocess((val) => Number(val), z.number().int().min(1)).default(1),
   limit: z
-    .preprocess((val) => Number(val), z.number().int().min(1).max(100))
+    .preprocess((val) => Number(val), z.number().int().min(1).max(1000))
     .default(20),
   startDate: z
     .string()

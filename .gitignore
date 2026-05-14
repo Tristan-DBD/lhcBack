@@ -1,7 +1,6 @@
 node_modules
 .vscode
 generated
-prisma/migrations
 coverage
 
 .env.prod
